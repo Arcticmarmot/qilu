@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
     @PostMapping
@@ -21,6 +22,6 @@ public class UserController {
 
     @GetMapping("/{uuid}")
     public Result<UserVO> getUser(@PathVariable String uuid) {
-        return Result.success(userService.getUserByUuid(uuid));
+        return Result.success(userService.getUserProfile(uuid));
     }
 }

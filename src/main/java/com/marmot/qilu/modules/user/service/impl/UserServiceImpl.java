@@ -21,18 +21,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVO createUser(CreateUserDTO dto) {
         if(dto.getNickname() == null || dto.getNickname().isBlank()) {
-            throw new RuntimeException("nickname couldn't be null");
+            throw new RuntimeException("Nickname must not be blank.");
         }
         if(dto.getPassword() == null || dto.getPassword().isBlank()) {
-            throw new RuntimeException("password couldn't be null");
+            throw new RuntimeException("Password must not be blank.");
         }
+
         if(dto.getEmail() != null && !dto.getEmail().isBlank()) {
             User existed = userMapper.selectOne(
                     new LambdaQueryWrapper<User>()
                             .eq(User::getEmail, dto.getEmail())
             );
             if(existed != null) {
-                throw new RuntimeException("email already existed");
+                throw new RuntimeException("Email already exists.");
             }
         }
         User user = new User();
@@ -41,23 +42,38 @@ public class UserServiceImpl implements UserService {
         user.setEmail(dto.getEmail());
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setStatus(1);
+
         userMapper.insert(user);
-        return toVO(user);
+
+        return toUserVO(user);
     }
 
     @Override
-    public UserVO getUserByUuid(String uuid) {
-        User user = userMapper.selectOne(
+    public UserVO getUserProfile(String uuid) {
+        User user = getUserByUuid(uuid);
+        if (user == null) {
+            throw new RuntimeException("User not found.");
+        }
+        return toUserVO(user);
+    }
+
+    @Override
+    public User getUserByUuid(String uuid) {
+        return userMapper.selectOne(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUuid, uuid)
         );
-        if(user == null) {
-            throw new RuntimeException("user not exist");
-        }
-        return toVO(user);
     }
 
-    private UserVO toVO(User user) {
+    @Override
+    public User getUserByEmail(String email) {
+        return userMapper.selectOne(
+                new LambdaQueryWrapper<User>()
+                        .eq(User::getEmail, email)
+        );
+    }
+
+    private UserVO toUserVO(User user) {
         UserVO vo = new UserVO();
         vo.setUuid(user.getUuid());
         vo.setNickname(user.getNickname());

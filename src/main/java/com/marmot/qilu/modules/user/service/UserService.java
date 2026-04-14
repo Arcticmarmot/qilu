@@ -7,5 +7,9 @@ import com.marmot.qilu.modules.user.vo.UserVO;
 public interface UserService {
     UserVO createUser(CreateUserDTO dto);
 
-    UserVO getUserByUuid(String uuid);
+    UserVO getUserProfile(String uuid);
+
+    User getUserByUuid(String uuid);
+
+    User getUserByEmail(String email);
 }
