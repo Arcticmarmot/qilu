@@ -1,3 +1,15 @@
 spring:
   application:
     name: qilu
+  datasource:
+    url: jdbc:mysql://localhost:3306/qilu?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Singapore
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
