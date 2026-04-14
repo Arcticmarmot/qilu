@@ -58,6 +58,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserVO getCurrentUserProfile(String uuid) {
+        User user = getUserByUuid(uuid);
+        if(user == null) {
+            throw new RuntimeException("Current user not found.");
+        }
+        return toUserVO(user);
+    }
+
+    @Override
     public User getUserByUuid(String uuid) {
         return userMapper.selectOne(
                 new LambdaQueryWrapper<User>()

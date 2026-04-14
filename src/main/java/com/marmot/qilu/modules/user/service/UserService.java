@@ -9,6 +9,8 @@ public interface UserService {
 
     UserVO getUserProfile(String uuid);
 
+    UserVO getCurrentUserProfile(String uuid);
+
     User getUserByUuid(String uuid);
 
     User getUserByEmail(String email);

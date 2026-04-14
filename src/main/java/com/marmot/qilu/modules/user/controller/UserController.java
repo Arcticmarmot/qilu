@@ -1,5 +1,6 @@
 package com.marmot.qilu.modules.user.controller;
 
+import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.result.Result;
 import com.marmot.qilu.modules.user.dto.CreateUserDTO;
 import com.marmot.qilu.modules.user.entity.User;
@@ -23,5 +24,11 @@ public class UserController {
     @GetMapping("/{uuid}")
     public Result<UserVO> getUser(@PathVariable String uuid) {
         return Result.success(userService.getUserProfile(uuid));
+    }
+
+    @GetMapping("/me")
+    public Result<UserVO> getCurrentUser() {
+        String uuid = UserContext.getUuid();
+        return Result.success(userService.getCurrentUserProfile(uuid));
     }
 }
