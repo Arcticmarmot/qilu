@@ -14,7 +14,7 @@ public class Post {
     @TableId(type= IdType.AUTO)
     private Long id;
 
-    private Long userId;
+    private String userUuid;
 
     private String title;
 
@@ -23,7 +23,6 @@ public class Post {
     /**
      * 0 deleted
      * 1 normal
-     * 2 hidden
      */
     private Integer status;
 

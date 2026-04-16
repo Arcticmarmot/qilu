@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostCreateDTO {
+public class PostUpdateDTO {
 
     @Size(max = 128, message = "title length must not exceed 128")
     private String title;

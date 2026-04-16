@@ -1,6 +1,6 @@
 CREATE TABLE `user` (
                         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-                        `uuid` CHAR(32) NOT NULL COMMENT '用户身份标识',
+                        `uuid` CHAR(36) NOT NULL COMMENT '用户身份标识',
                         `password_hash` VARCHAR(255) NOT NULL COMMENT '密码哈希',
                         `nickname` VARCHAR(32) NOT NULL COMMENT '昵称',
                         `email` VARCHAR(64) DEFAULT NULL COMMENT '邮箱',

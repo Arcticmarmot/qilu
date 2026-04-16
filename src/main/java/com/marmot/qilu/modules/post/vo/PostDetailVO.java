@@ -11,7 +11,7 @@ public class PostDetailVO {
 
     private Long id;
 
-    private Long userId;
+    private String userUuid;
 
     private String title;
 

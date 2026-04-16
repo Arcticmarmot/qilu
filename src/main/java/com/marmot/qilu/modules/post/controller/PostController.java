@@ -1,9 +1,16 @@
 package com.marmot.qilu.modules.post.controller;
 
+import com.marmot.qilu.common.result.Result;
+import com.marmot.qilu.modules.post.dto.PostCreateDTO;
+import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
+import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
 import com.marmot.qilu.modules.post.service.PostService;
+import com.marmot.qilu.modules.post.vo.PostDetailVO;
+import com.marmot.qilu.modules.post.vo.PostPageItemVO;
+import com.marmot.qilu.modules.post.vo.PostPageVO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/posts")
@@ -11,4 +18,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
+
+    @PostMapping
+    public Result<Long> createPost(@Valid @RequestBody PostCreateDTO dto) {
+        return Result.success(postService.createPost(dto));
+    }
+
+    @GetMapping("/{postId}")
+    public Result<PostDetailVO> getPostDetail(@PathVariable Long postId) {
+        return Result.success(postService.getPostDetail(postId));
+    }
+
+    @PutMapping("/{postId}")
+    public Result<Void> updatePost(@PathVariable Long postId, @Valid @RequestBody PostUpdateDTO dto) {
+        postService.updatePost(postId, dto);
+        return Result.success();
+    }
+
+    @DeleteMapping("/{postId}")
+    public Result<Void> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return Result.success();
+    }
+
+    @GetMapping
+    public Result<PostPageVO<PostPageItemVO>> getPostPage(PostPageQueryDTO dto) {
+        return Result.success(postService.getPostPage(dto));
+    }
 }
