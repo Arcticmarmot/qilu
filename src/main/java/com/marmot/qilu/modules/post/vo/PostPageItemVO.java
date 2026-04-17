@@ -13,9 +13,11 @@ public class PostPageItemVO {
 
     private String userUuid;
 
+    private String nickname;
+
     private String title;
 
     private String contentPreview;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }

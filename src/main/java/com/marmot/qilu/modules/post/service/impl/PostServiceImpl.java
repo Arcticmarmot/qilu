@@ -16,6 +16,7 @@ import com.marmot.qilu.modules.post.vo.PostPageVO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -120,43 +121,15 @@ public class PostServiceImpl implements PostService {
         }
         long current = dto.getCurrent();
         long size = dto.getSize();
+        long offset = (current - 1) * size;
+        Long total = postMapper.countPublicPosts();
 
-        Page<Post> page = new Page<>(current, size);
-        Page<Post> postPage = postMapper.selectPage(
-                page,
-                new LambdaQueryWrapper<Post>()
-                        .eq(Post::getStatus, STATUS_NORMAL)
-                        .eq(Post::getVisibility, VISIBILITY_PUBLIC)
-                        .orderByDesc(Post::getCreatedAt)
-        );
-
+        List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size);
         PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
-        pageVO.setCurrent(postPage.getCurrent());
-        pageVO.setSize(postPage.getSize());
-        pageVO.setTotal(postPage.getTotal());
-        pageVO.setRecords(postPage.getRecords()
-                .stream()
-                .map(this::toPostPageItemVO)
-                .toList()
-        );
+        pageVO.setCurrent(current);
+        pageVO.setSize(size);
+        pageVO.setTotal(total);
+        pageVO.setRecords(records);
         return pageVO;
-    }
-
-    private PostPageItemVO toPostPageItemVO(Post post) {
-        PostPageItemVO vo = new PostPageItemVO();
-        vo.setId(post.getId());
-        vo.setTitle(post.getTitle());
-        vo.setUserUuid(post.getUserUuid());
-        vo.setContentPreview(buildContentPreview(post.getContent()));
-        vo.setCreateAt(post.getCreatedAt());
-        return vo;
-    }
-
-    private String buildContentPreview(String content) {
-        if (content == null || content.isBlank()) {
-            return "";
-        }
-        String trimmed = content.trim();
-        return trimmed.length() <= 20 ? trimmed : trimmed.substring(0, 20);
     }
 }
