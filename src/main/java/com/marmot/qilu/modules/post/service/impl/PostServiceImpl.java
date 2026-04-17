@@ -13,12 +13,14 @@ import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
     private static final int STATUS_DELETED = 0;
@@ -27,10 +29,6 @@ public class PostServiceImpl implements PostService {
     private static final int VISIBILITY_PRIVATE = 2;
 
     private final PostMapper postMapper;
-
-    public PostServiceImpl(PostMapper postMapper) {
-        this.postMapper = postMapper;
-    }
 
     @Override
     public Long createPost(PostCreateDTO dto) {

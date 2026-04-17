@@ -17,5 +17,9 @@ public class PostDetailVO {
 
     private String content;
 
+//    private Integer likeCount;
+//
+//    private Boolean isLikeByMe;
+
     private LocalDateTime createAt;
 }
