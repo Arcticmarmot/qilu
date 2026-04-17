@@ -11,5 +11,6 @@ CREATE TABLE `post` (
                         PRIMARY KEY (`id`),
                         KEY `idx_user_id` (`user_uuid`),
                         KEY `idx_status_created_at` (`status`, `created_at`),
+                        KEY `idx_status_visibility_created_at` (`status`, `visibility`, `created_at`),
                         KEY `idx_user_status_created_at` (`user_uuid`, `status`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='帖子主表';

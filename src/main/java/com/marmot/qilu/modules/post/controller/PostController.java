@@ -26,7 +26,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public Result<PostDetailVO> getPostDetail(@PathVariable Long postId) {
-        return Result.success(postService.getPostDetail(postId));
+        return Result.success(postService.getPublicPostDetail(postId));
     }
 
     @PutMapping("/{postId}")
@@ -43,6 +43,6 @@ public class PostController {
 
     @GetMapping
     public Result<PostPageVO<PostPageItemVO>> getPostPage(PostPageQueryDTO dto) {
-        return Result.success(postService.getPostPage(dto));
+        return Result.success(postService.getPublicPostPage(dto));
     }
 }

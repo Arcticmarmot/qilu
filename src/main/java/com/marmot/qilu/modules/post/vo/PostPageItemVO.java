@@ -19,5 +19,11 @@ public class PostPageItemVO {
 
     private String contentPreview;
 
+    private Integer visibility;
+
+    private Integer likeCount;
+
+    private Boolean likedByMe;
+
     private LocalDateTime createdAt;
 }

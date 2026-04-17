@@ -2,6 +2,7 @@ package com.marmot.qilu.modules.post.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.marmot.qilu.modules.post.entity.Post;
+import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,5 +14,11 @@ public interface PostMapper extends BaseMapper<Post> {
 
     Long countPublicPosts();
 
-    List<PostPageItemVO> selectPublicPostPage(@Param("offset") long current, @Param("size") long size);
+    List<PostPageItemVO> selectPublicPostPage(@Param("offset") long offset,
+                                              @Param("size") long size,
+                                              @Param("currUserUuid") String currUserUuid
+    );
+
+    PostDetailVO selectPublicPostDetail(@Param("postId") Long postId,
+                                  @Param("currUserUuid") String currUserUuid);
 }

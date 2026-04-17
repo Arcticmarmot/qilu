@@ -29,12 +29,4 @@
         where id = #{postId}
           and status = 1
     </update>
-    
-    <select id="selectPostLikeCount" resultType="java.lang.Integer">
-        select like_count
-        from post
-        where id = #{postId}
-          and status = 1
-        limit 1
-    </select>
 </mapper>

@@ -32,6 +32,8 @@ public class Post {
      */
     private Integer visibility;
 
+    private Integer likeCount;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

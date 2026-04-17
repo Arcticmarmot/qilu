@@ -2,8 +2,9 @@ package com.marmot.qilu.modules.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.modules.like.entity.PostLike;
+import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
@@ -25,8 +26,6 @@ public class PostServiceImpl implements PostService {
 
     private static final int STATUS_DELETED = 0;
     private static final int STATUS_NORMAL = 1;
-    private static final int VISIBILITY_PUBLIC = 1;
-    private static final int VISIBILITY_PRIVATE = 2;
 
     private final PostMapper postMapper;
 
@@ -41,30 +40,21 @@ public class PostServiceImpl implements PostService {
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
         post.setVisibility(dto.getVisibility());
-        // audit relevant
         post.setStatus(STATUS_NORMAL);
         postMapper.insert(post);
         return post.getId();
     }
 
     @Override
-    public PostDetailVO getPostDetail(Long postId) {
-        Post post = postMapper.selectOne(
-                new LambdaQueryWrapper<Post>()
-                        .eq(Post::getId, postId)
-                        .eq(Post::getStatus, STATUS_NORMAL)
-        );
-
-        if(post == null) {
-            throw new RuntimeException("Post not found.");
+    public PostDetailVO getPublicPostDetail(Long postId) {
+        String currUserUuid = UserContext.getUuid();
+        if(currUserUuid == null) {
+            throw new RuntimeException("User not logged in.");
         }
-
-        PostDetailVO vo = new PostDetailVO();
-        vo.setTitle(post.getTitle());
-        vo.setContent(post.getContent());
-        vo.setId(post.getId());
-        vo.setCreateAt(post.getCreatedAt());
-        vo.setUserUuid(post.getUserUuid());
+        PostDetailVO vo = postMapper.selectPublicPostDetail(postId, currUserUuid);
+        if(vo == null) {
+            throw new RuntimeException("Post not found");
+        }
         return vo;
     }
 
@@ -112,7 +102,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostPageVO<PostPageItemVO> getPostPage(PostPageQueryDTO dto) {
+    public PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto) {
         String currUserUuid = UserContext.getUuid();
         if(currUserUuid == null) {
             throw new RuntimeException("User not logged in.");
@@ -122,7 +112,7 @@ public class PostServiceImpl implements PostService {
         long offset = (current - 1) * size;
         Long total = postMapper.countPublicPosts();
 
-        List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size);
+        List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size, currUserUuid);
         PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
         pageVO.setCurrent(current);
         pageVO.setSize(size);

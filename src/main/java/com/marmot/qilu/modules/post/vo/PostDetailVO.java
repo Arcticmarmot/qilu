@@ -13,13 +13,17 @@ public class PostDetailVO {
 
     private String userUuid;
 
+    private String nickname;
+
     private String title;
 
     private String content;
 
-//    private Integer likeCount;
-//
-//    private Boolean isLikeByMe;
+    private Integer visibility;
+
+    private Integer likeCount;
+
+    private Boolean likedByMe;
 
     private LocalDateTime createAt;
 }

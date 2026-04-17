@@ -6,7 +6,6 @@ import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.modules.like.entity.PostLike;
 import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.like.service.PostLikeService;
-import com.marmot.qilu.modules.like.vo.PostLikeStatusVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -126,32 +125,5 @@ public class PostLikeServiceImpl implements PostLikeService {
         if(updated > 0) {
             postLikeMapper.decreasePostLikeCount(postId);
         }
-    }
-
-    @Override
-    public PostLikeStatusVO getPostLikeStatus(Long postId) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
-
-        Integer postCount = postLikeMapper.countNormalPostById(postId);
-        if(postCount == null || postCount <= 0) {
-            throw new RuntimeException("Post not found.");
-        }
-
-        Integer likeCount = postLikeMapper.selectPostLikeCount(postId);
-
-        PostLike existing = postLikeMapper.selectOne(
-                new LambdaQueryWrapper<PostLike>()
-                        .eq(PostLike::getPostId, postId)
-                        .eq(PostLike::getUserUuid, currUserUuid)
-                        .last("limit 1")
-        );
-
-        PostLikeStatusVO vo = new PostLikeStatusVO();
-        vo.setLikeByMe(existing != null && STATUS_LIKED == existing.getStatus());
-        vo.setLikeCount(likeCount == null ? 0 : likeCount);
-        return vo;
     }
 }
