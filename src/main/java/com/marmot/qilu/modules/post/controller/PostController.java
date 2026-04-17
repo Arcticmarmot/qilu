@@ -24,9 +24,24 @@ public class PostController {
         return Result.success(postService.createPost(dto));
     }
 
+    @GetMapping("/me/{postId}")
+    public Result<PostDetailVO> getMyPostDetail(@PathVariable Long postId) {
+        return Result.success(postService.getMyPostDetail(postId));
+    }
+
+    @GetMapping("/me")
+    public Result<PostPageVO<PostPageItemVO>> getMyPostPage(PostPageQueryDTO dto) {
+        return Result.success(postService.getMyPostPage(dto));
+    }
+
     @GetMapping("/{postId}")
-    public Result<PostDetailVO> getPostDetail(@PathVariable Long postId) {
+    public Result<PostDetailVO> getPublicPostDetail(@PathVariable Long postId) {
         return Result.success(postService.getPublicPostDetail(postId));
+    }
+
+    @GetMapping
+    public Result<PostPageVO<PostPageItemVO>> getPublicPostPage(PostPageQueryDTO dto) {
+        return Result.success(postService.getPublicPostPage(dto));
     }
 
     @PutMapping("/{postId}")
@@ -41,8 +56,5 @@ public class PostController {
         return Result.success();
     }
 
-    @GetMapping
-    public Result<PostPageVO<PostPageItemVO>> getPostPage(PostPageQueryDTO dto) {
-        return Result.success(postService.getPublicPostPage(dto));
-    }
+
 }

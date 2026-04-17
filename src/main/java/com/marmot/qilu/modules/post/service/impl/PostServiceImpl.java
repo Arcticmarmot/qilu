@@ -46,6 +46,39 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PostDetailVO getMyPostDetail(Long postId) {
+        String currUserUuid = UserContext.getUuid();
+        if(currUserUuid == null) {
+            throw new RuntimeException("User not logged in.");
+        }
+        PostDetailVO vo = postMapper.selectMyPostDetail(postId, currUserUuid);
+        if(vo == null) {
+            throw new RuntimeException("Post not found");
+        }
+        return vo;
+    }
+
+    @Override
+    public PostPageVO<PostPageItemVO> getMyPostPage(PostPageQueryDTO dto) {
+        String currUserUuid = UserContext.getUuid();
+        if(currUserUuid == null) {
+            throw new RuntimeException("User not logged in.");
+        }
+        long current = dto.getCurrent();
+        long size = dto.getSize();
+        long offset = (current - 1) * size;
+        Long total = postMapper.countMyPosts(currUserUuid);
+
+        List<PostPageItemVO> records = postMapper.selectMyPostPage(offset, size, currUserUuid);
+        PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
+        pageVO.setCurrent(current);
+        pageVO.setSize(size);
+        pageVO.setTotal(total);
+        pageVO.setRecords(records);
+        return pageVO;
+    }
+
+    @Override
     public PostDetailVO getPublicPostDetail(Long postId) {
         String currUserUuid = UserContext.getUuid();
         if(currUserUuid == null) {
@@ -56,6 +89,26 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("Post not found");
         }
         return vo;
+    }
+
+    @Override
+    public PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto) {
+        String currUserUuid = UserContext.getUuid();
+        if(currUserUuid == null) {
+            throw new RuntimeException("User not logged in.");
+        }
+        long current = dto.getCurrent();
+        long size = dto.getSize();
+        long offset = (current - 1) * size;
+        Long total = postMapper.countPublicPosts();
+
+        List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size, currUserUuid);
+        PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
+        pageVO.setCurrent(current);
+        pageVO.setSize(size);
+        pageVO.setTotal(total);
+        pageVO.setRecords(records);
+        return pageVO;
     }
 
     @Override
@@ -99,25 +152,5 @@ public class PostServiceImpl implements PostService {
         if(deleted == 0) {
             throw new RuntimeException("posts not found or no permissions.");
         }
-    }
-
-    @Override
-    public PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
-        long current = dto.getCurrent();
-        long size = dto.getSize();
-        long offset = (current - 1) * size;
-        Long total = postMapper.countPublicPosts();
-
-        List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size, currUserUuid);
-        PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
-        pageVO.setCurrent(current);
-        pageVO.setSize(size);
-        pageVO.setTotal(total);
-        pageVO.setRecords(records);
-        return pageVO;
     }
 }

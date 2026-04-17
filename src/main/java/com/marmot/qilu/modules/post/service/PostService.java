@@ -11,11 +11,15 @@ public interface PostService {
 
     Long createPost(PostCreateDTO dto);
 
+    PostDetailVO getMyPostDetail(Long postId);
+
+    PostPageVO<PostPageItemVO> getMyPostPage(PostPageQueryDTO dto);
+
     PostDetailVO getPublicPostDetail(Long postId);
+
+    PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto);
 
     void updatePost(Long postId, PostUpdateDTO dto);
 
     void deletePost(Long postId);
-
-    PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto);
 }

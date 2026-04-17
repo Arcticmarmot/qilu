@@ -12,13 +12,21 @@ import java.util.List;
 @Mapper
 public interface PostMapper extends BaseMapper<Post> {
 
-    Long countPublicPosts();
+    Long countMyPosts(@Param("currUserUuid") String currUserUuid);
 
-    List<PostPageItemVO> selectPublicPostPage(@Param("offset") long offset,
-                                              @Param("size") long size,
-                                              @Param("currUserUuid") String currUserUuid
-    );
+    PostDetailVO selectMyPostDetail(@Param("postId") Long postId,
+                                        @Param("currUserUuid") String currUserUuid);
+
+    List<PostPageItemVO> selectMyPostPage(@Param("offset") long offset,
+                                          @Param("size") long size,
+                                          @Param("currUserUuid") String currUserUuid);
+
+    Long countPublicPosts();
 
     PostDetailVO selectPublicPostDetail(@Param("postId") Long postId,
                                   @Param("currUserUuid") String currUserUuid);
+
+    List<PostPageItemVO> selectPublicPostPage(@Param("offset") long offset,
+                                              @Param("size") long size,
+                                              @Param("currUserUuid") String currUserUuid);
 }
