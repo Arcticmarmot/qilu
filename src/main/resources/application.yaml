@@ -6,15 +6,23 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    try-it-out-enabled: true
-    operations-sorted: alpha
-    tags-sorter: alpha
-  api-docs:
-    path: /v3/api-docs
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: qilu-notification-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.marmot.qilu.modules.notification.event"
+    listener:
+      ack-mode: manual
 
 mybatis-plus:
   configuration:
@@ -26,3 +34,12 @@ mybatis-plus:
 jwt:
   secret: ${JWT_SECRET:qilu-jwt-secret-please-change-in-production-2026-0414-1233}
   expire: ${JWT_EXPIRE:3600000}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorted: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
