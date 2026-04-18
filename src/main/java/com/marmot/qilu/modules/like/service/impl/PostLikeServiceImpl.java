@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.modules.like.entity.PostLike;
+import com.marmot.qilu.modules.like.event.PostLikeEventProducer;
 import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.like.service.PostLikeService;
 import com.marmot.qilu.modules.post.service.PostService;
@@ -22,6 +23,7 @@ public class PostLikeServiceImpl implements PostLikeService {
 
     private final PostLikeMapper postLikeMapper;
     private final PostService postService;
+    private final PostLikeEventProducer postLikeEventProducer;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -65,6 +67,11 @@ public class PostLikeServiceImpl implements PostLikeService {
                 throw new RuntimeException("Like post failed.");
             }
         }
+
+        /** TODO:
+         * 构造 PostLikeEvent
+         * postLikeEventProducer.sendPostLikedEvent(event);
+         */
     }
 
     @Override
