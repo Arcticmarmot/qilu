@@ -6,6 +6,8 @@ import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.modules.like.entity.PostLike;
 import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.like.service.PostLikeService;
+import com.marmot.qilu.modules.post.service.PostService;
+import com.marmot.qilu.modules.post.service.impl.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -19,19 +21,14 @@ public class PostLikeServiceImpl implements PostLikeService {
     private static final int STATUS_LIKED = 1;
 
     private final PostLikeMapper postLikeMapper;
+    private final PostService postService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void likePost(Long postId) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
 
-        Integer postCount = postLikeMapper.countNormalPostById(postId);
-        if(postCount == null || postCount <= 0) {
-            throw new RuntimeException("Post not found.");
-        }
+        postService.checkPostInteractable(postId);
 
         PostLike existing = postLikeMapper.selectOne(
                 new LambdaQueryWrapper<PostLike>()
@@ -49,81 +46,48 @@ public class PostLikeServiceImpl implements PostLikeService {
             try {
                 postLikeMapper.insert(postLike);
                 postLikeMapper.increasePostLikeCount(postId);
-            } catch (DuplicateKeyException e) {
-                PostLike duplicated = postLikeMapper.selectOne(
-                        new LambdaQueryWrapper<PostLike>()
-                                .eq(PostLike::getPostId, postId)
-                                .eq(PostLike::getUserUuid, currUserUuid)
-                                .last("limit 1")
-                );
-                if(duplicated != null && STATUS_UNLIKED == duplicated.getStatus()) {
-                    int updated = postLikeMapper.update(
-                            null,
-                            new LambdaQueryWrapper<PostLike>()
-                                    .eq(PostLike::getId, duplicated.getId())
-                                    .eq(PostLike::getStatus, STATUS_LIKED)
-                    );
-                    if(updated > 0) {
-                        postLikeMapper.increasePostLikeCount(postId);
-                    }
-                }
-            }
-            return;
-        }
-
-        if(STATUS_LIKED == existing.getStatus()) {
-            return;
+                return;
+            } catch (DuplicateKeyException ignored) { }
         }
 
         int updated = postLikeMapper.update(
                 null,
                 new LambdaUpdateWrapper<PostLike>()
-                        .eq(PostLike::getId, existing.getId())
+                        .eq(PostLike::getPostId, postId)
+                        .eq(PostLike::getUserUuid, currUserUuid)
+                        .eq(PostLike::getStatus, STATUS_UNLIKED)
                         .set(PostLike::getStatus, STATUS_LIKED)
         );
 
-        if(updated > 0) {
-            postLikeMapper.increasePostLikeCount(postId);
+        if (updated > 0) {
+            int rows = postLikeMapper.increasePostLikeCount(postId);
+            if (rows <= 0) {
+                throw new RuntimeException("Like post failed.");
+            }
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void unlikePost(Long postId) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
 
-        Integer postCount = postLikeMapper.countNormalPostById(postId);
-        if(postCount == null || postCount <= 0) {
-            throw new RuntimeException("Post not found.");
-        }
-
-        PostLike existing = postLikeMapper.selectOne(
-                new LambdaQueryWrapper<PostLike>()
-                        .eq(PostLike::getPostId, postId)
-                        .eq(PostLike::getUserUuid, currUserUuid)
-                        .last("limit 1")
-        );
-
-        if(existing == null) {
-            return;
-        }
-
-        if(STATUS_UNLIKED == existing.getStatus()) {
-            return;
-        }
+        postService.checkPostInteractable(postId);
 
         int updated = postLikeMapper.update(
                 null,
                 new LambdaUpdateWrapper<PostLike>()
-                        .eq(PostLike::getId, existing.getId())
+                        .eq(PostLike::getPostId, postId)
+                        .eq(PostLike::getUserUuid, currUserUuid)
+                        .eq(PostLike::getStatus, STATUS_LIKED)
                         .set(PostLike::getStatus, STATUS_UNLIKED)
         );
 
         if(updated > 0) {
-            postLikeMapper.decreasePostLikeCount(postId);
+            int rows = postLikeMapper.decreasePostLikeCount(postId);
+            if(rows <= 0) {
+                throw new RuntimeException("Unlike post failed");
+            }
         }
     }
 }

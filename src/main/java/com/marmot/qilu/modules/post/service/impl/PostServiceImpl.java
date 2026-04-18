@@ -1,10 +1,7 @@
 package com.marmot.qilu.modules.post.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.marmot.qilu.common.context.UserContext;
-import com.marmot.qilu.modules.like.entity.PostLike;
-import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
@@ -30,11 +27,18 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     @Override
-    public Long createPost(PostCreateDTO dto) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
+    public void checkPostInteractable(Long postId) {
+        String currUserUuid = UserContext.requireUuid();
+        Integer exists = postMapper.existsInteractablePostById(postId, currUserUuid);
+        if(exists == null) {
+            throw new RuntimeException("Post not interactable");
         }
+    }
+
+    @Override
+    public Long createPost(PostCreateDTO dto) {
+        String currUserUuid = UserContext.requireUuid();
+
         Post post = new Post();
         post.setUserUuid(currUserUuid);
         post.setTitle(dto.getTitle());
@@ -47,10 +51,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDetailVO getMyPostDetail(Long postId) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
+
         PostDetailVO vo = postMapper.selectMyPostDetail(postId, currUserUuid);
         if(vo == null) {
             throw new RuntimeException("Post not found");
@@ -60,10 +62,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostPageVO<PostPageItemVO> getMyPostPage(PostPageQueryDTO dto) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
+
         long current = dto.getCurrent();
         long size = dto.getSize();
         long offset = (current - 1) * size;
@@ -80,10 +80,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDetailVO getPublicPostDetail(Long postId) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
+
         PostDetailVO vo = postMapper.selectPublicPostDetail(postId, currUserUuid);
         if(vo == null) {
             throw new RuntimeException("Post not found");
@@ -93,10 +91,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
+
         long current = dto.getCurrent();
         long size = dto.getSize();
         long offset = (current - 1) * size;
@@ -113,10 +109,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(Long postId, PostUpdateDTO dto) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
 
         int updated = postMapper.update(
                 null,
@@ -135,10 +128,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(Long postId) {
-        String currUserUuid = UserContext.getUuid();
-        if(currUserUuid == null) {
-            throw new RuntimeException("User not logged in.");
-        }
+        String currUserUuid = UserContext.requireUuid();
 
         int deleted = postMapper.update(
                 null,

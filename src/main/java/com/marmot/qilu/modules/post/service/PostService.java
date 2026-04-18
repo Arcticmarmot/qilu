@@ -9,6 +9,8 @@ import com.marmot.qilu.modules.post.vo.PostPageVO;
 
 public interface PostService {
 
+    void checkPostInteractable(Long postId);
+
     Long createPost(PostCreateDTO dto);
 
     PostDetailVO getMyPostDetail(Long postId);

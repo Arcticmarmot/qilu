@@ -12,6 +12,8 @@ import java.util.List;
 @Mapper
 public interface PostMapper extends BaseMapper<Post> {
 
+    Integer existsInteractablePostById(@Param("postId") Long postId, @Param("currUserUuid") String currUserUuid);
+
     Long countMyPosts(@Param("currUserUuid") String currUserUuid);
 
     PostDetailVO selectMyPostDetail(@Param("postId") Long postId,

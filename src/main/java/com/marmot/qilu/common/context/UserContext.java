@@ -14,6 +14,14 @@ public class UserContext {
         return UUID_HOLDER.get();
     }
 
+    public static String requireUuid() {
+        String uuid = UserContext.getUuid();
+        if(uuid == null) {
+            throw new RuntimeException("User not logged in.");
+        }
+        return uuid;
+    }
+
     public static void clear() {
         UUID_HOLDER.remove();
     }
