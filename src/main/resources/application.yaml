@@ -7,6 +7,15 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorted: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

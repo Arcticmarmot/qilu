@@ -1,7 +1,7 @@
 package com.marmot.qilu.modules.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.marmot.qilu.modules.user.dto.CreateUserDTO;
+import com.marmot.qilu.modules.user.dto.UserCreateDTO;
 import com.marmot.qilu.modules.user.entity.User;
 import com.marmot.qilu.modules.user.mapper.UserMapper;
 import com.marmot.qilu.modules.user.service.UserService;
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserVO createUser(CreateUserDTO dto) {
+    public UserVO createUser(UserCreateDTO dto) {
         if(dto.getNickname() == null || dto.getNickname().isBlank()) {
             throw new RuntimeException("Nickname must not be blank.");
         }
