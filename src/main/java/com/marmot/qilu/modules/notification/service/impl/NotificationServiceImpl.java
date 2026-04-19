@@ -1,13 +1,19 @@
 package com.marmot.qilu.modules.notification.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.event.interaction.InteractionEntityType;
 import com.marmot.qilu.common.event.interaction.InteractionEvent;
+import com.marmot.qilu.common.event.interaction.InteractionEventType;
 import com.marmot.qilu.modules.notification.entity.Notification;
 import com.marmot.qilu.modules.notification.mapper.NotificationMapper;
 import com.marmot.qilu.modules.notification.service.NotificationService;
+import com.marmot.qilu.modules.notification.vo.NotificationListItemVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +63,28 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             notificationMapper.insert(notification);
         } catch (DuplicateKeyException ignored) { }
+    }
+
+    @Override
+    public List<NotificationListItemVO> listNotificationsByType(InteractionEventType type) {
+        String currUserUuid = UserContext.requireUuid();
+
+        if (type == null) {
+            throw new RuntimeException("Notification type must not be null.");
+        }
+
+        return notificationMapper.selectNotificationsByType(currUserUuid, type.name());
+    }
+
+    @Override
+    public void markNotificationsReadByType(InteractionEventType type) {
+        String currUserUuid = UserContext.requireUuid();
+
+        if (type == null) {
+            throw new RuntimeException("Notification type must not be null.");
+        }
+
+        notificationMapper.markNotificationsReadByType(currUserUuid, type.name());
     }
 
     private String buildPostLikedBizKey(Long postId, String actorUuid, String receiverUuid) {
