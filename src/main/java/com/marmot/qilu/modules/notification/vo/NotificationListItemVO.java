@@ -30,5 +30,5 @@ public class NotificationListItemVO {
     private Integer isRead;
 
     @Schema(description = "通知创建时间")
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }
