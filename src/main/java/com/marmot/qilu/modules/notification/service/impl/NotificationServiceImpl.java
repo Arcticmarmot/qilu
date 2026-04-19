@@ -1,8 +1,8 @@
 package com.marmot.qilu.modules.notification.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.marmot.qilu.common.event.interaction.InteractionEvent;
 import com.marmot.qilu.modules.notification.entity.Notification;
-import com.marmot.qilu.modules.notification.event.PostLikedEvent;
 import com.marmot.qilu.modules.notification.mapper.NotificationMapper;
 import com.marmot.qilu.modules.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +16,16 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
 
     @Override
-    public void createPostLikedNotification(PostLikedEvent event) {
+    public void createPostLikedNotification(InteractionEvent event) {
         if(event == null) {
             return;
         }
 
         String actorUuid = event.getActorUuid();
         String receiverUuid = event.getReceiverUuid();
-        Long postId = event.getPostId();
+        Long entityId = event.getEntityId();
 
-        if (actorUuid == null || receiverUuid == null || postId == null) {
+        if (actorUuid == null || receiverUuid == null || entityId == null) {
             return;
         }
 
@@ -33,7 +33,7 @@ public class NotificationServiceImpl implements NotificationService {
             return;
         }
 
-        String bizKey = buildPostLikedBizKey(postId, actorUuid, receiverUuid);
+        String bizKey = buildPostLikedBizKey(entityId, actorUuid, receiverUuid);
 
         Long count = notificationMapper.selectCount(
                 Wrappers.<Notification>lambdaQuery()
@@ -48,16 +48,15 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = new Notification();
         notification.setReceiverUuid(receiverUuid);
         notification.setActorUuid(actorUuid);
-        notification.setType("POST_LIKED");
-        notification.setEntityType("POST");
-        notification.setEntityId(postId);
+        notification.setType(event.getEventType().name());
+        notification.setEntityType(event.getEntityType().name());
+        notification.setEntityId(event.getEntityId());
         notification.setBizKey(bizKey);
         notification.setIsRead(0);
 
         try {
             notificationMapper.insert(notification);
         } catch (DuplicateKeyException ignored) { }
-
     }
 
     private String buildPostLikedBizKey(Long postId, String actorUuid, String receiverUuid) {

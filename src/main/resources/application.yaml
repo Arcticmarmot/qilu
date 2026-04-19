@@ -20,7 +20,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "com.marmot.qilu.modules.notification.event"
+        spring.json.trusted.packages: "com.marmot.qilu.common.event.interaction"
     listener:
       ack-mode: manual
 

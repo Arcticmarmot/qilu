@@ -1,19 +1,19 @@
-package com.marmot.qilu.modules.like.event;
+package com.marmot.qilu.common.event.interaction;
 
-import com.marmot.qilu.modules.notification.event.PostLikedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import static com.marmot.qilu.common.kafka.KafkaTopics.TOPIC_INTERACTION_EVENTS;
+
 @Component
 @RequiredArgsConstructor
-public class PostLikedEventProducer {
-
-    private static final String TOPIC_INTERACTION_EVENTS = "interaction_events";
+public class InteractionEventProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public void sendPostLikedEvent(PostLikedEvent event) {
+    public void sendInteractionEvent(InteractionEvent event) {
         kafkaTemplate.send(TOPIC_INTERACTION_EVENTS, event.getReceiverUuid(), event);
     }
 }
+
