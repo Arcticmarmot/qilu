@@ -40,6 +40,7 @@ public class PostLikeServiceImpl implements PostLikeService {
 
         postService.checkPostInteractable(postId);
 
+        boolean liked = false;
         PostLike existing = postLikeMapper.selectOne(
                 new LambdaQueryWrapper<PostLike>()
                         .eq(PostLike::getPostId, postId)
@@ -52,45 +53,34 @@ public class PostLikeServiceImpl implements PostLikeService {
             postLike.setPostId(postId);
             postLike.setUserUuid(currUserUuid);
             postLike.setStatus(STATUS_LIKED);
-
             try {
                 postLikeMapper.insert(postLike);
                 postLikeMapper.increasePostLikeCount(postId);
-                return;
+                liked = true;
             } catch (DuplicateKeyException ignored) { }
         }
+        if(!liked){
+            int updated = postLikeMapper.update(
+                    null,
+                    new LambdaUpdateWrapper<PostLike>()
+                            .eq(PostLike::getPostId, postId)
+                            .eq(PostLike::getUserUuid, currUserUuid)
+                            .eq(PostLike::getStatus, STATUS_UNLIKED)
+                            .set(PostLike::getStatus, STATUS_LIKED)
+            );
 
-        int updated = postLikeMapper.update(
-                null,
-                new LambdaUpdateWrapper<PostLike>()
-                        .eq(PostLike::getPostId, postId)
-                        .eq(PostLike::getUserUuid, currUserUuid)
-                        .eq(PostLike::getStatus, STATUS_UNLIKED)
-                        .set(PostLike::getStatus, STATUS_LIKED)
-        );
-
-        if (updated > 0) {
-            int rows = postLikeMapper.increasePostLikeCount(postId);
-            if (rows <= 0) {
-                throw new RuntimeException("Like post failed.");
+            if (updated > 0) {
+                int rows = postLikeMapper.increasePostLikeCount(postId);
+                if (rows <= 0) {
+                    throw new RuntimeException("Like post failed.");
+                }
+                liked = true;
             }
         }
 
-        // kafka post-liked event
-        String receiverUuid = postMapper.getUserUuidByPostId(postId);
-        if(receiverUuid == null || receiverUuid.equals(currUserUuid)) {
-            return;
+        if(liked) {
+            sendPostLikedEvent(postId, currUserUuid);
         }
-        InteractionEvent event = new InteractionEvent();
-        event.setEventId(UUID.randomUUID().toString());
-        event.setEventType(InteractionEventType.POST_LIKED);
-        event.setEntityType(InteractionEntityType.POST);
-        event.setEntityId(postId);
-        event.setReceiverUuid(receiverUuid);
-        event.setActorUuid(currUserUuid);
-        event.setOccurredAt(now());
-
-        interactionEventProducer.sendInteractionEvent(event);
     }
 
     @Override
@@ -115,5 +105,22 @@ public class PostLikeServiceImpl implements PostLikeService {
                 throw new RuntimeException("Unlike post failed");
             }
         }
+    }
+
+    private void sendPostLikedEvent(Long postId, String currUserUuid) {
+        String receiverUuid = postMapper.getUserUuidByPostId(postId);
+        if(receiverUuid == null || receiverUuid.equals(currUserUuid)) {
+            return;
+        }
+        InteractionEvent event = new InteractionEvent();
+        event.setEventId(UUID.randomUUID().toString());
+        event.setEventType(InteractionEventType.POST_LIKED);
+        event.setEntityType(InteractionEntityType.POST);
+        event.setEntityId(postId);
+        event.setReceiverUuid(receiverUuid);
+        event.setActorUuid(currUserUuid);
+        event.setOccurredAt(now());
+
+        interactionEventProducer.sendInteractionEvent(event);
     }
 }
