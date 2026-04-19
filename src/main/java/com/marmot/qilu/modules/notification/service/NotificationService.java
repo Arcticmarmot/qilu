@@ -1,8 +1,8 @@
 package com.marmot.qilu.modules.notification.service;
 
-import com.marmot.qilu.modules.notification.event.PostLikeEvent;
+import com.marmot.qilu.modules.notification.event.PostLikedEvent;
 
 public interface NotificationService {
 
-    void createPostLikeNotification(PostLikeEvent event);
+    void createPostLikedNotification(PostLikedEvent event);
 }

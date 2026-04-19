@@ -16,6 +16,14 @@
             limit 1
     </select>
 
+    <select id="getUserUuidByPostId" resultType="java.lang.String">
+        select user_uuid
+        from post
+        where id = #{postId}
+          and status = 1
+        limit 1
+    </select>
+
     <select id="selectMyPostDetail" resultType="com.marmot.qilu.modules.post.vo.PostDetailVO">
         select
             p.id,

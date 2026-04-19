@@ -2,14 +2,12 @@ package com.marmot.qilu.modules.notification.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.marmot.qilu.modules.notification.entity.Notification;
-import com.marmot.qilu.modules.notification.event.PostLikeEvent;
+import com.marmot.qilu.modules.notification.event.PostLikedEvent;
 import com.marmot.qilu.modules.notification.mapper.NotificationMapper;
 import com.marmot.qilu.modules.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-
-import java.sql.Wrapper;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +16,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
 
     @Override
-    public void createPostLikeNotification(PostLikeEvent event) {
+    public void createPostLikedNotification(PostLikedEvent event) {
         if(event == null) {
             return;
         }

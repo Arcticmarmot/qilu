@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.consumer;
 
-import com.marmot.qilu.modules.notification.event.PostLikeEvent;
+import com.marmot.qilu.modules.notification.event.PostLikedEvent;
 import com.marmot.qilu.modules.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.support.Acknowledgment;
@@ -20,8 +20,8 @@ public class NotificationConsumer {
             topics = TOPIC_INTERACTION_EVENTS,
             groupId = GROUP_NOTIFICATION
     )
-    public void onPostLiked(PostLikeEvent event, Acknowledgment acknowledgement) {
-        notificationService.createPostLikeNotification(event);
+    public void onPostLiked(PostLikedEvent event, Acknowledgment acknowledgement) {
+        notificationService.createPostLikedNotification(event);
         acknowledgement.acknowledge();
     }
 }

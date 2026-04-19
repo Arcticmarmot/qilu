@@ -4,15 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.modules.like.entity.PostLike;
-import com.marmot.qilu.modules.like.event.PostLikeEventProducer;
+import com.marmot.qilu.modules.like.event.PostLikedEventProducer;
 import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.like.service.PostLikeService;
+import com.marmot.qilu.modules.notification.event.PostLikedEvent;
+import com.marmot.qilu.modules.post.mapper.PostMapper;
 import com.marmot.qilu.modules.post.service.PostService;
-import com.marmot.qilu.modules.post.service.impl.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +28,8 @@ public class PostLikeServiceImpl implements PostLikeService {
 
     private final PostLikeMapper postLikeMapper;
     private final PostService postService;
-    private final PostLikeEventProducer postLikeEventProducer;
+    private final PostMapper postMapper;
+    private final PostLikedEventProducer postLikedEventProducer;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -68,10 +74,18 @@ public class PostLikeServiceImpl implements PostLikeService {
             }
         }
 
-        /** TODO:
-         * 构造 PostLikeEvent
-         * postLikeEventProducer.sendPostLikedEvent(event);
-         */
+        String receiverUuid = postMapper.getUserUuidByPostId(postId);
+        if(receiverUuid == null || receiverUuid.equals(currUserUuid)) {
+            return;
+        }
+        PostLikedEvent event = new PostLikedEvent();
+        event.setPostId(postId);
+        event.setReceiverUuid(receiverUuid);
+        event.setActorUuid(currUserUuid);
+        event.setOccurredAt(now());
+        event.setEventId(UUID.randomUUID().toString());
+
+        postLikedEventProducer.sendPostLikedEvent(event);
     }
 
     @Override

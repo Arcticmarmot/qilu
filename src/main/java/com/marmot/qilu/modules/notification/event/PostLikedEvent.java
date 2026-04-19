@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class PostLikeEvent {
+public class PostLikedEvent {
 
     private String eventId;
 
