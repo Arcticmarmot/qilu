@@ -11,6 +11,8 @@ public interface PostService {
 
     void checkPostInteractable(Long postId);
 
+    String getPostAuthorUuid(Long postId);
+
     Long createPost(PostCreateDTO dto);
 
     PostDetailVO getMyPostDetail(Long postId);

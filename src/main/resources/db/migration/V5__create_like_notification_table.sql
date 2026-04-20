@@ -1,8 +1,7 @@
-CREATE TABLE `notification` (
+CREATE TABLE `like_notification` (
                                 `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '通知ID',
                                 `receiver_uuid` CHAR(36) NOT NULL COMMENT '接收通知的用户ID',
                                 `actor_uuid` CHAR(36) NOT NULL COMMENT '触发动作的用户ID',
-                                `type` VARCHAR(32) NOT NULL COMMENT '通知类型：POST_LIKED、POST_COMMENTED等',
                                 `entity_type` VARCHAR(32) NOT NULL COMMENT '关联实体类型：POST、COMMENT',
                                 `entity_id` BIGINT NOT NULL COMMENT '关联实体ID',
                                 `biz_key` VARCHAR(128) NOT NULL COMMENT '通知幂等键',
@@ -13,6 +12,5 @@ CREATE TABLE `notification` (
                                 PRIMARY KEY (`id`),
                                 UNIQUE KEY `uk_biz_key` (`biz_key`),
                                 KEY `idx_receiver_created_at` (`receiver_uuid`, `created_at`),
-                                KEY `idx_receiver_is_read_created_at` (`receiver_uuid`, `is_read`, `created_at`),
-                                KEY `idx_receiver_type_created_at` (`receiver_uuid`, `type`, `created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知表';
+                                KEY `idx_receiver_is_read_created_at` (`receiver_uuid`, `is_read`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞通知表';

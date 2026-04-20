@@ -16,7 +16,7 @@
             limit 1
     </select>
 
-    <select id="getUserUuidByPostId" resultType="java.lang.String">
+    <select id="selectUserUuidByPostId" resultType="java.lang.String">
         select user_uuid
         from post
         where id = #{postId}

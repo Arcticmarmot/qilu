@@ -1,4 +1,4 @@
-package com.marmot.qilu.modules.notification.vo;
+package com.marmot.qilu.modules.notification.like.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Schema(description = "通知列表项")
-public class NotificationListItemVO {
+public class LikeNotificationListItemVO {
 
     @Schema(description = "通知ID", example = "1")
     private Long id;
@@ -19,9 +19,6 @@ public class NotificationListItemVO {
 
     @Schema(description = "触发动作的用户昵称")
     private String actorNickname;
-
-    @Schema(description = "通知类型，例如 POST_LIKED")
-    private String type;
 
     @Schema(description = "关联实体类型，例如 POST")
     private String entityType;

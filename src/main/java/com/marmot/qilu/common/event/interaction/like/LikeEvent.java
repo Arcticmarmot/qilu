@@ -1,4 +1,4 @@
-package com.marmot.qilu.common.event.interaction;
+package com.marmot.qilu.common.event.interaction.like;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class InteractionEvent {
+public class LikeEvent {
 
     private String eventId;
 
@@ -15,11 +15,9 @@ public class InteractionEvent {
 
     private String receiverUuid;
 
-    private InteractionEventType eventType;
-
     private Long entityId;
 
-    private InteractionEntityType entityType;
+    private LikeEntityType entityType;
 
     private LocalDateTime occurredAt;
 }
