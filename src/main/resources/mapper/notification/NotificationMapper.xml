@@ -7,19 +7,24 @@
 
     <select id="selectNotificationsByType" resultType="com.marmot.qilu.modules.notification.vo.NotificationListItemVO">
         select
-            id,
-            actor_uuid as actorUuid,
-            type,
-            entity_type as entityType,
-            entity_id as entityId,
-            is_read as isRead,
-            read_at as readAt,
-            created_at as createdAt
-        from notification
-        where receiver_uuid = #{currUserUuid}
-          and type = #{type}
-          and deleted_at is null
-        order by created_at desc
+            n.id,
+            n.actor_uuid as actorUuid,
+            u.nickname as actorNickname,
+            n.type,
+            n.entity_type as entityType,
+            n.entity_id as entityId,
+            substring(p.title, 1, 30) as entityTitlePreview,
+            n.is_read as isRead,
+            n.created_at as createdAt
+        from notification n
+        left join user u
+          on u.uuid = n.actor_uuid
+        left join post p
+          on n.entity_type = 'POST'
+          and p.id = n.entity_id
+        where n.receiver_uuid = #{currUserUuid}
+          and n.type = #{type}
+        order by n.created_at desc
     </select>
 
     <update id="markNotificationsReadByType">
@@ -30,7 +35,6 @@
         where receiver_uuid = #{currUserUuid}
           and type = #{type}
           and is_read = 0
-          and deleted_at is null
     </update>
 
 </mapper>

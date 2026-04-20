@@ -10,7 +10,6 @@ CREATE TABLE `notification` (
                                 `read_at` DATETIME DEFAULT NULL COMMENT '已读时间',
                                 `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                 `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                                `deleted_at` DATETIME DEFAULT NULL COMMENT '软删除时间',
                                 PRIMARY KEY (`id`),
                                 UNIQUE KEY `uk_biz_key` (`biz_key`),
                                 KEY `idx_receiver_created_at` (`receiver_uuid`, `created_at`),

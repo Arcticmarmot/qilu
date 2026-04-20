@@ -21,7 +21,7 @@ public class NotificationConsumer {
             groupId = GROUP_NOTIFICATION
     )
     public void onInteractionEvent(InteractionEvent event, Acknowledgment acknowledgement) {
-        notificationService.createPostLikedNotification(event);
+        notificationService.createInteractionEventNotification(event);
         acknowledgement.acknowledge();
     }
 }

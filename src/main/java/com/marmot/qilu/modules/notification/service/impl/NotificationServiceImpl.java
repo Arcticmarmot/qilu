@@ -21,43 +21,12 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
 
     @Override
-    public void createPostLikedNotification(InteractionEvent event) {
-        if(event == null) {
+    public void createInteractionEventNotification(InteractionEvent event) {
+        if(!shouldCreateNotification(event)) {
             return;
         }
 
-        String actorUuid = event.getActorUuid();
-        String receiverUuid = event.getReceiverUuid();
-        Long entityId = event.getEntityId();
-
-        if (actorUuid == null || receiverUuid == null || entityId == null) {
-            return;
-        }
-
-        if (actorUuid.equals(receiverUuid)) {
-            return;
-        }
-
-        String bizKey = buildPostLikedBizKey(entityId, actorUuid, receiverUuid);
-
-        Long count = notificationMapper.selectCount(
-                Wrappers.<Notification>lambdaQuery()
-                        .eq(Notification::getBizKey, bizKey)
-                        .isNull(Notification::getDeletedAt)
-        );
-
-        if(count != null && count > 0) {
-            return;
-        }
-
-        Notification notification = new Notification();
-        notification.setReceiverUuid(receiverUuid);
-        notification.setActorUuid(actorUuid);
-        notification.setType(event.getEventType().name());
-        notification.setEntityType(event.getEntityType().name());
-        notification.setEntityId(event.getEntityId());
-        notification.setBizKey(bizKey);
-        notification.setIsRead(0);
+        Notification notification = buildNotification(event);
 
         try {
             notificationMapper.insert(notification);
@@ -86,7 +55,35 @@ public class NotificationServiceImpl implements NotificationService {
         notificationMapper.markNotificationsReadByType(currUserUuid, type.name());
     }
 
-    private String buildPostLikedBizKey(Long postId, String actorUuid, String receiverUuid) {
-        return "pl" + postId + ":" + actorUuid + ":" + receiverUuid;
+    private boolean shouldCreateNotification(InteractionEvent event) {
+        if(event == null) return false;
+        if (event.getActorUuid() == null
+                || event.getReceiverUuid() == null
+                || event.getEntityId() == null
+                || event.getEventType() == null
+                || event.getEntityType() == null) {
+            return false;
+        }
+
+        return !event.getActorUuid().equals(event.getReceiverUuid());
+    }
+
+
+    private Notification buildNotification(InteractionEvent event) {
+        Notification notification = new Notification();
+        notification.setReceiverUuid(event.getReceiverUuid());
+        notification.setActorUuid(event.getActorUuid());
+        notification.setType(event.getEventType().name());
+        notification.setEntityType(event.getEntityType().name());
+        notification.setEntityId(event.getEntityId());
+        notification.setBizKey(buildNotificationBizKey(event));
+        notification.setIsRead(0);
+        return notification;
+    }
+
+    private String buildNotificationBizKey(InteractionEvent event) {
+        return event.getEventType() + ":" + event.getEntityId() + ":" +
+                event.getActorUuid()+ ":" + event.getReceiverUuid() + ":" +
+                event.getOccurredAt();
     }
 }

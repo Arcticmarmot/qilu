@@ -17,6 +17,9 @@ public class NotificationListItemVO {
     @Schema(description = "触发动作的用户UUID")
     private String actorUuid;
 
+    @Schema(description = "触发动作的用户昵称")
+    private String actorNickname;
+
     @Schema(description = "通知类型，例如 POST_LIKED")
     private String type;
 
@@ -25,6 +28,9 @@ public class NotificationListItemVO {
 
     @Schema(description = "关联实体ID", example = "1001")
     private Long entityId;
+
+    @Schema(description = "关联实体标题预览")
+    private String entityTitlePreview;
 
     @Schema(description = "是否已读：0未读 1已读", example = "0")
     private Integer isRead;
