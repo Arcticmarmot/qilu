@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.like.consumer;
 
-import com.marmot.qilu.common.event.interaction.like.LikeEvent;
+import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.modules.notification.like.service.LikeNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.support.Acknowledgment;

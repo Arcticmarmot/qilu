@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.like.service;
 
-import com.marmot.qilu.common.event.interaction.like.LikeEvent;
+import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.modules.notification.like.vo.LikeNotificationListItemVO;
 
 import java.util.List;

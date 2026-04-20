@@ -1,7 +1,7 @@
 package com.marmot.qilu.modules.notification.like.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
-import com.marmot.qilu.common.event.interaction.like.LikeEvent;
+import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.modules.notification.like.entity.LikeNotification;
 import com.marmot.qilu.modules.notification.like.mapper.LikeNotificationMapper;
 import com.marmot.qilu.modules.notification.like.service.LikeNotificationService;
@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LikeLikeNotificationServiceImpl implements LikeNotificationService {
 
+    private static final int UNREAD = 0;
     private final LikeNotificationMapper likeNotificationMapper;
 
     @Override
@@ -65,12 +66,13 @@ public class LikeLikeNotificationServiceImpl implements LikeNotificationService 
         likeNotification.setEntityType(event.getEntityType().name());
         likeNotification.setEntityId(event.getEntityId());
         likeNotification.setBizKey(buildNotificationBizKey(event));
-        likeNotification.setIsRead(0);
+        likeNotification.setIsRead(UNREAD);
         return likeNotification;
     }
 
     private String buildNotificationBizKey(LikeEvent event) {
-        return event.getEntityId() + ":" + event.getActorUuid()+ ":" + event.getReceiverUuid() + ":" +
-                event.getOccurredAt();
+        return String.join(":",
+                event.getEntityType().name(), event.getEntityId().toString(),
+                event.getActorUuid(), event.getReceiverUuid());
     }
 }

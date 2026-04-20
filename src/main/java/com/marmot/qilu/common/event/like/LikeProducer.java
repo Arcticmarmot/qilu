@@ -1,4 +1,4 @@
-package com.marmot.qilu.common.event.interaction.like;
+package com.marmot.qilu.common.event.like;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
