@@ -56,7 +56,7 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
     }
 
     @Override
-    public int getUnreadLikeNotificationsCount() {
+    public int getUnreadLikeNotificationCount() {
         String currUserUuid = UserContext.requireUuid();
         String key = buildUnreadCountKey(currUserUuid);
 
@@ -82,7 +82,7 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
     }
 
     private String buildUnreadCountKey(String receiverUuid) {
-        return "notification:like:unread" + receiverUuid;
+        return "notification:like:unread:" + receiverUuid;
     }
 
     private boolean shouldCreateNotification(LikeEvent event) {

@@ -13,5 +13,5 @@ public interface LikeNotificationService {
 
     void markLikeNotificationsRead();
 
-    int getUnreadLikeNotificationsCount();
+    int getUnreadLikeNotificationCount();
 }

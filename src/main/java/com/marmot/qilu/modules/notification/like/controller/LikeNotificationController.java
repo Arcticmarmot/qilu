@@ -43,6 +43,6 @@ public class LikeNotificationController {
     )
     @GetMapping("/unread-count")
     public Result<Integer> getUnreadLikeNotificationsCount() {
-        return Result.success(likeNotificationService.getUnreadLikeNotificationsCount());
+        return Result.success(likeNotificationService.getUnreadLikeNotificationCount());
     }
 }
