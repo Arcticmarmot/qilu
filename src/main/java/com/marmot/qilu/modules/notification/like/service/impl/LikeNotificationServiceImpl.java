@@ -31,10 +31,9 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         }
 
         LikeNotification likeNotification = buildLikeNotification(event);
-        incrementUnreadCount(likeNotification.getReceiverUuid());
         try {
             likeNotificationMapper.insert(likeNotification);
-
+            incrementUnreadCount(likeNotification.getReceiverUuid());
         } catch (DuplicateKeyException ignored) { }
     }
 
