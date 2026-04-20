@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "点赞通知模块", description = "点赞通知查询与已读管理相关接口")
+@Tag(name = "LikeNotification", description = "点赞通知查询与已读管理相关接口")
 @RestController
 @RequestMapping("/like-notifications")
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class LikeNotificationController {
             description = "查询当前登录用户点赞的通知列表。该接口只负责查询，不会修改通知状态。"
     )
     @GetMapping
-    public Result<List<LikeNotificationListItemVO>> listNotification() {
+    public Result<List<LikeNotificationListItemVO>> listLikeNotifications() {
         return Result.success(likeNotificationService.listLikeNotifications());
     }
 
@@ -32,8 +32,17 @@ public class LikeNotificationController {
             description = "将当前登录用户点赞的所有未读通知批量标记为已读"
     )
     @PatchMapping("/read-all")
-    public Result<Void> markAllRead() {
+    public Result<Void> markLikeNotificationsRead() {
         likeNotificationService.markLikeNotificationsRead();
         return Result.success();
+    }
+
+    @Operation(
+            summary = "获取当前未读通知数量",
+            description = "当前登录用户未读点赞通知的数量"
+    )
+    @GetMapping("/unread-count")
+    public Result<Integer> getUnreadLikeNotificationsCount() {
+        return Result.success(likeNotificationService.getUnreadLikeNotificationsCount());
     }
 }

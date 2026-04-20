@@ -13,5 +13,7 @@ public interface LikeNotificationMapper extends BaseMapper<LikeNotification> {
 
     List<LikeNotificationListItemVO> selectLikeNotifications(@Param("currUserUuid") String currUserUuid);
 
-    int markLikeNotificationsRead(@Param("currUserUuid") String currUserUuid);
+    int updateLikeNotificationsRead(@Param("currUserUuid") String currUserUuid);
+
+    int countUnreadLikeNotifications(@Param("currUserUuid") String currUserUuid);
 }

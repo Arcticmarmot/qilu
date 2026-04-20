@@ -12,4 +12,6 @@ public interface LikeNotificationService {
     List<LikeNotificationListItemVO> listLikeNotifications();
 
     void markLikeNotificationsRead();
+
+    int getUnreadLikeNotificationsCount();
 }

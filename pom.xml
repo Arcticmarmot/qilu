@@ -102,6 +102,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!--kafka-->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
