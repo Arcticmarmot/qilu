@@ -152,4 +152,14 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("posts not found or no permissions.");
         }
     }
+
+    @Override
+    public int increasePostLikeCount(Long postId) {
+        return postMapper.increasePostLikeCount(postId);
+    }
+
+    @Override
+    public int decreasePostLikeCount(Long postId) {
+        return postMapper.decreasePostLikeCount(postId);
+    }
 }

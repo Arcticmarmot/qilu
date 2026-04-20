@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @TableName("user")
 public class User {
+
     @TableId(type= IdType.AUTO)
     private Long id;
 

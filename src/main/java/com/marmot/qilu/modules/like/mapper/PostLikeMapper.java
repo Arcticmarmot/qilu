@@ -7,8 +7,4 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PostLikeMapper extends BaseMapper<PostLike> {
-
-    int increasePostLikeCount(@Param("postId") Long postId);
-
-    int decreasePostLikeCount(@Param("postId") Long postId);
 }

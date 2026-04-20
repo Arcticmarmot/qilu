@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.marmot.qilu.modules.comment.mapper.PostCommentMapper">
+
+    <select id="existsNormalPostById" resultType="java.lang.Integer">
+        select 1
+        from post
+        where id = #{postId}
+          and status = 1
+            limit 1
+    </select>
+
+    <select id="selectPostAuthorUuidByPostId" resultType="java.lang.String">
+        select user_uuid
+        from post
+        where id = #{postId}
+          and status = 1
+            limit 1
+    </select>
+
+    <insert id="insertPostComment" parameterType="com.marmot.qilu.modules.comment.entity.PostComment"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into post_comment (
+            post_id,
+            post_author_uuid,
+            user_uuid,
+            content,
+            status
+        ) values (
+                     #{postId},
+                     #{postAuthorUuid},
+                     #{userUuid},
+                     #{content},
+                     #{status}
+                 )
+    </insert>
+
+    <update id="softDeletePostComment">
+        update post_comment
+        set status = 0,
+            updated_at = now()
+        where id = #{commentId}
+          and user_uuid = #{currUserUuid}
+          and status = 1
+    </update>
+
+    <select id="selectNormalCommentsByPostId"
+            resultType="com.marmot.qilu.modules.comment.vo.PostCommentListItemVO">
+        select
+            pc.id,
+            pc.post_id as postId,
+            pc.user_uuid as userUuid,
+            u.nickname as nickname,
+            pc.content,
+            pc.created_at as createdAt
+        from post_comment pc
+                 left join user u on pc.user_uuid = u.uuid
+        where pc.post_id = #{postId}
+          and pc.status = 1
+        order by pc.created_at asc, pc.id asc
+    </select>
+
+</mapper>

@@ -33,4 +33,8 @@ public interface PostMapper extends BaseMapper<Post> {
     List<PostPageItemVO> selectPublicPostPage(@Param("offset") long offset,
                                               @Param("size") long size,
                                               @Param("currUserUuid") String currUserUuid);
+
+    int increasePostLikeCount(@Param("postId") Long postId);
+
+    int decreasePostLikeCount(@Param("postId") Long postId);
 }

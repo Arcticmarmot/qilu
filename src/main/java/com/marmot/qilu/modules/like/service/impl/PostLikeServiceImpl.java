@@ -52,7 +52,7 @@ public class PostLikeServiceImpl implements PostLikeService {
             postLike.setStatus(STATUS_LIKED);
             try {
                 postLikeMapper.insert(postLike);
-                postLikeMapper.increasePostLikeCount(postId);
+                postService.increasePostLikeCount(postId);
                 liked = true;
             } catch (DuplicateKeyException ignored) { }
         }
@@ -67,7 +67,7 @@ public class PostLikeServiceImpl implements PostLikeService {
             );
 
             if (updated > 0) {
-                int rows = postLikeMapper.increasePostLikeCount(postId);
+                int rows = postService.increasePostLikeCount(postId);
                 if (rows <= 0) {
                     throw new RuntimeException("Like post failed.");
                 }
@@ -97,7 +97,7 @@ public class PostLikeServiceImpl implements PostLikeService {
         );
 
         if(updated > 0) {
-            int rows = postLikeMapper.decreasePostLikeCount(postId);
+            int rows = postService.decreasePostLikeCount(postId);
             if(rows <= 0) {
                 throw new RuntimeException("Unlike post failed");
             }

@@ -161,4 +161,23 @@
                             and pl.status = 1
         order by p.created_at desc
     </select>
+
+    <update id="increasePostLikeCount">
+        update post
+        set like_count = like_count + 1,
+            updated_at = now()
+        where id = #{postId}
+          and status = 1
+    </update>
+
+    <update id="decreasePostLikeCount">
+        update post
+        set like_count = case
+                             when like_count > 0 then like_count - 1
+                             else 0
+            end,
+            updated_at = now()
+        where id = #{postId}
+          and status = 1
+    </update>
 </mapper>

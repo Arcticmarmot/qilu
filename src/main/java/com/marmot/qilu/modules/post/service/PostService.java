@@ -6,6 +6,7 @@ import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
+import org.apache.ibatis.annotations.Param;
 
 public interface PostService {
 
@@ -26,4 +27,8 @@ public interface PostService {
     void updatePost(Long postId, PostUpdateDTO dto);
 
     void deletePost(Long postId);
+
+    int increasePostLikeCount(Long postId);
+
+    int decreasePostLikeCount(Long postId);
 }
