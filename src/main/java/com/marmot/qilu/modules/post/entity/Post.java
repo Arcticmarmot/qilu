@@ -34,6 +34,8 @@ public class Post {
 
     private Integer likeCount;
 
+    private Integer commentCount;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

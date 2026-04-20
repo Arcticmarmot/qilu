@@ -27,8 +27,7 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     @Override
-    public void checkPostInteractable(Long postId) {
-        String currUserUuid = UserContext.requireUuid();
+    public void checkPostInteractable(Long postId, String currUserUuid) {
         Integer exists = postMapper.existsInteractablePostById(postId, currUserUuid);
         if(exists == null) {
             throw new RuntimeException("Post not interactable");
@@ -161,5 +160,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public int decreasePostLikeCount(Long postId) {
         return postMapper.decreasePostLikeCount(postId);
+    }
+
+    @Override
+    public int increasePostCommentCount(Long postId) {
+        return postMapper.increasePostCommentCount(postId);
+    }
+
+    @Override
+    public int decreasePostCommentCount(Long postId) {
+        return postMapper.decreasePostCommentCount(postId);
     }
 }

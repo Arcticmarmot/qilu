@@ -37,4 +37,8 @@ public interface PostMapper extends BaseMapper<Post> {
     int increasePostLikeCount(@Param("postId") Long postId);
 
     int decreasePostLikeCount(@Param("postId") Long postId);
+
+    int increasePostCommentCount(@Param("postId") Long postId);
+
+    int decreasePostCommentCount(@Param("postId") Long postId);
 }

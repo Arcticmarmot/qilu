@@ -33,6 +33,7 @@
             p.content,
             p.visibility as visibility,
             p.like_count as likeCount,
+            p.comment_count as commentCount,
             case
                 when pl.id is not null then true
                 else false
@@ -66,6 +67,7 @@
             p.title,
             p.visibility as visibility,
             p.like_count as likeCount,
+            p.comment_count as commentCount,
             substring(p.content, 1, 20) as contentPreview,
             case
                 when pl.id is not null then true
@@ -79,6 +81,7 @@
                   content,
                   visibility,
                   like_count,
+                  comment_count,
                   created_at
               from post
               where status = 1
@@ -102,6 +105,7 @@
             p.content,
             p.visibility as visibility,
             p.like_count as likeCount,
+            p.comment_count as commentCount,
             case
                 when pl.id is not null then true
                 else false
@@ -135,6 +139,7 @@
             p.title,
             p.visibility as visibility,
             p.like_count as likeCount,
+            p.comment_count as commentCount,
             substring(p.content, 1, 20) as contentPreview,
             case
                 when pl.id is not null then true
@@ -148,6 +153,7 @@
                   content,
                   visibility,
                   like_count,
+                  comment_count,
                   created_at
               from post
               where status = 1
@@ -173,8 +179,27 @@
     <update id="decreasePostLikeCount">
         update post
         set like_count = case
-                             when like_count > 0 then like_count - 1
-                             else 0
+            when like_count > 0 then like_count - 1
+            else 0
+            end,
+            updated_at = now()
+        where id = #{postId}
+          and status = 1
+    </update>
+
+    <update id="increasePostCommentCount">
+        update post
+        set comment_count = comment_count + 1,
+            updated_at = now()
+        where id = #{postId}
+          and status = 1
+    </update>
+
+    <update id="decreasePostCommentCount">
+        update post
+        set comment_count = case
+            when comment_count > 0 then comment_count - 1
+            else 0
             end,
             updated_at = now()
         where id = #{postId}

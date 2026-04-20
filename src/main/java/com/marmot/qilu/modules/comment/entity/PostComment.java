@@ -15,7 +15,7 @@ public class PostComment {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private String postId;
+    private Long postId;
 
     private String postAuthorUuid;
 

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface PostService {
 
-    void checkPostInteractable(Long postId);
+    void checkPostInteractable(Long postId, String currUserUuid);
 
     String getPostAuthorUuid(Long postId);
 
@@ -31,4 +31,8 @@ public interface PostService {
     int increasePostLikeCount(Long postId);
 
     int decreasePostLikeCount(Long postId);
+
+    int increasePostCommentCount(Long postId);
+
+    int decreasePostCommentCount(Long postId);
 }

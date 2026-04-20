@@ -11,8 +11,6 @@ import java.util.List;
 @Mapper
 public interface PostCommentMapper extends BaseMapper<PostComment> {
 
-    int insertPostComment(PostComment postComment);
-
     int deletePostComment(@Param("commentId") Long commentId,
                           @Param("currUserUuid") String currUserUuid);
 

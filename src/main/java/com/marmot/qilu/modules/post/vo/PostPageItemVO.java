@@ -32,6 +32,9 @@ public class PostPageItemVO {
     @Schema(description = "点赞数", example = "3")
     private Integer likeCount;
 
+    @Schema(description = "评论数", example = "3")
+    private Integer commentCount;
+
     @Schema(description = "当前登录用户是否已点赞", example = "false")
     private Boolean likedByMe;
 

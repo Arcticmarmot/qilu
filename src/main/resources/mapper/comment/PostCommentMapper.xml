@@ -5,40 +5,7 @@
 
 <mapper namespace="com.marmot.qilu.modules.comment.mapper.PostCommentMapper">
 
-    <select id="existsNormalPostById" resultType="java.lang.Integer">
-        select 1
-        from post
-        where id = #{postId}
-          and status = 1
-            limit 1
-    </select>
-
-    <select id="selectPostAuthorUuidByPostId" resultType="java.lang.String">
-        select user_uuid
-        from post
-        where id = #{postId}
-          and status = 1
-            limit 1
-    </select>
-
-    <insert id="insertPostComment" parameterType="com.marmot.qilu.modules.comment.entity.PostComment"
-            useGeneratedKeys="true" keyProperty="id">
-        insert into post_comment (
-            post_id,
-            post_author_uuid,
-            user_uuid,
-            content,
-            status
-        ) values (
-                     #{postId},
-                     #{postAuthorUuid},
-                     #{userUuid},
-                     #{content},
-                     #{status}
-                 )
-    </insert>
-
-    <update id="softDeletePostComment">
+    <update id="deletePostComment">
         update post_comment
         set status = 0,
             updated_at = now()
@@ -57,10 +24,10 @@
             pc.content,
             pc.created_at as createdAt
         from post_comment pc
-                 left join user u on pc.user_uuid = u.uuid
+            left join user u on pc.user_uuid = u.uuid
         where pc.post_id = #{postId}
           and pc.status = 1
-        order by pc.created_at asc, pc.id asc
+        order by pc.created_at asc
     </select>
 
 </mapper>

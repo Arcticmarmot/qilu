@@ -35,7 +35,7 @@ public class PostLikeServiceImpl implements PostLikeService {
     public void likePost(Long postId) {
         String currUserUuid = UserContext.requireUuid();
 
-        postService.checkPostInteractable(postId);
+        postService.checkPostInteractable(postId, currUserUuid);
 
         boolean liked = false;
         PostLike existing = postLikeMapper.selectOne(
@@ -51,8 +51,14 @@ public class PostLikeServiceImpl implements PostLikeService {
             postLike.setUserUuid(currUserUuid);
             postLike.setStatus(STATUS_LIKED);
             try {
-                postLikeMapper.insert(postLike);
-                postService.increasePostLikeCount(postId);
+                int inserted = postLikeMapper.insert(postLike);
+                if(inserted != 1) {
+                    throw new RuntimeException("Like post failed.");
+                }
+                int rows = postService.increasePostLikeCount(postId);
+                if (rows != 1) {
+                    throw new RuntimeException("Like post failed.");
+                }
                 liked = true;
             } catch (DuplicateKeyException ignored) { }
         }
@@ -66,9 +72,9 @@ public class PostLikeServiceImpl implements PostLikeService {
                             .set(PostLike::getStatus, STATUS_LIKED)
             );
 
-            if (updated > 0) {
+            if (updated == 1) {
                 int rows = postService.increasePostLikeCount(postId);
-                if (rows <= 0) {
+                if (rows != 1) {
                     throw new RuntimeException("Like post failed.");
                 }
                 liked = true;
@@ -85,7 +91,7 @@ public class PostLikeServiceImpl implements PostLikeService {
     public void unlikePost(Long postId) {
         String currUserUuid = UserContext.requireUuid();
 
-        postService.checkPostInteractable(postId);
+        postService.checkPostInteractable(postId, currUserUuid);
 
         int updated = postLikeMapper.update(
                 null,
@@ -96,9 +102,9 @@ public class PostLikeServiceImpl implements PostLikeService {
                         .set(PostLike::getStatus, STATUS_UNLIKED)
         );
 
-        if(updated > 0) {
+        if(updated == 1) {
             int rows = postService.decreasePostLikeCount(postId);
-            if(rows <= 0) {
+            if(rows != 1) {
                 throw new RuntimeException("Unlike post failed");
             }
         }
