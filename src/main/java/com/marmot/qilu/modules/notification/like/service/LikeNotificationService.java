@@ -9,9 +9,9 @@ public interface LikeNotificationService {
 
     void createLikeNotification(LikeEvent event);
 
-    List<LikeNotificationListItemVO> listLikeNotifications();
-
     void markLikeNotificationsRead();
+
+    List<LikeNotificationListItemVO> listLikeNotifications();
 
     int getUnreadLikeNotificationCount();
 }

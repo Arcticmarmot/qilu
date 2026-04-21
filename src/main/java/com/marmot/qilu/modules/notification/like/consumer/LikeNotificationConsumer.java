@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.kafka.annotation.KafkaListener;
-import static com.marmot.qilu.common.kafka.KafkaTopics.TOPIC_LIKED_EVENTS;
+import static com.marmot.qilu.common.kafka.KafkaTopics.TOPIC_LIKE_EVENTS;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +17,7 @@ public class LikeNotificationConsumer {
     private final LikeNotificationService likeNotificationService;
 
     @KafkaListener(
-            topics = TOPIC_LIKED_EVENTS,
+            topics = TOPIC_LIKE_EVENTS,
             groupId = GROUP_NOTIFICATION
     )
     public void onLikeEvent(LikeEvent event, Acknowledgment acknowledgement) {

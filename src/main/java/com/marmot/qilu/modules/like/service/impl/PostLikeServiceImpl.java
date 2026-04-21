@@ -82,7 +82,7 @@ public class PostLikeServiceImpl implements PostLikeService {
         }
 
         if(liked) {
-            sendPostLikedEvent(postId, currUserUuid);
+            sendPostLikeEvent(postId, currUserUuid);
         }
     }
 
@@ -110,7 +110,7 @@ public class PostLikeServiceImpl implements PostLikeService {
         }
     }
 
-    private void sendPostLikedEvent(Long postId, String currUserUuid) {
+    private void sendPostLikeEvent(Long postId, String currUserUuid) {
         String receiverUuid = postService.getPostAuthorUuid(postId);
         if(receiverUuid == null || receiverUuid.equals(currUserUuid)) {
             return;

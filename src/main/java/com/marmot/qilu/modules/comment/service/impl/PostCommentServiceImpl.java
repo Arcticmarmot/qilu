@@ -1,6 +1,9 @@
 package com.marmot.qilu.modules.comment.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.event.comment.CommentEntityType;
+import com.marmot.qilu.common.event.comment.CommentEvent;
+import com.marmot.qilu.common.event.comment.CommentProducer;
 import com.marmot.qilu.modules.comment.dto.PostCommentCreateDTO;
 import com.marmot.qilu.modules.comment.entity.PostComment;
 import com.marmot.qilu.modules.comment.mapper.PostCommentMapper;
@@ -12,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +26,11 @@ public class PostCommentServiceImpl implements PostCommentService {
     private static final int STATUS_NORMAL = 1;
     private static final int STATUS_DELETED = 0;
 
+    private static final int PREVIEW_LENGTH = 10;
+
     private final PostCommentMapper postCommentMapper;
     private final PostService postService;
+    private final CommentProducer commentProducer;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -55,7 +64,7 @@ public class PostCommentServiceImpl implements PostCommentService {
             throw new RuntimeException("Failed to create comment.");
         }
 
-        // TODO: kafka 通知
+        sendCommentEvent(postComment);
     }
 
     @Override
@@ -101,5 +110,40 @@ public class PostCommentServiceImpl implements PostCommentService {
         postService.checkPostInteractable(postId, currUserUuid);
 
         return postCommentMapper.selectNormalCommentsByPostId(postId);
+    }
+
+    private void sendCommentEvent(PostComment postComment) {
+        if(postComment == null) {
+            return;
+        }
+
+        CommentEvent event = new CommentEvent();
+        event.setEventId(UUID.randomUUID().toString());
+        event.setCommentId(postComment.getId());
+        event.setEntityId(postComment.getPostId());
+        event.setEntityType(CommentEntityType.POST);
+        event.setActorUuid(postComment.getUserUuid());
+        event.setReceiverUuid(postComment.getPostAuthorUuid());
+        event.setContentPreview(buildContentPreview(postComment.getContent()));
+        event.setOccurredAt(now());
+
+        commentProducer.sendCommentEvent(event);
+    }
+
+    private String buildContentPreview(String content) {
+        if (content == null) {
+            return "";
+        }
+
+        String normalized = content
+                .replace("\r", " ")
+                .replace("\n", " ")
+                .trim();
+
+        if (normalized.isEmpty()) {
+            return "";
+        }
+
+        return normalized.substring(0, Math.min(normalized.length(), PREVIEW_LENGTH));
     }
 }

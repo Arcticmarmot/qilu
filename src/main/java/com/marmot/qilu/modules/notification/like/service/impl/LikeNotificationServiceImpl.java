@@ -97,7 +97,6 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         return !event.getActorUuid().equals(event.getReceiverUuid());
     }
 
-
     private LikeNotification buildLikeNotification(LikeEvent event) {
         LikeNotification likeNotification = new LikeNotification();
         likeNotification.setReceiverUuid(event.getReceiverUuid());

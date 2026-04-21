@@ -3,30 +3,32 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.marmot.qilu.modules.notification.like.mapper.LikeNotificationMapper">
+<mapper namespace="com.marmot.qilu.modules.notification.comment.mapper.CommentNotificationMapper">
 
-    <select id="selectLikeNotifications" resultType="com.marmot.qilu.modules.notification.like.vo.LikeNotificationListItemVO">
+    <select id="selectCommentNotifications" resultType="com.marmot.qilu.modules.notification.comment.vo.CommentNotificationListItemVO">
         select
             n.id,
+            n.comment_id as commentId,
             n.actor_uuid as actorUuid,
             u.nickname as actorNickname,
             n.entity_type as entityType,
             n.entity_id as entityId,
             substring(p.title, 1, 30) as entityPreview,
+            n.content_preview as contentPreview,
             n.is_read as isRead,
             n.created_at as createdAt
-        from like_notification n
-        left join user u
-          on u.uuid = n.actor_uuid
-        left join post p
-          on n.entity_type = 'POST'
-          and p.id = n.entity_id
+        from comment_notification n
+                 left join user u
+                           on u.uuid = n.actor_uuid
+                 left join post p
+                           on n.entity_type = 'POST'
+                               and p.id = n.entity_id
         where n.receiver_uuid = #{currUserUuid}
         order by n.created_at desc
     </select>
 
-    <update id="updateLikeNotificationsRead">
-        update like_notification
+    <update id="updateCommentNotificationsRead">
+        update comment_notification
         set is_read = 1,
             read_at = now(),
             updated_at = now()
@@ -34,11 +36,11 @@
           and is_read = 0
     </update>
 
-    <select id="countUnreadLikeNotifications" resultType="java.lang.Integer">
+    <select id="countUnreadCommentNotifications" resultType="java.lang.Integer">
         select count(1)
-        from like_notification
+        from comment_notification
         where receiver_uuid = #{currUserUuid}
-            and is_read = 0
+          and is_read = 0
     </select>
 
 </mapper>

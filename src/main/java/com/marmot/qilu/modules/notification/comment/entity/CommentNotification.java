@@ -1,4 +1,4 @@
-package com.marmot.qilu.modules.notification.like.entity;
+package com.marmot.qilu.modules.notification.comment.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@TableName("like_notification")
-public class LikeNotification {
+@TableName("comment_notification")
+public class CommentNotification {
 
     private Long id;
+
+    private Long commentId;
 
     private String receiverUuid;
 
@@ -20,6 +22,8 @@ public class LikeNotification {
     private String entityType;
 
     private Long entityId;
+
+    private String contentPreview;
 
     private String bizKey;
 
