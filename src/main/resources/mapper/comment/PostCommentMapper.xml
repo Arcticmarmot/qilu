@@ -5,6 +5,23 @@
 
 <mapper namespace="com.marmot.qilu.modules.comment.mapper.PostCommentMapper">
 
+    <select id="existsInteractablePostCommentById" resultType="java.lang.Integer">
+        select 1
+        from post_comment
+        where id = #{commentId}
+          and post_id = #{postId}
+          and status = 1
+            limit 1
+    </select>
+
+    <select id="selectUserUuidById" resultType="java.lang.String">
+        select user_uuid
+        from post_comment
+        where id = #{commentId}
+          and status = 1
+            limit 1
+    </select>
+
     <update id="deletePostComment">
         update post_comment
         set status = 0,
@@ -14,7 +31,7 @@
           and status = 1
     </update>
 
-    <select id="selectNormalCommentsByPostId"
+    <select id="selectNormalPostCommentsByPostId"
             resultType="com.marmot.qilu.modules.comment.vo.PostCommentListItemVO">
         select
             pc.id,

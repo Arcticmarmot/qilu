@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String getPostAuthorUuid(Long postId) {
-        String authorUuid= postMapper.selectUserUuidByPostId(postId);
+        String authorUuid= postMapper.selectUserUuidById(postId);
         if (authorUuid == null) {
             throw new RuntimeException("Post not found");
         }

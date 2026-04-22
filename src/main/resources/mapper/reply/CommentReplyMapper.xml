@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.marmot.qilu.modules.reply.mapper.CommentReplyMapper">
+
+    <select id="existsInteractableCommentReplyById" resultType="java.lang.Integer">
+        select 1
+        from comment_reply
+        where id = #{replyId}
+          and post_id = #{postId}
+          and root_comment_id = #{commentId}
+          and status = 1
+            limit 1
+    </select>
+
+    <select id="selectUserUuidById" resultType="java.lang.String">
+        select user_uuid
+        from comment_reply
+        where id = #{replyId}
+          and status = 1
+            limit 1
+    </select>
+
+    <select id="selectNormalCommentRepliesByCommentId"
+            resultType="com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO">
+        select
+            cr.id,
+            cr.root_comment_id as rootCommentId,
+            cr.parent_reply_id as parentReplyId,
+            cr.user_uuid as userUuid,
+            u.nickname as nickname,
+            cr.target_user_uuid as targetUserUuid,
+            tu.nickname as targetNickname,
+            cr.content,
+            cr.created_at as createdAt
+        from comment_reply cr
+                 left join user u on cr.user_uuid = u.uuid
+                 left join user tu on cr.target_user_uuid = tu.uuid
+        where cr.root_comment_id = #{rootCommentId}
+          and cr.status = 1
+        order by cr.created_at asc, cr.id asc
+    </select>
+
+</mapper>

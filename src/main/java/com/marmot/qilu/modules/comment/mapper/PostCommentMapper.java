@@ -11,8 +11,14 @@ import java.util.List;
 @Mapper
 public interface PostCommentMapper extends BaseMapper<PostComment> {
 
+    Integer existsInteractablePostCommentById(@Param("postId") Long postId,
+                                              @Param("commentId") Long commentId);
+
+    String selectUserUuidById(@Param("commentId") Long commentId);
+
+
     int deletePostComment(@Param("commentId") Long commentId,
                           @Param("currUserUuid") String currUserUuid);
 
-    List<PostCommentListItemVO> selectNormalCommentsByPostId(@Param("postId") Long postId);
+    List<PostCommentListItemVO> selectNormalPostCommentsByPostId(@Param("postId") Long postId);
 }

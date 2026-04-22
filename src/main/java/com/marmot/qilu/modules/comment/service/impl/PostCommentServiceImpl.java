@@ -33,6 +33,24 @@ public class PostCommentServiceImpl implements PostCommentService {
     private final CommentProducer commentProducer;
 
     @Override
+    public void checkPostCommentInteractable(Long postId, Long commentId, String currUserUuid) {
+        postService.checkPostInteractable(postId, currUserUuid);
+        Integer exists = postCommentMapper.existsInteractablePostCommentById(postId, commentId);
+        if(exists == null) {
+            throw new RuntimeException("Comment not interactable");
+        }
+    }
+
+    @Override
+    public String getAuthorUuidById(Long commentId) {
+        String authorUuid = postCommentMapper.selectUserUuidById(commentId);
+        if (authorUuid == null) {
+            throw new RuntimeException("Comment not found");
+        }
+        return authorUuid;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void createPostComment(Long postId, PostCommentCreateDTO dto) {
         if(postId == null || postId <= 0) {
@@ -109,7 +127,7 @@ public class PostCommentServiceImpl implements PostCommentService {
 
         postService.checkPostInteractable(postId, currUserUuid);
 
-        return postCommentMapper.selectNormalCommentsByPostId(postId);
+        return postCommentMapper.selectNormalPostCommentsByPostId(postId);
     }
 
     private void sendCommentEvent(PostComment postComment) {

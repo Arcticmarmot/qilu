@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface PostCommentService {
 
+    void checkPostCommentInteractable(Long postId, Long commentId, String currUserUuid);
+
+    String getAuthorUuidById(Long commentId);
+
     void createPostComment(Long postId, PostCommentCreateDTO dto);
 
     void deletePostComment(Long commentId);

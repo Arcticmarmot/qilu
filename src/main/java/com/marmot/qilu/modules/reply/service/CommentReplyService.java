@@ -1,8 +1,18 @@
 package com.marmot.qilu.modules.reply.service;
 
 import com.marmot.qilu.modules.reply.dto.CommentReplyCreateDTO;
+import com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO;
 
-public interface CommentReplyService{
+import java.util.List;
 
-    void createCommentReply(Long postId, Long rootCommentId, CommentReplyCreateDTO dto);
+public interface CommentReplyService {
+
+    void checkCommentReplyInteractable(Long postId, Long commentId,
+                                       Long replyId, String currUserUuid);
+
+    String getAuthorUuidById(Long replyId);
+
+    void createCommentReply(Long postId, Long commentId, CommentReplyCreateDTO dto);
+
+    List<CommentReplyListItemVO> listCommentReplies(Long postId, Long commentId);
 }
