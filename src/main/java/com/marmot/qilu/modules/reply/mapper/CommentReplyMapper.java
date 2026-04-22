@@ -15,7 +15,7 @@ public interface CommentReplyMapper extends BaseMapper<CommentReply> {
                                            @Param("commentId") Long commentId,
                                            @Param("replyId") Long replyId);
 
-    String selectUserUuidById(@Param("reply_id") Long replyId);
+    String selectUserUuidById(@Param("replyId") Long replyId);
 
     List<CommentReplyListItemVO> selectNormalCommentRepliesByCommentId(@Param("commentId") Long commentId);
 }
