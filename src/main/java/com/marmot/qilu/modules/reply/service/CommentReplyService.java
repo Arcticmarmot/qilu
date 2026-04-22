@@ -14,5 +14,7 @@ public interface CommentReplyService {
 
     void createCommentReply(Long postId, Long commentId, CommentReplyCreateDTO dto);
 
+    void deleteCommentReply(Long postId, Long commentId, Long replyId);
+
     List<CommentReplyListItemVO> listCommentReplies(Long postId, Long commentId);
 }

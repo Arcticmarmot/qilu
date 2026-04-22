@@ -15,17 +15,18 @@ import java.util.List;
 
 @Tag(name = "PostComment", description = "帖子一级评论接口")
 @RestController
-@RequestMapping
+@RequestMapping("/posts/{postId}")
 @RequiredArgsConstructor
 public class PostCommentController {
 
     private final PostCommentService postCommentService;
 
     @Operation(summary = "创建帖子评论", description = "当前登录用户对指定帖子发表评论")
-    @PostMapping("/posts/{postId}/comments")
+    @PostMapping("/comments")
     public Result<Void> createPostComment(
             @Parameter(description = "帖子ID", example = "1", required = true)
             @PathVariable Long postId,
+            @Parameter(description = "评论创建输入")
             @Valid @RequestBody PostCommentCreateDTO dto
     ) {
         postCommentService.createPostComment(postId, dto);
@@ -35,21 +36,20 @@ public class PostCommentController {
     @Operation(summary = "删除自己的评论", description = "当前登录用户删除自己发布的一级评论")
     @DeleteMapping("/comments/{commentId}")
     public Result<Void> deletePostComment(
+            @Parameter(description = "帖子ID", example = "1", required = true)
+            @PathVariable Long postId,
             @Parameter(description = "评论ID", example = "1", required = true)
             @PathVariable Long commentId
     ) {
-        postCommentService.deletePostComment(commentId);
+        postCommentService.deletePostComment(postId, commentId);
         return Result.success();
     }
 
     @Operation(summary = "获取帖子评论列表", description = "获取指定帖子的一级评论列表")
-    @GetMapping("/posts/{postId}/comments")
+    @GetMapping("/comments")
     public Result<List<PostCommentListItemVO>> listPostComments(
             @Parameter(description = "帖子ID", example = "1", required = true)
-            @PathVariable Long postId
-    ) {
+            @PathVariable Long postId) {
         return Result.success(postCommentService.listPostComments(postId));
     }
-
-
 }

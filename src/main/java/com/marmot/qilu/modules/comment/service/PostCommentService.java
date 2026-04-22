@@ -13,7 +13,7 @@ public interface PostCommentService {
 
     void createPostComment(Long postId, PostCommentCreateDTO dto);
 
-    void deletePostComment(Long commentId);
+    void deletePostComment(Long postId, Long commentId);
 
     List<PostCommentListItemVO> listPostComments(Long postId);
 }

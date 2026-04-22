@@ -2,6 +2,7 @@ package com.marmot.qilu.modules.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
@@ -13,6 +14,7 @@ import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +25,7 @@ public class PostServiceImpl implements PostService {
 
     private static final int STATUS_DELETED = 0;
     private static final int STATUS_NORMAL = 1;
+    private static final int MAX_POST_CONTENT_LENGTH = 4096;
 
     private final PostMapper postMapper;
 
@@ -44,17 +47,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Long createPost(PostCreateDTO dto) {
+    @Transactional(rollbackFor = Exception.class)
+    public void createPost(PostCreateDTO dto) {
         String currUserUuid = UserContext.requireUuid();
+
+        if(dto == null) {
+            throw new RuntimeException("Request body must not be null.");
+        }
+        String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
+        validateContent(normalizedContent);
 
         Post post = new Post();
         post.setUserUuid(currUserUuid);
         post.setTitle(dto.getTitle());
-        post.setContent(dto.getContent());
+        post.setContent(normalizedContent);
         post.setVisibility(dto.getVisibility());
         post.setStatus(STATUS_NORMAL);
-        postMapper.insert(post);
-        return post.getId();
+        int inserted = postMapper.insert(post);
+        if(inserted != 1) {
+            throw new RuntimeException("Create post failed.");
+        }
     }
 
     @Override
@@ -170,5 +182,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public int decreasePostCommentCount(Long postId) {
         return postMapper.decreasePostCommentCount(postId);
+    }
+
+    private void validateContent(String content) {
+        if (content.isEmpty()) {
+            throw new RuntimeException("Content cannot be blank.");
+        }
+        if (content.length() > MAX_POST_CONTENT_LENGTH) {
+            throw new RuntimeException("Content too long.");
+        }
     }
 }

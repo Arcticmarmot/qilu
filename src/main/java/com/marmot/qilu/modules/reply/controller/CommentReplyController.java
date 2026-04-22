@@ -19,17 +19,25 @@ public class CommentReplyController {
     private final CommentReplyService commentReplyService;
 
     @Operation(summary = "创建评论回复", description = "当前登录用户对指定评论发表回复")
-    @PostMapping("/{rootCommentId}/replies")
+    @PostMapping("/{commentId}/replies")
     public void createCommentReply(@PathVariable Long postId,
-                                   @PathVariable Long rootCommentId,
+                                   @PathVariable Long commentId,
                                    @RequestBody CommentReplyCreateDTO dto) {
-        commentReplyService.createCommentReply(postId, rootCommentId, dto);
+        commentReplyService.createCommentReply(postId, commentId, dto);
+    }
+
+    @Operation(summary = "删除评论回复", description = "当前登录用户对指定评论发表回复")
+    @DeleteMapping("/{commentId}/replies/{replyId}")
+    public void deleteCommentReply(@PathVariable Long postId,
+                                   @PathVariable Long commentId,
+                                   @PathVariable Long replyId) {
+        commentReplyService.deleteCommentReply(postId, commentId, replyId);
     }
 
     @Operation(summary = "获取评论回复列表", description = "获取指定评论的回复列表")
-    @GetMapping("/{rootCommentId}/replies")
+    @GetMapping("/{commentId}/replies")
     public List<CommentReplyListItemVO> listCommentReplies(@PathVariable Long postId,
-                                                           @PathVariable Long rootCommentId) {
-        return commentReplyService.listCommentReplies(postId, rootCommentId);
+                                                           @PathVariable Long commentId) {
+        return commentReplyService.listCommentReplies(postId, commentId);
     }
 }

@@ -4,6 +4,7 @@ import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.event.comment.CommentEntityType;
 import com.marmot.qilu.common.event.comment.CommentEvent;
 import com.marmot.qilu.common.event.comment.CommentProducer;
+import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.comment.dto.PostCommentCreateDTO;
 import com.marmot.qilu.modules.comment.entity.PostComment;
 import com.marmot.qilu.modules.comment.mapper.PostCommentMapper;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marmot.qilu.common.util.ContentUtils.buildCommentContentPreview;
 import static java.time.LocalDateTime.now;
 
 @Service
@@ -26,7 +28,7 @@ public class PostCommentServiceImpl implements PostCommentService {
     private static final int STATUS_NORMAL = 1;
     private static final int STATUS_DELETED = 0;
 
-    private static final int PREVIEW_LENGTH = 10;
+    private static final int MAX_COMMENT_CONTENT_LENGTH = 1024;
 
     private final PostCommentMapper postCommentMapper;
     private final PostService postService;
@@ -64,14 +66,14 @@ public class PostCommentServiceImpl implements PostCommentService {
 
         postService.checkPostInteractable(postId, currUserUuid);
         String postAuthorUuid = postService.getPostAuthorUuid(postId);
-
+        String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
+        validateContent(normalizedContent);
         PostComment postComment = new PostComment();
         postComment.setPostId(postId);
         postComment.setPostAuthorUuid(postAuthorUuid);
         postComment.setUserUuid(currUserUuid);
-        postComment.setContent(dto.getContent());
+        postComment.setContent(normalizedContent);
         postComment.setStatus(STATUS_NORMAL);
-
 
         int inserted = postCommentMapper.insert(postComment);
         if(inserted != 1) {
@@ -87,31 +89,25 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deletePostComment(Long commentId) {
+    public void deletePostComment(Long postId, Long commentId) {
+        if(postId == null || postId <= 0) {
+            throw new RuntimeException("PostId is invalid.");
+        }
+
         if(commentId == null || commentId <= 0) {
             throw new RuntimeException("CommentId is invalid.");
         }
 
         String currUserUuid = UserContext.requireUuid();
 
-        PostComment postComment = postCommentMapper.selectById(commentId);
-
-        if (postComment == null
-                || postComment.getStatus() == null
-                || postComment.getStatus() == STATUS_DELETED) {
-            throw new RuntimeException("Comment does not exist.");
-        }
-
-        if (!currUserUuid.equals(postComment.getUserUuid())) {
-            throw new RuntimeException("No permission to delete this comment.");
-        }
+        checkPostCommentInteractable(postId, commentId, currUserUuid);
 
         int deleted = postCommentMapper.deletePostComment(commentId, currUserUuid);
 
         if(deleted != 1) {
-            throw new RuntimeException("Failed to delete comment.");
+            throw new RuntimeException("Comment not found or no permission to delete.");
         }
-        int rows = postService.decreasePostCommentCount(postComment.getPostId());
+        int rows = postService.decreasePostCommentCount(postId);
         if(rows != 1) {
             throw new RuntimeException("Failed to delete comment.");
         }
@@ -136,32 +132,33 @@ public class PostCommentServiceImpl implements PostCommentService {
         }
 
         CommentEvent event = new CommentEvent();
+        String contentPreview = buildCommentContentPreview(postComment.getContent());
+        validateContentPreview(contentPreview);
         event.setEventId(UUID.randomUUID().toString());
         event.setCommentId(postComment.getId());
         event.setEntityId(postComment.getPostId());
         event.setEntityType(CommentEntityType.POST);
         event.setActorUuid(postComment.getUserUuid());
         event.setReceiverUuid(postComment.getPostAuthorUuid());
-        event.setContentPreview(buildContentPreview(postComment.getContent()));
+        event.setContentPreview(contentPreview);
         event.setOccurredAt(now());
 
         commentProducer.sendCommentEvent(event);
     }
 
-    private String buildContentPreview(String content) {
-        if (content == null) {
-            return "";
+    private void validateContentPreview(String preview) {
+        if(preview == null || preview.isEmpty()) {
+            throw new RuntimeException("Preview cannot be blank.");
+        }
+    }
+
+    private void validateContent(String content) {
+        if(content == null || content.isEmpty()) {
+            throw new RuntimeException("Preview cannot be blank.");
         }
 
-        String normalized = content
-                .replace("\r", " ")
-                .replace("\n", " ")
-                .trim();
-
-        if (normalized.isEmpty()) {
-            return "";
+        if(content.length() > MAX_COMMENT_CONTENT_LENGTH) {
+            throw new RuntimeException("Content too long.");
         }
-
-        return normalized.substring(0, Math.min(normalized.length(), PREVIEW_LENGTH));
     }
 }

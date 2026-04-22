@@ -14,7 +14,7 @@ public interface PostService {
 
     String getPostAuthorUuid(Long postId);
 
-    Long createPost(PostCreateDTO dto);
+    void createPost(PostCreateDTO dto);
 
     PostDetailVO getMyPostDetail(Long postId);
 

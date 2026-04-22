@@ -26,7 +26,8 @@ public class PostController {
     @Operation(summary = "创建帖子", description = "创建一篇新帖子，可设置为公开或仅自己可见")
     @PostMapping
     public Result<Long> createPost(@Valid @RequestBody PostCreateDTO dto) {
-        return Result.success(postService.createPost(dto));
+        postService.createPost(dto);
+        return Result.success();
     }
 
     @Operation(summary = "获取我的帖子详情", description = "返回当前登录用户自己的帖子详情，可查看自己的公开或私密帖子")

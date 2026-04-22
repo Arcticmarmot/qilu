@@ -139,16 +139,6 @@ or
 ./mvnw clean package
 ```
 
-## What This Repository Is Good For
-
-Qilu is a good fit for people who want to study or discuss:
-
-- Spring Boot modular backend design
-- MyBatis-Plus based persistence
-- SQL schema evolution with Flyway
-- Redis / Kafka integration in a community product scenario
-- interaction and notification modeling for posts, comments, and replies
-
 ## Notes
 
 This project is still evolving, so some modules may be incomplete or subject to refactoring. The current repository structure already shows the intended architecture and the main business direction.
