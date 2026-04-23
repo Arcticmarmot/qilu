@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.like.controller;
 
-import com.marmot.qilu.common.result.ApiResponse;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.like.service.PostLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

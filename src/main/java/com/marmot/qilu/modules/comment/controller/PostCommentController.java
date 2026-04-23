@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.comment.controller;
 
-import com.marmot.qilu.common.result.ApiResponse;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.comment.dto.PostCommentCreateDTO;
 import com.marmot.qilu.modules.comment.service.PostCommentService;
 import com.marmot.qilu.modules.comment.vo.PostCommentListItemVO;

@@ -48,6 +48,11 @@ jwt:
   secret: ${JWT_SECRET:qilu-jwt-secret-please-change-in-production-2026-0414-1233}
   expire: ${JWT_EXPIRE:36000000}
 
+logging:
+  level:
+    root: info
+    com.marmot.qilu: debug
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

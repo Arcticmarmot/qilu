@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.reply.controller;
 
-import com.marmot.qilu.common.result.ApiResponse;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.notification.reply.service.ReplyNotificationService;
 import com.marmot.qilu.modules.notification.reply.vo.ReplyNotificationListItemVO;
 import io.swagger.v3.oas.annotations.Operation;

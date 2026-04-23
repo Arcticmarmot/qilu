@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.like.controller;
 
-import com.marmot.qilu.common.result.ApiResponse;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.notification.like.service.LikeNotificationService;
 import com.marmot.qilu.modules.notification.like.vo.LikeNotificationListItemVO;
 import io.swagger.v3.oas.annotations.Operation;

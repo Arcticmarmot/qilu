@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.auth.controller;
 
-import com.marmot.qilu.common.result.ApiResponse;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.auth.dto.LoginDTO;
 import com.marmot.qilu.modules.auth.service.AuthService;
 import com.marmot.qilu.modules.auth.vo.LoginVO;

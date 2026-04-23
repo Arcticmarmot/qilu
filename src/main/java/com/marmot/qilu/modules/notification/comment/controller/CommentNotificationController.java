@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.comment.controller;
 
-import com.marmot.qilu.common.result.ApiResponse;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.notification.comment.service.CommentNotificationService;
 import com.marmot.qilu.modules.notification.comment.vo.CommentNotificationListItemVO;
 import io.swagger.v3.oas.annotations.Operation;

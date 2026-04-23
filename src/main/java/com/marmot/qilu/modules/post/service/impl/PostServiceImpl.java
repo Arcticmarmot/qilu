@@ -2,6 +2,9 @@ package com.marmot.qilu.modules.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.exception.BadRequestException;
+import com.marmot.qilu.common.exception.ForbiddenException;
+import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
@@ -13,12 +16,14 @@ import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -33,7 +38,7 @@ public class PostServiceImpl implements PostService {
     public void checkPostInteractable(Long postId, String currUserUuid) {
         Integer exists = postMapper.existsInteractablePostById(postId, currUserUuid);
         if(exists == null) {
-            throw new RuntimeException("Post not interactable");
+            throw new ForbiddenException("post not interactable");
         }
     }
 
@@ -41,7 +46,7 @@ public class PostServiceImpl implements PostService {
     public String getPostAuthorUuid(Long postId) {
         String authorUuid= postMapper.selectUserUuidById(postId);
         if (authorUuid == null) {
-            throw new RuntimeException("Post not found");
+            throw new NotFoundException("post not found");
         }
         return authorUuid;
     }
@@ -52,7 +57,7 @@ public class PostServiceImpl implements PostService {
         String currUserUuid = UserContext.requireUuid();
 
         if(dto == null) {
-            throw new RuntimeException("Request body must not be null.");
+            throw new BadRequestException("request body is null");
         }
         String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
         validateContent(normalizedContent);
@@ -67,6 +72,7 @@ public class PostServiceImpl implements PostService {
         if(inserted != 1) {
             throw new RuntimeException("Create post failed.");
         }
+        log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
     }
 
     @Override
@@ -144,6 +150,7 @@ public class PostServiceImpl implements PostService {
         if(updated == 0) {
             throw new RuntimeException("posts not found or no permissions.");
         }
+        log.info("update post success, userUuid={}, postId={}", currUserUuid, postId);
     }
 
     @Override
@@ -160,8 +167,9 @@ public class PostServiceImpl implements PostService {
                         .set(Post::getDeletedAt, LocalDateTime.now())
         );
         if(deleted == 0) {
-            throw new RuntimeException("posts not found or no permissions.");
+            throw new RuntimeException("posts not found or no permissions");
         }
+        log.info("delete post success, userUuid={}, postId={}", currUserUuid, postId);
     }
 
     @Override
