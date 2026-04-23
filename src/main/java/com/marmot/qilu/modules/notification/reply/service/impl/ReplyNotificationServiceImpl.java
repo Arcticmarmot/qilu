@@ -1,14 +1,13 @@
-package com.marmot.qilu.modules.notification.comment.service.impl;
+package com.marmot.qilu.modules.notification.reply.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
-import com.marmot.qilu.common.event.comment.CommentEvent;
-import com.marmot.qilu.modules.notification.comment.entity.CommentNotification;
-import com.marmot.qilu.modules.notification.comment.mapper.CommentNotificationMapper;
-import com.marmot.qilu.modules.notification.comment.service.CommentNotificationService;
-import com.marmot.qilu.modules.notification.comment.vo.CommentNotificationListItemVO;
+import com.marmot.qilu.common.event.reply.ReplyEvent;
+import com.marmot.qilu.modules.notification.reply.entity.ReplyNotification;
+import com.marmot.qilu.modules.notification.reply.mapper.ReplyNotificationMapper;
+import com.marmot.qilu.modules.notification.reply.service.ReplyNotificationService;
+import com.marmot.qilu.modules.notification.reply.vo.ReplyNotificationListItemVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,58 +19,58 @@ import static com.marmot.qilu.common.util.ContentUtils.COMMENT_PREVIEW_LENGTH;
 
 @Service
 @RequiredArgsConstructor
-public class CommentNotificationServiceImpl implements CommentNotificationService {
+public class ReplyNotificationServiceImpl implements ReplyNotificationService {
 
     private static final int UNREAD = 0;
     private static final Duration UNREAD_COUNT_TTL = Duration.ofDays(7);
-    private final CommentNotificationMapper commentNotificationMapper;
+    private final ReplyNotificationMapper replyNotificationMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createCommentNotification(CommentEvent event) {
+    public void createReplyNotification(ReplyEvent event) {
         validateEvent(event);
 
         if(event.getActorUuid().equals(event.getReceiverUuid())) {
             return;
         }
 
-        CommentNotification notification = buildCommentNotification(event);
+        ReplyNotification notification = buildReplyNotification(event);
 
         try {
-            commentNotificationMapper.insert(notification);
+            replyNotificationMapper.insert(notification);
             incrementUnreadCount(notification.getReceiverUuid());
         } catch (DuplicateKeyException ignored) { }
     }
 
     @Override
-    public List<CommentNotificationListItemVO> listCommentNotifications() {
+    public List<ReplyNotificationListItemVO> listReplyNotifications() {
         String currUserUuid = UserContext.requireUuid();
 
-        return commentNotificationMapper.selectCommentNotifications(currUserUuid, COMMENT_PREVIEW_LENGTH);
+        return replyNotificationMapper.selectReplyNotifications(currUserUuid, COMMENT_PREVIEW_LENGTH);
     }
 
     @Override
-    public void markCommentNotificationsRead() {
+    public void markReplyNotificationRead() {
         String currUserUuid = UserContext.requireUuid();
 
-        int updated = commentNotificationMapper.updateCommentNotificationsRead(currUserUuid);
+        int updated = replyNotificationMapper.updateReplyNotificationsRead(currUserUuid);
+
         if(updated > 0) {
             clearUnreadCount(currUserUuid);
         }
     }
 
     @Override
-    public int getUnreadCommentNotificationCount() {
+    public int getUnreadReplyNotificationCount() {
         String currUserUuid = UserContext.requireUuid();
         String key = buildUnreadCountKey(currUserUuid);
-
         String cachedValue = stringRedisTemplate.opsForValue().get(key);
         if(cachedValue != null) {
             return Integer.parseInt(cachedValue);
         }
 
-        int count = commentNotificationMapper.countUnreadCommentNotifications(currUserUuid);
+        int count = replyNotificationMapper.countUnreadReplyNotifications(currUserUuid);
         stringRedisTemplate.opsForValue().set(key, String.valueOf(count), UNREAD_COUNT_TTL);
         return count;
     }
@@ -88,28 +87,28 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
     }
 
     private String buildUnreadCountKey(String receiverUuid) {
-        return "notification:comment:unread:" + receiverUuid;
+        return "notification:reply:unread:" + receiverUuid;
     }
 
-    private void validateEvent(CommentEvent event) {
+    private void validateEvent(ReplyEvent event) {
         if(event == null) {
-            throw new RuntimeException("CommentEvent is null");
+            throw new RuntimeException("ReplyEvent is null");
         }
         if (event.getEventId() == null
                 || event.getActorUuid() == null
                 || event.getReceiverUuid() == null
                 || event.getEntityId() == null
                 || event.getEntityType() == null
-                || event.getCommentId() == null
+                || event.getReplyId() == null
                 || event.getOccurredAt() == null
                 || event.getContentPreview() == null) {
-            throw new RuntimeException("Invalid CommentEvent.");
+            throw new RuntimeException("Invalid ReplyEvent.");
         }
     }
 
-    private CommentNotification buildCommentNotification(CommentEvent event) {
-        CommentNotification notification = new CommentNotification();
-        notification.setCommentId(event.getCommentId());
+    private ReplyNotification buildReplyNotification(ReplyEvent event) {
+        ReplyNotification notification = new ReplyNotification();
+        notification.setReplyId(event.getReplyId());
         notification.setActorUuid(event.getActorUuid());
         notification.setReceiverUuid(event.getReceiverUuid());
         notification.setEntityId(event.getEntityId());
@@ -120,9 +119,10 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
         return notification;
     }
 
-    private String buildNotificationBizKey(CommentEvent event) {
+    private String buildNotificationBizKey(ReplyEvent event) {
         return String.join(":",
-                event.getCommentId().toString(), event.getEntityType().name(),
+                event.getReplyId().toString(), event.getEntityType().name(),
                 event.getEntityId().toString(), event.getReceiverUuid());
     }
+
 }

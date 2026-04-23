@@ -13,7 +13,7 @@
             u.nickname as actorNickname,
             n.entity_type as entityType,
             n.entity_id as entityId,
-            substring(p.title, 1, 30) as entityPreview,
+            substring(p.title, 1, #{previewLength}) as entityPreview,
             n.content_preview as contentPreview,
             n.is_read as isRead,
             n.created_at as createdAt

@@ -25,4 +25,5 @@ public class CommentNotificationConsumer {
     public void onCommentEvent(CommentEvent event, Acknowledgment acknowledgement) {
         commentNotificationService.createCommentNotification(event);
         acknowledgement.acknowledge();
-    }}
+    }
+}

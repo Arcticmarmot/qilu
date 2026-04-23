@@ -2,8 +2,8 @@ package com.marmot.qilu.common.util;
 
 public final class ContentUtils {
 
-    private static final int POST_PREVIEW_LENGTH = 16;
-    private static final int COMMENT_PREVIEW_LENGTH = 16;
+    public static final int POST_PREVIEW_LENGTH = 16;
+    public static final int COMMENT_PREVIEW_LENGTH = 16;
 
     private ContentUtils() {
     }

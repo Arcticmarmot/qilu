@@ -1,6 +1,9 @@
 package com.marmot.qilu.modules.reply.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.event.reply.ReplyEntityType;
+import com.marmot.qilu.common.event.reply.ReplyEvent;
+import com.marmot.qilu.common.event.reply.ReplyProducer;
 import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.comment.service.PostCommentService;
 import com.marmot.qilu.modules.reply.dto.CommentReplyCreateDTO;
@@ -13,6 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
+
+import static com.marmot.qilu.common.util.ContentUtils.buildCommentContentPreview;
+import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +30,7 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
     private final CommentReplyMapper commentReplyMapper;
     private final PostCommentService postCommentService;
+    private final ReplyProducer replyProducer;
 
     @Override
     public void checkCommentReplyInteractable(Long postId, Long commentId, Long replyId, String currUserUuid) {
@@ -52,35 +60,56 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
         String targetUserUuid;
         Long parentReplyId = dto.getParentReplyId();
+        ReplyEvent event = new ReplyEvent();
+
         if(parentReplyId == null) {
             postCommentService.checkPostCommentInteractable(postId, commentId, currUserUuid);
             targetUserUuid = postCommentService.getAuthorUuidById(commentId);
+            event.setEntityType(ReplyEntityType.COMMENT);
+            event.setEntityId(commentId);
         } else {
             if(parentReplyId <= 0) {
                 throw new RuntimeException("Invalid parentReplyId.");
             }
             checkCommentReplyInteractable(postId, commentId, parentReplyId, currUserUuid);
             targetUserUuid = getAuthorUuidById(parentReplyId);
+            event.setEntityType(ReplyEntityType.REPLY);
+            event.setEntityId(parentReplyId);
         }
 
-        CommentReply reply = new CommentReply();
+        CommentReply commentReply = new CommentReply();
         String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
         validateContent(normalizedContent);
 
-        reply.setStatus(STATUS_NORMAL);
-        reply.setUserUuid(currUserUuid);
-        reply.setPostId(postId);
-        reply.setRootCommentId(commentId);
-        reply.setContent(normalizedContent);
-        reply.setParentReplyId(parentReplyId);
-        reply.setTargetUserUuid(targetUserUuid);
+        commentReply.setStatus(STATUS_NORMAL);
+        commentReply.setUserUuid(currUserUuid);
+        commentReply.setPostId(postId);
+        commentReply.setRootCommentId(commentId);
+        commentReply.setContent(normalizedContent);
+        commentReply.setParentReplyId(parentReplyId);
+        commentReply.setTargetUserUuid(targetUserUuid);
 
-        int inserted = commentReplyMapper.insert(reply);
+        int inserted = commentReplyMapper.insert(commentReply);
         if(inserted != 1) {
             throw new RuntimeException("Failed to create reply.");
         }
 
-        // TODO: kafka notification
+        String contentPreview = buildCommentContentPreview(commentReply.getContent());
+        validateContentPreview(contentPreview);
+        event.setEventId(UUID.randomUUID().toString());
+        event.setReplyId(commentReply.getId());
+        event.setActorUuid(commentReply.getUserUuid());
+        event.setReceiverUuid(commentReply.getTargetUserUuid());
+        event.setContentPreview(contentPreview);
+        event.setOccurredAt(now());
+
+        replyProducer.sendReplyEvent(event);
+    }
+
+    private void validateContentPreview(String preview) {
+        if(preview == null || preview.isEmpty()) {
+            throw new RuntimeException("Preview cannot be blank.");
+        }
     }
 
     @Override
