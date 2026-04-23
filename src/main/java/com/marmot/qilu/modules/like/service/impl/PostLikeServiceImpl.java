@@ -11,6 +11,7 @@ import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
 import com.marmot.qilu.modules.like.service.PostLikeService;
 import com.marmot.qilu.modules.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,6 @@ public class PostLikeServiceImpl implements PostLikeService {
         String currUserUuid = UserContext.requireUuid();
 
         postService.checkPostInteractable(postId, currUserUuid);
-
         boolean liked = false;
         PostLike existing = postLikeMapper.selectOne(
                 new LambdaQueryWrapper<PostLike>()

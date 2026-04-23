@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.like.controller;
 
-import com.marmot.qilu.common.result.Result;
+import com.marmot.qilu.common.result.ApiResponse;
 import com.marmot.qilu.modules.notification.like.service.LikeNotificationService;
 import com.marmot.qilu.modules.notification.like.vo.LikeNotificationListItemVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +23,8 @@ public class LikeNotificationController {
             description = "查询当前登录用户点赞的通知列表。该接口只负责查询，不会修改通知状态。"
     )
     @GetMapping
-    public Result<List<LikeNotificationListItemVO>> listLikeNotifications() {
-        return Result.success(likeNotificationService.listLikeNotifications());
+    public ApiResponse<List<LikeNotificationListItemVO>> listLikeNotifications() {
+        return ApiResponse.success(likeNotificationService.listLikeNotifications());
     }
 
     @Operation(
@@ -32,9 +32,9 @@ public class LikeNotificationController {
             description = "将当前登录用户点赞的所有未读通知批量标记为已读"
     )
     @PatchMapping("/read-all")
-    public Result<Void> markLikeNotificationsRead() {
+    public ApiResponse<Void> markLikeNotificationsRead() {
         likeNotificationService.markLikeNotificationsRead();
-        return Result.success();
+        return ApiResponse.success();
     }
 
     @Operation(
@@ -42,7 +42,7 @@ public class LikeNotificationController {
             description = "当前登录用户未读点赞通知的数量"
     )
     @GetMapping("/unread-count")
-    public Result<Integer> getUnreadLikeNotificationsCount() {
-        return Result.success(likeNotificationService.getUnreadLikeNotificationCount());
+    public ApiResponse<Integer> getUnreadLikeNotificationsCount() {
+        return ApiResponse.success(likeNotificationService.getUnreadLikeNotificationCount());
     }
 }

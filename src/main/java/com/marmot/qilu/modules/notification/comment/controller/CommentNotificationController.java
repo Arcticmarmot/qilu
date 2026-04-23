@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.notification.comment.controller;
 
-import com.marmot.qilu.common.result.Result;
+import com.marmot.qilu.common.result.ApiResponse;
 import com.marmot.qilu.modules.notification.comment.service.CommentNotificationService;
 import com.marmot.qilu.modules.notification.comment.vo.CommentNotificationListItemVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +26,8 @@ public class CommentNotificationController {
             description = "查询当前登录用户评论的通知列表。该接口只负责查询，不会修改通知状态。"
     )
     @GetMapping
-    public Result<List<CommentNotificationListItemVO>> listCommentNotifications() {
-        return Result.success(commentNotificationService.listCommentNotifications());
+    public ApiResponse<List<CommentNotificationListItemVO>> listCommentNotifications() {
+        return ApiResponse.success(commentNotificationService.listCommentNotifications());
     }
 
     @Operation(
@@ -35,9 +35,9 @@ public class CommentNotificationController {
             description = "将当前登录用户评论的所有未读通知批量标记为已读"
     )
     @PatchMapping("/read-all")
-    public Result<Void> markCommentNotificationsRead() {
+    public ApiResponse<Void> markCommentNotificationsRead() {
         commentNotificationService.markCommentNotificationsRead();
-        return Result.success();
+        return ApiResponse.success();
     }
 
     @Operation(
@@ -45,7 +45,7 @@ public class CommentNotificationController {
             description = "当前登录用户未读评论通知的数量"
     )
     @GetMapping("/unread-count")
-    public Result<Integer> getUnreadCommentNotificationsCount() {
-        return Result.success(commentNotificationService.getUnreadCommentNotificationCount());
+    public ApiResponse<Integer> getUnreadCommentNotificationsCount() {
+        return ApiResponse.success(commentNotificationService.getUnreadCommentNotificationCount());
     }
 }

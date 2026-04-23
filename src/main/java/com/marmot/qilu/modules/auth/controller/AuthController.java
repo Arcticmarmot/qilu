@@ -1,6 +1,6 @@
 package com.marmot.qilu.modules.auth.controller;
 
-import com.marmot.qilu.common.result.Result;
+import com.marmot.qilu.common.result.ApiResponse;
 import com.marmot.qilu.modules.auth.dto.LoginDTO;
 import com.marmot.qilu.modules.auth.service.AuthService;
 import com.marmot.qilu.modules.auth.vo.LoginVO;
@@ -22,8 +22,8 @@ public class AuthController {
 
     @Operation(summary = "用户登录", description = "用户使用账号和密码登录，成功后返回访问令牌及基础用户信息")
     @PostMapping("/login")
-    public Result<LoginVO> login(@RequestBody LoginDTO dto) {
-        return Result.success(authService.login(dto));
+    public ApiResponse<LoginVO> login(@RequestBody LoginDTO dto) {
+        return ApiResponse.success(authService.login(dto));
     }
 
 }
