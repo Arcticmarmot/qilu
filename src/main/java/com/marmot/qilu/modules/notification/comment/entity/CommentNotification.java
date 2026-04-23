@@ -19,9 +19,7 @@ public class CommentNotification {
 
     private String actorUuid;
 
-    private String entityType;
-
-    private Long entityId;
+    private Long postId;
 
     private String contentPreview;
 

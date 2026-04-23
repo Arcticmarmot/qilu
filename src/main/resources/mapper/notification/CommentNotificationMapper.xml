@@ -11,8 +11,7 @@
             n.comment_id as commentId,
             n.actor_uuid as actorUuid,
             u.nickname as actorNickname,
-            n.entity_type as entityType,
-            n.entity_id as entityId,
+            n.post_id as postId,
             substring(p.title, 1, #{previewLength}) as entityPreview,
             n.content_preview as contentPreview,
             n.is_read as isRead,
@@ -21,8 +20,7 @@
                  left join user u
                            on u.uuid = n.actor_uuid
                  left join post p
-                           on n.entity_type = 'POST'
-                               and p.id = n.entity_id
+                           on p.id = n.post_id
         where n.receiver_uuid = #{currUserUuid}
         order by n.created_at desc
     </select>

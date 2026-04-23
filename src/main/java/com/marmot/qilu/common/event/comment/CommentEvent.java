@@ -17,9 +17,7 @@ public class CommentEvent {
 
     private String receiverUuid;
 
-    private Long entityId;
-
-    private CommentEntityType entityType;
+    private Long postId;
 
     private String contentPreview;
 

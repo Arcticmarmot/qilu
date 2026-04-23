@@ -1,7 +1,6 @@
 package com.marmot.qilu.modules.comment.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
-import com.marmot.qilu.common.event.comment.CommentEntityType;
 import com.marmot.qilu.common.event.comment.CommentEvent;
 import com.marmot.qilu.common.event.comment.CommentProducer;
 import com.marmot.qilu.common.util.ContentUtils;
@@ -136,8 +135,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         validateContentPreview(contentPreview);
         event.setEventId(UUID.randomUUID().toString());
         event.setCommentId(postComment.getId());
-        event.setEntityId(postComment.getPostId());
-        event.setEntityType(CommentEntityType.POST);
+        event.setPostId(postComment.getPostId());
         event.setActorUuid(postComment.getUserUuid());
         event.setReceiverUuid(postComment.getPostAuthorUuid());
         event.setContentPreview(contentPreview);

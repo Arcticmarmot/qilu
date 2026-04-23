@@ -23,11 +23,8 @@ public class CommentNotificationListItemVO {
     @Schema(description = "触发动作的用户昵称")
     private String actorNickname;
 
-    @Schema(description = "关联实体类型，例如 POST")
-    private String entityType;
-
-    @Schema(description = "关联实体ID", example = "1001")
-    private Long entityId;
+    @Schema(description = "关联帖子ID", example = "1001")
+    private Long postId;
 
     @Schema(description = "关联实体预览")
     private String entityPreview;

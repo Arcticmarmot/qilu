@@ -98,8 +98,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
         if (event.getEventId() == null
                 || event.getActorUuid() == null
                 || event.getReceiverUuid() == null
-                || event.getEntityId() == null
-                || event.getEntityType() == null
+                || event.getPostId() == null
                 || event.getCommentId() == null
                 || event.getOccurredAt() == null
                 || event.getContentPreview() == null) {
@@ -112,8 +111,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
         notification.setCommentId(event.getCommentId());
         notification.setActorUuid(event.getActorUuid());
         notification.setReceiverUuid(event.getReceiverUuid());
-        notification.setEntityId(event.getEntityId());
-        notification.setEntityType(event.getEntityType().name());
+        notification.setPostId(event.getPostId());
         notification.setContentPreview(event.getContentPreview());
         notification.setIsRead(UNREAD);
         notification.setBizKey(buildNotificationBizKey(event));
@@ -122,7 +120,8 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
 
     private String buildNotificationBizKey(CommentEvent event) {
         return String.join(":",
-                event.getCommentId().toString(), event.getEntityType().name(),
-                event.getEntityId().toString(), event.getReceiverUuid());
+                event.getCommentId().toString(),
+                event.getPostId().toString(),
+                event.getReceiverUuid());
     }
 }
