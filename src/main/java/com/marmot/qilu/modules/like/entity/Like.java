@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@TableName("post_like")
+@TableName("like")
 public class Like {
 
     @TableId(type = IdType.AUTO)
