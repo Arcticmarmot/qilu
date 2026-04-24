@@ -7,13 +7,16 @@ import com.marmot.qilu.modules.notification.like.mapper.LikeNotificationMapper;
 import com.marmot.qilu.modules.notification.like.service.LikeNotificationService;
 import com.marmot.qilu.modules.notification.like.vo.LikeNotificationListItemVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LikeNotificationServiceImpl implements LikeNotificationService {
@@ -25,18 +28,34 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createLikeNotification(LikeEvent event) {
-        if(!shouldCreateNotification(event)) {
+        validateEvent(event);
+
+        if (event.getActorUuid().equals(event.getReceiverUuid())) {
             return;
         }
 
         LikeNotification likeNotification = buildLikeNotification(event);
-        try {
-            likeNotificationMapper.insert(likeNotification);
-            incrementUnreadCount(likeNotification.getReceiverUuid());
-        } catch (DuplicateKeyException ignored) { }
-    }
 
+        try {
+            int inserted = likeNotificationMapper.insert(likeNotification);
+            if (inserted != 1) {
+                throw new IllegalStateException("create like notification failed");
+            }
+
+            incrementUnreadCount(likeNotification.getReceiverUuid());
+        } catch (DuplicateKeyException e) {
+            log.warn(
+                    "duplicate like notification ignored, eventId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                    event.getEventId(),
+                    event.getEntityType(),
+                    event.getEntityId(),
+                    event.getActorUuid(),
+                    event.getReceiverUuid()
+            );
+        }
+    }
 
     @Override
     public List<LikeNotificationListItemVO> listLikeNotifications() {
@@ -46,12 +65,14 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void markLikeNotificationsRead() {
         String currUserUuid = UserContext.requireUuid();
 
         int updated = likeNotificationMapper.updateLikeNotificationsRead(currUserUuid);
-        if(updated > 0) {
+        if (updated > 0) {
             clearUnreadCount(currUserUuid);
+            log.info("mark like notifications read success, userUuid={}, updated={}", currUserUuid, updated);
         }
     }
 
@@ -61,8 +82,13 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         String key = buildUnreadCountKey(currUserUuid);
 
         String cachedValue = stringRedisTemplate.opsForValue().get(key);
-        if(cachedValue != null) {
-            return Integer.parseInt(cachedValue);
+        if (cachedValue != null) {
+            try {
+                return Integer.parseInt(cachedValue);
+            } catch (NumberFormatException e) {
+                log.warn("invalid cached like unread count, userUuid={}, value={}", currUserUuid, cachedValue);
+                stringRedisTemplate.delete(key);
+            }
         }
 
         int count = likeNotificationMapper.countUnreadLikeNotifications(currUserUuid);
@@ -85,16 +111,19 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         return "notification:like:unread:" + receiverUuid;
     }
 
-    private boolean shouldCreateNotification(LikeEvent event) {
-        if(event == null) return false;
-        if (event.getActorUuid() == null
-                || event.getReceiverUuid() == null
-                || event.getEntityId() == null
-                || event.getEntityType() == null) {
-            return false;
+    private void validateEvent(LikeEvent event) {
+        if (event == null) {
+            throw new IllegalArgumentException("like event must not be null");
         }
 
-        return !event.getActorUuid().equals(event.getReceiverUuid());
+        if (event.getEventId() == null
+                || event.getActorUuid() == null
+                || event.getReceiverUuid() == null
+                || event.getEntityId() == null
+                || event.getEntityType() == null
+                || event.getOccurredAt() == null) {
+            throw new IllegalArgumentException("like event is invalid");
+        }
     }
 
     private LikeNotification buildLikeNotification(LikeEvent event) {
@@ -110,7 +139,10 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
 
     private String buildNotificationBizKey(LikeEvent event) {
         return String.join(":",
-                event.getEntityType().name(), event.getEntityId().toString(),
-                event.getActorUuid(), event.getReceiverUuid());
+                event.getEntityType().name(),
+                event.getEntityId().toString(),
+                event.getActorUuid(),
+                event.getReceiverUuid()
+        );
     }
 }

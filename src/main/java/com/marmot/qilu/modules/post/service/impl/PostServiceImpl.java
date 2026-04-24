@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
     public void checkPostInteractable(Long postId, String currUserUuid) {
         Integer exists = postMapper.existsInteractablePostById(postId, currUserUuid);
         if(exists == null) {
-            throw new ForbiddenException("post not interactable");
+            throw new ForbiddenException("post not found or interactable");
         }
     }
 
@@ -57,7 +57,7 @@ public class PostServiceImpl implements PostService {
         String currUserUuid = UserContext.requireUuid();
 
         if(dto == null) {
-            throw new BadRequestException("request body is null");
+            throw new BadRequestException("request body must not be null");
         }
         String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
         validateContent(normalizedContent);
@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService {
         post.setStatus(STATUS_NORMAL);
         int inserted = postMapper.insert(post);
         if(inserted != 1) {
-            throw new RuntimeException("Create post failed.");
+            throw new IllegalStateException("create post failed");
         }
         log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
     }
@@ -81,7 +81,7 @@ public class PostServiceImpl implements PostService {
 
         PostDetailVO vo = postMapper.selectMyPostDetail(postId, currUserUuid);
         if(vo == null) {
-            throw new RuntimeException("Post not found");
+            throw new NotFoundException("post not found");
         }
         return vo;
     }
@@ -110,7 +110,7 @@ public class PostServiceImpl implements PostService {
 
         PostDetailVO vo = postMapper.selectPublicPostDetail(postId, currUserUuid);
         if(vo == null) {
-            throw new RuntimeException("Post not found");
+            throw new NotFoundException("post not found");
         }
         return vo;
     }
@@ -134,6 +134,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updatePost(Long postId, PostUpdateDTO dto) {
         String currUserUuid = UserContext.requireUuid();
 
@@ -148,12 +149,13 @@ public class PostServiceImpl implements PostService {
                         .set(Post::getVisibility, dto.getVisibility())
         );
         if(updated == 0) {
-            throw new RuntimeException("posts not found or no permissions.");
+            throw new NotFoundException("post not found or no permission");
         }
         log.info("update post success, userUuid={}, postId={}", currUserUuid, postId);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deletePost(Long postId) {
         String currUserUuid = UserContext.requireUuid();
 
@@ -167,7 +169,7 @@ public class PostServiceImpl implements PostService {
                         .set(Post::getDeletedAt, LocalDateTime.now())
         );
         if(deleted == 0) {
-            throw new RuntimeException("posts not found or no permissions");
+            throw new NotFoundException("post not found or no permission");
         }
         log.info("delete post success, userUuid={}, postId={}", currUserUuid, postId);
     }
@@ -194,10 +196,10 @@ public class PostServiceImpl implements PostService {
 
     private void validateContent(String content) {
         if (content.isEmpty()) {
-            throw new RuntimeException("Content cannot be blank.");
+            throw new BadRequestException("content must not be blank");
         }
         if (content.length() > MAX_POST_CONTENT_LENGTH) {
-            throw new RuntimeException("Content too long.");
+            throw new BadRequestException("content too long");
         }
     }
 }

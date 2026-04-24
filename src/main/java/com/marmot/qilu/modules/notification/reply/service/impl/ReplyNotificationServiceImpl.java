@@ -7,6 +7,7 @@ import com.marmot.qilu.modules.notification.reply.mapper.ReplyNotificationMapper
 import com.marmot.qilu.modules.notification.reply.service.ReplyNotificationService;
 import com.marmot.qilu.modules.notification.reply.vo.ReplyNotificationListItemVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,14 @@ import java.util.List;
 
 import static com.marmot.qilu.common.util.ContentUtils.COMMENT_PREVIEW_LENGTH;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReplyNotificationServiceImpl implements ReplyNotificationService {
 
     private static final int UNREAD = 0;
     private static final Duration UNREAD_COUNT_TTL = Duration.ofDays(7);
+
     private final ReplyNotificationMapper replyNotificationMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -31,16 +34,29 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     public void createReplyNotification(ReplyEvent event) {
         validateEvent(event);
 
-        if(event.getActorUuid().equals(event.getReceiverUuid())) {
+        if (event.getActorUuid().equals(event.getReceiverUuid())) {
             return;
         }
 
         ReplyNotification notification = buildReplyNotification(event);
 
         try {
-            replyNotificationMapper.insert(notification);
+            int inserted = replyNotificationMapper.insert(notification);
+            if (inserted != 1) {
+                throw new IllegalStateException("create reply notification failed");
+            }
+
             incrementUnreadCount(notification.getReceiverUuid());
-        } catch (DuplicateKeyException ignored) { }
+        } catch (DuplicateKeyException e) {
+            log.warn(
+                    "duplicate reply notification ignored, eventId={}, replyId={}, entityType={}, entityId={}, receiverUuid={}",
+                    event.getEventId(),
+                    event.getReplyId(),
+                    event.getEntityType(),
+                    event.getEntityId(),
+                    event.getReceiverUuid()
+            );
+        }
     }
 
     @Override
@@ -51,13 +67,15 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void markReplyNotificationRead() {
         String currUserUuid = UserContext.requireUuid();
 
         int updated = replyNotificationMapper.updateReplyNotificationsRead(currUserUuid);
 
-        if(updated > 0) {
+        if (updated > 0) {
             clearUnreadCount(currUserUuid);
+            log.info("mark reply notifications read success, userUuid={}, updated={}", currUserUuid, updated);
         }
     }
 
@@ -65,9 +83,15 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     public int getUnreadReplyNotificationCount() {
         String currUserUuid = UserContext.requireUuid();
         String key = buildUnreadCountKey(currUserUuid);
+
         String cachedValue = stringRedisTemplate.opsForValue().get(key);
-        if(cachedValue != null) {
-            return Integer.parseInt(cachedValue);
+        if (cachedValue != null) {
+            try {
+                return Integer.parseInt(cachedValue);
+            } catch (NumberFormatException e) {
+                log.warn("invalid cached reply unread count, userUuid={}, value={}", currUserUuid, cachedValue);
+                stringRedisTemplate.delete(key);
+            }
         }
 
         int count = replyNotificationMapper.countUnreadReplyNotifications(currUserUuid);
@@ -91,9 +115,10 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     }
 
     private void validateEvent(ReplyEvent event) {
-        if(event == null) {
-            throw new RuntimeException("ReplyEvent is null");
+        if (event == null) {
+            throw new IllegalArgumentException("reply event must not be null");
         }
+
         if (event.getEventId() == null
                 || event.getActorUuid() == null
                 || event.getReceiverUuid() == null
@@ -102,7 +127,7 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
                 || event.getReplyId() == null
                 || event.getOccurredAt() == null
                 || event.getContentPreview() == null) {
-            throw new RuntimeException("Invalid ReplyEvent.");
+            throw new IllegalArgumentException("reply event is invalid");
         }
     }
 
@@ -121,8 +146,10 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
 
     private String buildNotificationBizKey(ReplyEvent event) {
         return String.join(":",
-                event.getReplyId().toString(), event.getEntityType().name(),
-                event.getEntityId().toString(), event.getReceiverUuid());
+                event.getReplyId().toString(),
+                event.getEntityType().name(),
+                event.getEntityId().toString(),
+                event.getReceiverUuid()
+        );
     }
-
 }

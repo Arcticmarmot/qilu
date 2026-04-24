@@ -7,8 +7,8 @@ import com.marmot.qilu.modules.notification.comment.mapper.CommentNotificationMa
 import com.marmot.qilu.modules.notification.comment.service.CommentNotificationService;
 import com.marmot.qilu.modules.notification.comment.vo.CommentNotificationListItemVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +18,14 @@ import java.util.List;
 
 import static com.marmot.qilu.common.util.ContentUtils.COMMENT_PREVIEW_LENGTH;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentNotificationServiceImpl implements CommentNotificationService {
 
     private static final int UNREAD = 0;
     private static final Duration UNREAD_COUNT_TTL = Duration.ofDays(7);
+
     private final CommentNotificationMapper commentNotificationMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -32,16 +34,29 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
     public void createCommentNotification(CommentEvent event) {
         validateEvent(event);
 
-        if(event.getActorUuid().equals(event.getReceiverUuid())) {
+        if (event.getActorUuid().equals(event.getReceiverUuid())) {
             return;
         }
 
         CommentNotification notification = buildCommentNotification(event);
 
         try {
-            commentNotificationMapper.insert(notification);
+            int inserted = commentNotificationMapper.insert(notification);
+            if (inserted != 1) {
+                throw new IllegalStateException("create comment notification failed");
+            }
+
             incrementUnreadCount(notification.getReceiverUuid());
-        } catch (DuplicateKeyException ignored) { }
+
+        } catch (DuplicateKeyException e) {
+            log.warn(
+                    "duplicate comment notification ignored, eventId={}, commentId={}, postId={}, receiverUuid={}",
+                    event.getEventId(),
+                    event.getCommentId(),
+                    event.getPostId(),
+                    event.getReceiverUuid()
+            );
+        }
     }
 
     @Override
@@ -52,12 +67,14 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void markCommentNotificationsRead() {
         String currUserUuid = UserContext.requireUuid();
 
         int updated = commentNotificationMapper.updateCommentNotificationsRead(currUserUuid);
-        if(updated > 0) {
+        if (updated > 0) {
             clearUnreadCount(currUserUuid);
+            log.info("mark comment notifications read success, userUuid={}, updated={}", currUserUuid, updated);
         }
     }
 
@@ -67,8 +84,13 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
         String key = buildUnreadCountKey(currUserUuid);
 
         String cachedValue = stringRedisTemplate.opsForValue().get(key);
-        if(cachedValue != null) {
-            return Integer.parseInt(cachedValue);
+        if (cachedValue != null) {
+            try {
+                return Integer.parseInt(cachedValue);
+            } catch (NumberFormatException e) {
+                log.warn("invalid cached comment unread count, userUuid={}, value={}", currUserUuid, cachedValue);
+                stringRedisTemplate.delete(key);
+            }
         }
 
         int count = commentNotificationMapper.countUnreadCommentNotifications(currUserUuid);
@@ -92,9 +114,10 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
     }
 
     private void validateEvent(CommentEvent event) {
-        if(event == null) {
-            throw new RuntimeException("CommentEvent is null");
+        if (event == null) {
+            throw new IllegalArgumentException("comment event must not be null");
         }
+
         if (event.getEventId() == null
                 || event.getActorUuid() == null
                 || event.getReceiverUuid() == null
@@ -102,7 +125,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
                 || event.getCommentId() == null
                 || event.getOccurredAt() == null
                 || event.getContentPreview() == null) {
-            throw new RuntimeException("Invalid CommentEvent.");
+            throw new IllegalArgumentException("comment event is invalid");
         }
     }
 
