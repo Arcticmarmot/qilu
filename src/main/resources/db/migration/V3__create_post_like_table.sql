@@ -1,6 +1,7 @@
-CREATE TABLE `post_like` (
+CREATE TABLE `like` (
                              `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '点赞ID',
-                             `post_id` BIGINT NOT NULL COMMENT '帖子ID',
+                             `entity_id` BIGINT NOT NULL COMMENT '关联实体ID',
+                             `entity_type` VARCHAR(32) NOT NULL COMMENT '关联实体类型：POST、COMMENT、REPLY',
                              `user_uuid` CHAR(36) NOT NULL COMMENT '用户ID',
                              `status` TINYINT NOT NULL DEFAULT 1 COMMENT '状态：0取消点赞 1已点赞',
                              `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -9,4 +10,4 @@ CREATE TABLE `post_like` (
                              UNIQUE KEY `uk_post_user` (`post_id`, `user_uuid`),
                              KEY `idx_user_status_created_at` (`user_uuid`, `status`, `created_at`),
                              KEY `idx_post_status_created_at` (`post_id`, `status`, `created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='帖子点赞表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞表';

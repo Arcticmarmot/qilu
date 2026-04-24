@@ -7,10 +7,14 @@ import com.marmot.qilu.common.event.like.LikeEntityType;
 import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.common.event.like.LikeProducer;
 import com.marmot.qilu.common.exception.BadRequestException;
-import com.marmot.qilu.modules.like.entity.PostLike;
-import com.marmot.qilu.modules.like.mapper.PostLikeMapper;
-import com.marmot.qilu.modules.like.service.PostLikeService;
+import com.marmot.qilu.modules.comment.service.PostCommentService;
+import com.marmot.qilu.modules.like.dto.LikeOperateDTO;
+import com.marmot.qilu.modules.like.entity.Like;
+import com.marmot.qilu.modules.like.mapper.LikeMapper;
+import com.marmot.qilu.modules.like.service.LikeService;
 import com.marmot.qilu.modules.post.service.PostService;
+import com.marmot.qilu.modules.reply.entity.CommentReply;
+import com.marmot.qilu.modules.reply.service.CommentReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,36 +28,48 @@ import static java.time.LocalDateTime.now;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostLikeServiceImpl implements PostLikeService {
+public class LikeServiceImpl implements LikeService {
 
     private static final int STATUS_UNLIKED = 0;
     private static final int STATUS_LIKED = 1;
 
-    private final PostLikeMapper postLikeMapper;
+    private final LikeMapper postLikeMapper;
     private final PostService postService;
+    private final PostCommentService postCommentService;
+    private final CommentReplyService commentReplyService;
     private final LikeProducer likeProducer;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void likePost(Long postId) {
-        validatePostId(postId);
-
+    public void like(LikeOperateDTO dto) {
+        validateLikeOperateDTO(dto);
         String currUserUuid = UserContext.requireUuid();
+        Long entityId = dto.getEntityId();
+        LikeEntityType entityType = dto.getEntityType();
+        switch (entityType) {
+            case POST -> likePost(currUserUuid, entityId);
+            case COMMENT -> likeComment(currUserUuid, entityId);
+            case REPLY -> likeReply(currUserUuid, entityId);
+            default -> throw new BadRequestException("entity type is invalid");
+        }
+    }
 
+    private void likePost(String currUserUuid, Long postId) {
         postService.checkPostInteractable(postId, currUserUuid);
 
         boolean liked = false;
 
-        PostLike existing = postLikeMapper.selectOne(
-                new LambdaQueryWrapper<PostLike>()
-                        .eq(PostLike::getPostId, postId)
-                        .eq(PostLike::getUserUuid, currUserUuid)
+        Like existing = postLikeMapper.selectOne(
+                new LambdaQueryWrapper<Like>()
+                        .eq(Like::getEntityId, postId)
+                        .eq(Like::getUserUuid, currUserUuid)
                         .last("limit 1")
         );
 
         if (existing == null) {
-            PostLike postLike = new PostLike();
-            postLike.setPostId(postId);
+            Like postLike = new Like();
+            postLike.setEntityId(postId);
             postLike.setUserUuid(currUserUuid);
             postLike.setStatus(STATUS_LIKED);
 
@@ -77,11 +93,11 @@ public class PostLikeServiceImpl implements PostLikeService {
         if (!liked) {
             int updated = postLikeMapper.update(
                     null,
-                    new LambdaUpdateWrapper<PostLike>()
-                            .eq(PostLike::getPostId, postId)
-                            .eq(PostLike::getUserUuid, currUserUuid)
-                            .eq(PostLike::getStatus, STATUS_UNLIKED)
-                            .set(PostLike::getStatus, STATUS_LIKED)
+                    new LambdaUpdateWrapper<Like>()
+                            .eq(Like::getEntityId, postId)
+                            .eq(Like::getUserUuid, currUserUuid)
+                            .eq(Like::getStatus, STATUS_UNLIKED)
+                            .set(Like::getStatus, STATUS_LIKED)
             );
 
             if (updated == 1) {
@@ -100,22 +116,42 @@ public class PostLikeServiceImpl implements PostLikeService {
         }
     }
 
+    private void likeComment(String currUserUuid, Long commentId) {
+
+    }
+
+    private void likeReply(String currUserUuid, Long replyId) {
+
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void unlikePost(Long postId) {
-        validatePostId(postId);
+    public void unlike(LikeOperateDTO dto) {
+        validateLikeOperateDTO(dto);
 
         String currUserUuid = UserContext.requireUuid();
+        Long entityId = dto.getEntityId();
+        LikeEntityType entityType = dto.getEntityType();
 
+        switch (entityType) {
+            case POST -> unlikePost(currUserUuid, entityId);
+            case COMMENT -> unlikeComment(currUserUuid, entityId);
+            case REPLY -> unlikeReply(currUserUuid, entityId);
+            default -> throw new BadRequestException("entity type is invalid");
+        }
+    }
+
+
+    private void unlikePost(String currUserUuid, Long postId) {
         postService.checkPostInteractable(postId, currUserUuid);
 
         int updated = postLikeMapper.update(
                 null,
-                new LambdaUpdateWrapper<PostLike>()
-                        .eq(PostLike::getPostId, postId)
-                        .eq(PostLike::getUserUuid, currUserUuid)
-                        .eq(PostLike::getStatus, STATUS_LIKED)
-                        .set(PostLike::getStatus, STATUS_UNLIKED)
+                new LambdaUpdateWrapper<Like>()
+                        .eq(Like::getEntityId, postId)
+                        .eq(Like::getUserUuid, currUserUuid)
+                        .eq(Like::getStatus, STATUS_LIKED)
+                        .set(Like::getStatus, STATUS_UNLIKED)
         );
 
         if (updated == 1) {
@@ -146,9 +182,24 @@ public class PostLikeServiceImpl implements PostLikeService {
         likeProducer.sendLikeEvent(event);
     }
 
-    private void validatePostId(Long postId) {
-        if (postId == null || postId <= 0) {
-            throw new BadRequestException("post id is invalid");
+    private void unlikeComment(String currUserUuid, Long commentId) {
+
+    }
+
+    private void unlikeReply(String currUserUuid, Long replyId) {
+
+    }
+
+    private void validateLikeOperateDTO(LikeOperateDTO dto) {
+        Long entityId = dto.getEntityId();
+        LikeEntityType entityType = dto.getEntityType();
+
+        if (entityId == null || entityId <= 0) {
+            throw new BadRequestException("entity id is invalid");
+        }
+
+        if(entityType == null) {
+            throw new BadRequestException("entity type is invalid");
         }
     }
 }

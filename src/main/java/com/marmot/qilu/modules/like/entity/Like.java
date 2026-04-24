@@ -10,12 +10,14 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @TableName("post_like")
-public class PostLike {
+public class Like {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private Long postId;
+    private Long entityId;
+
+    private String entityType;
 
     private String userUuid;
 
