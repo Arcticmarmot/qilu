@@ -12,15 +12,26 @@
             u.nickname as actorNickname,
             n.entity_type as entityType,
             n.entity_id as entityId,
-            substring(p.title, 1, 30) as entityPreview,
+            case
+                when n.entity_type = 'POST' then coalesce(nullif(substring(p.title, 1, 30), ''), 'post')
+                when n.entity_type = 'COMMENT' then coalesce(nullif(substring(c.content, 1, 30), ''), 'comment')
+                when n.entity_type = 'REPLY' then coalesce(nullif(substring(r.content, 1, 30), ''), 'reply')
+                else ''
+            end as entityPreview,
             n.is_read as isRead,
             n.created_at as createdAt
         from like_notification n
         left join user u
-          on u.uuid = n.actor_uuid
+            on u.uuid = n.actor_uuid
         left join post p
-          on n.entity_type = 'POST'
-          and p.id = n.entity_id
+            on n.entity_type = 'POST'
+            and p.id = n.entity_id
+        left join post_comment c
+            on n.entity_type = 'COMMENT'
+            and c.id = n.entity_id
+        left join comment_reply r
+            on n.entity_type = 'REPLY'
+            and r.id = n.entity_id
         where n.receiver_uuid = #{currUserUuid}
         order by n.created_at desc
     </select>
