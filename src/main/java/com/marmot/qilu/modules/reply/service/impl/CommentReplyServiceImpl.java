@@ -12,7 +12,6 @@ import com.marmot.qilu.modules.reply.dto.CommentReplyCreateDTO;
 import com.marmot.qilu.modules.reply.entity.CommentReply;
 import com.marmot.qilu.modules.reply.mapper.CommentReplyMapper;
 import com.marmot.qilu.modules.reply.service.CommentReplyService;
-import com.marmot.qilu.modules.reply.vo.CommentReplyInfoVO;
 import com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +48,7 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
     @Override
     public String getAuthorUuidById(Long replyId) {
-        validateReplyId(replyId);
+        validateEntityId(replyId);
 
         String authorUuid = commentReplyMapper.selectUserUuidById(replyId);
         if (authorUuid == null) {
@@ -81,7 +80,7 @@ public class CommentReplyServiceImpl implements CommentReplyService {
             event.setEntityType(ReplyEntityType.COMMENT);
             event.setEntityId(commentId);
         } else {
-            validateReplyId(parentReplyId);
+            validateEntityId(parentReplyId);
             checkCommentReplyInteractable(postId, commentId, parentReplyId, currUserUuid);
             targetUserUuid = getAuthorUuidById(parentReplyId);
 
@@ -103,11 +102,9 @@ public class CommentReplyServiceImpl implements CommentReplyService {
             throw new IllegalStateException("create reply failed");
         }
 
-        if (replyToComment) {
-            int rows = postCommentService.increaseCommentReplyCount(commentId);
-            if (rows != 1) {
-                throw new IllegalStateException("increase comment reply count failed");
-            }
+        int rows = postCommentService.increaseCommentReplyCount(commentId);
+        if (rows != 1) {
+            throw new IllegalStateException("increase comment reply count failed");
         }
 
         sendReplyEvent(event, reply);
@@ -125,33 +122,22 @@ public class CommentReplyServiceImpl implements CommentReplyService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteCommentReply(Long postId, Long commentId, Long replyId) {
-        validatePostId(postId);
-        validateCommentId(commentId);
-        validateReplyId(replyId);
+        validateEntityId(postId);
+        validateEntityId(commentId);
+        validateEntityId(replyId);
 
         String currUserUuid = UserContext.requireUuid();
 
         checkCommentReplyInteractable(postId, commentId, replyId, currUserUuid);
-
-        CommentReplyInfoVO replyInfo = commentReplyMapper
-                .selectCommentReplyInfoById(postId, commentId, replyId);
-
-        if(replyInfo == null) {
-            throw new NotFoundException("reply not found");
-        }
-
-        boolean replyToComment = replyInfo.getParentReplyId() == null;
 
         int deleted = commentReplyMapper.deleteCommentReply(replyId, currUserUuid);
         if (deleted != 1) {
             throw new NotFoundException("reply not found or no permission");
         }
 
-        if(replyToComment) {
-            int rows = postCommentService.decreaseCommentReplyCount(commentId);
-            if(rows != 1) {
-                throw new IllegalStateException("delete reply failed");
-            }
+        int rows = postCommentService.decreaseCommentReplyCount(commentId);
+        if(rows != 1) {
+            throw new IllegalStateException("delete reply failed");
         }
 
         log.info(
@@ -165,8 +151,8 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
     @Override
     public List<CommentReplyListItemVO> listCommentReplies(Long postId, Long commentId) {
-        validatePostId(postId);
-        validateCommentId(commentId);
+        validateEntityId(postId);
+        validateEntityId(commentId);
 
         String currUserUuid = UserContext.requireUuid();
 
@@ -208,29 +194,17 @@ public class CommentReplyServiceImpl implements CommentReplyService {
     }
 
     private void validateCreateParams(Long postId, Long commentId, CommentReplyCreateDTO dto) {
-        validatePostId(postId);
-        validateCommentId(commentId);
+        validateEntityId(postId);
+        validateEntityId(commentId);
 
         if (dto == null) {
             throw new BadRequestException("request body must not be null");
         }
     }
 
-    private void validatePostId(Long postId) {
-        if (postId == null || postId <= 0) {
-            throw new BadRequestException("post id is invalid");
-        }
-    }
-
-    private void validateCommentId(Long commentId) {
-        if (commentId == null || commentId <= 0) {
-            throw new BadRequestException("comment id is invalid");
-        }
-    }
-
-    private void validateReplyId(Long replyId) {
-        if (replyId == null || replyId <= 0) {
-            throw new BadRequestException("reply id is invalid");
+    private void validateEntityId(Long entityId) {
+        if (entityId == null || entityId <= 0) {
+            throw new BadRequestException("entity id is invalid");
         }
     }
 

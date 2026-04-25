@@ -2,7 +2,6 @@ package com.marmot.qilu.modules.reply.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.marmot.qilu.modules.reply.entity.CommentReply;
-import com.marmot.qilu.modules.reply.vo.CommentReplyInfoVO;
 import com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,10 +16,6 @@ public interface CommentReplyMapper extends BaseMapper<CommentReply> {
                                            @Param("replyId") Long replyId);
 
     String selectUserUuidById(@Param("replyId") Long replyId);
-
-    CommentReplyInfoVO selectCommentReplyInfoById(@Param("postId") Long postId,
-                                                  @Param("commentId") Long commentId,
-                                                  @Param("replyId") Long replyId);
 
     int deleteCommentReply(@Param("replyId") Long replyId,
                           @Param("currUserUuid") String currUserUuid);

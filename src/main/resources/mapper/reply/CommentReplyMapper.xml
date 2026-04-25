@@ -23,22 +23,6 @@
             limit 1
     </select>
 
-    <select id="selectInteractableCommentReplyInfoById" resultType="com.marmot.qilu.modules.reply.vo.CommentReplyInfoVO">
-        select
-            id,
-            post_id as postId,
-            root_comment_id as rootCommentId,
-            parent_reply_id as parentReplyId,
-            user_uuid as userUuid,
-            target_user_uuid as targetUserUuid
-        from comment_reply
-        where id = #{replyId}
-          and post_id = #{postId}
-          and root_comment_id = #{commentId}
-          and status = 1
-            limit 1
-    </select>
-
     <update id="deleteCommentReply">
         update comment_reply
         set status = 0,
