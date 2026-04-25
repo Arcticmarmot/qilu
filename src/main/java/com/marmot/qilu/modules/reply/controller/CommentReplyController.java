@@ -1,5 +1,6 @@
 package com.marmot.qilu.modules.reply.controller;
 
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.reply.dto.CommentReplyCreateDTO;
 import com.marmot.qilu.modules.reply.service.CommentReplyService;
 import com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO;
@@ -20,24 +21,26 @@ public class CommentReplyController {
 
     @Operation(summary = "创建评论回复", description = "当前登录用户对指定评论发表回复")
     @PostMapping("/{commentId}/replies")
-    public void createCommentReply(@PathVariable Long postId,
-                                   @PathVariable Long commentId,
-                                   @RequestBody CommentReplyCreateDTO dto) {
+    public ApiResponse<Void> createCommentReply(@PathVariable Long postId,
+                                                @PathVariable Long commentId,
+                                                @RequestBody CommentReplyCreateDTO dto) {
         commentReplyService.createCommentReply(postId, commentId, dto);
+        return ApiResponse.success();
     }
 
     @Operation(summary = "删除评论回复", description = "当前登录用户对指定评论发表回复")
     @DeleteMapping("/{commentId}/replies/{replyId}")
-    public void deleteCommentReply(@PathVariable Long postId,
+    public ApiResponse<Void> deleteCommentReply(@PathVariable Long postId,
                                    @PathVariable Long commentId,
                                    @PathVariable Long replyId) {
         commentReplyService.deleteCommentReply(postId, commentId, replyId);
+        return ApiResponse.success();
     }
 
     @Operation(summary = "获取评论回复列表", description = "获取指定评论的回复列表")
     @GetMapping("/{commentId}/replies")
-    public List<CommentReplyListItemVO> listCommentReplies(@PathVariable Long postId,
+    public ApiResponse<List<CommentReplyListItemVO>> listCommentReplies(@PathVariable Long postId,
                                                            @PathVariable Long commentId) {
-        return commentReplyService.listCommentReplies(postId, commentId);
+        return ApiResponse.success(commentReplyService.listCommentReplies(postId, commentId));
     }
 }

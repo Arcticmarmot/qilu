@@ -1,4 +1,4 @@
-CREATE TABLE `like` (
+CREATE TABLE `entity_like` (
                              `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '点赞ID',
                              `entity_id` BIGINT NOT NULL COMMENT '关联实体ID',
                              `entity_type` VARCHAR(32) NOT NULL COMMENT '关联实体类型：POST、COMMENT、REPLY',
@@ -7,7 +7,7 @@ CREATE TABLE `like` (
                              `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                              `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                              PRIMARY KEY (`id`),
-                             UNIQUE KEY `uk_post_user` (`post_id`, `user_uuid`),
+                             UNIQUE KEY `uk_post_user` (`entity_type`, `entity_id`, `user_uuid`),
                              KEY `idx_user_status_created_at` (`user_uuid`, `status`, `created_at`),
-                             KEY `idx_post_status_created_at` (`post_id`, `status`, `created_at`)
+                             KEY `idx_post_status_created_at` (`entity_type`, `entity_id`, `status`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞表';

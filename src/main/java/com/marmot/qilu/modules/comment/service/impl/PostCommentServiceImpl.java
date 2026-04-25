@@ -70,7 +70,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         String currUserUuid = UserContext.requireUuid();
 
         postService.checkPostInteractable(postId, currUserUuid);
-        String postAuthorUuid = postService.getPostAuthorUuid(postId);
+        String postAuthorUuid = postService.getAuthorUuid(postId);
 
         String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
         validateContent(normalizedContent);
@@ -139,6 +139,26 @@ public class PostCommentServiceImpl implements PostCommentService {
         postService.checkPostInteractable(postId, currUserUuid);
 
         return postCommentMapper.selectNormalPostCommentsByPostId(postId);
+    }
+
+    @Override
+    public int increaseCommentLikeCount(Long commentId) {
+        return postCommentMapper.increaseCommentLikeCount(commentId);
+    }
+
+    @Override
+    public int decreaseCommentLikeCount(Long commentId) {
+        return postCommentMapper.decreaseCommentLikeCount(commentId);
+    }
+
+    @Override
+    public int increaseCommentReplyCount(Long commentId) {
+        return postCommentMapper.increaseCommentReplyCount(commentId);
+    }
+
+    @Override
+    public int decreaseCommentReplyCount(Long commentId) {
+        return postCommentMapper.decreaseCommentReplyCount(commentId);
     }
 
     private void sendCommentEvent(PostComment postComment) {

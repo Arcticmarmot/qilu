@@ -26,6 +26,12 @@ public class PostCommentListItemVO {
     @Schema(description = "评论内容", example = "写得很好")
     private String content;
 
+    @Schema(description = "评论点赞数", example = "1")
+    private Integer likeCount;
+
+    @Schema(description = "评论回复数", example = "1")
+    private Integer replyCount;
+
     @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 }

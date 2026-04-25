@@ -39,6 +39,8 @@
             pc.user_uuid as userUuid,
             u.nickname as nickname,
             pc.content,
+            pc.like_count as likeCount,
+            pc.reply_count as replyCount,
             pc.created_at as createdAt
         from post_comment pc
             left join user u on pc.user_uuid = u.uuid
@@ -46,5 +48,43 @@
           and pc.status = 1
         order by pc.created_at asc
     </select>
+
+    <update id="increaseCommentLikeCount">
+        update post_comment
+        set like_count = like_count + 1,
+            updated_at = now()
+        where id = #{commentId}
+          and status = 1
+    </update>
+
+    <update id="decreaseCommentLikeCount">
+        update post_comment
+        set like_count = case
+            when like_count > 0 then like_count - 1
+            else 0
+            end,
+            updated_at = now()
+        where id = #{commentId}
+          and status = 1
+    </update>
+
+    <update id="increaseCommentReplyCount">
+        update post_comment
+        set reply_count = reply_count + 1,
+            updated_at = now()
+        where id = #{commentId}
+          and status = 1
+    </update>
+
+    <update id="decreaseCommentReplyCount">
+        update post_count
+        set reply_count = case
+            when reply_count > 0 then reply_count - 1
+            else 0
+            end,
+            updated_at = now()
+        where id = #{commentId}
+          and status = 1
+    </update>
 
 </mapper>

@@ -23,6 +23,10 @@ public class PostComment {
 
     private String content;
 
+    private Integer likeCount;
+
+    private Integer replyCount;
+
     /**
      * 0-删除 1-正常
      */

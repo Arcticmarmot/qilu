@@ -17,4 +17,8 @@ public interface CommentReplyService {
     void deleteCommentReply(Long postId, Long commentId, Long replyId);
 
     List<CommentReplyListItemVO> listCommentReplies(Long postId, Long commentId);
+
+    int increaseReplyLikeCount(Long replyId);
+
+    int decreaseReplyLikeCount(Long replyId);
 }

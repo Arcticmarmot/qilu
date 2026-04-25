@@ -35,17 +35,18 @@
             p.like_count as likeCount,
             p.comment_count as commentCount,
             case
-                when pl.id is not null then true
+                when l.id is not null then true
                 else false
                 end as likedByMe,
             p.created_at as createdAt
         from post p
                  left join user as u
                            on u.uuid = p.user_uuid
-                 left join post_like as pl
-                           on pl.post_id = p.id
-                               and pl.user_uuid = #{currUserUuid}
-                               and pl.status = 1
+                 left join entity_like as l
+                               on  l.entity_type = 'POST'
+                               and l.entity_id = p.id
+                               and l.user_uuid = #{currUserUuid}
+                               and l.status = 1
         where p.id = #{postId}
           and p.user_uuid = #{currUserUuid}
           and p.status = 1
@@ -70,7 +71,7 @@
             p.comment_count as commentCount,
             substring(p.content, 1, 20) as contentPreview,
             case
-                when pl.id is not null then true
+                when l.id is not null then true
                 else false
                 end as likedByMe,
             p.created_at as createdAt
@@ -90,9 +91,11 @@
                   limit #{offset}, #{size}
              ) p
                  left join user u on p.user_uuid = u.uuid
-                 left join post_like pl on pl.post_id = p.id
-            and pl.user_uuid = #{currUserUuid}
-            and pl.status = 1
+                 left join entity_like as l
+                    on  l.entity_type = 'POST'
+                    and l.entity_id = p.id
+                    and l.user_uuid = #{currUserUuid}
+                    and l.status = 1
         order by p.created_at desc
     </select>
 
@@ -107,17 +110,18 @@
             p.like_count as likeCount,
             p.comment_count as commentCount,
             case
-                when pl.id is not null then true
+                when l.id is not null then true
                 else false
             end as likedByMe,
             p.created_at as createdAt
         from post p
         left join user as u
             on u.uuid = p.user_uuid
-        left join post_like as pl
-            on pl.post_id = p.id
-            and pl.user_uuid = #{currUserUuid}
-            and pl.status = 1
+        left join entity_like as l
+            on  l.entity_type = 'POST'
+            and l.entity_id = p.id
+            and l.user_uuid = #{currUserUuid}
+            and l.status = 1
         where p.id = #{postId}
             and p.status = 1
             and p.visibility = 1
@@ -142,7 +146,7 @@
             p.comment_count as commentCount,
             substring(p.content, 1, 20) as contentPreview,
             case
-                when pl.id is not null then true
+                when l.id is not null then true
                 else false
             end as likedByMe,
             p.created_at as createdAt
@@ -162,9 +166,11 @@
                   limit #{offset}, #{size}
         ) p
         left join user u on p.user_uuid = u.uuid
-        left join post_like pl on pl.post_id = p.id
-                            and pl.user_uuid = #{currUserUuid}
-                            and pl.status = 1
+        left join entity_like as l
+            on  l.entity_type = 'POST'
+            and l.entity_id = p.id
+            and l.user_uuid = #{currUserUuid}
+            and l.status = 1
         order by p.created_at desc
     </select>
 

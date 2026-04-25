@@ -11,21 +11,33 @@ import java.time.LocalDateTime;
 @Schema(description = "评论回复列表项")
 public class CommentReplyListItemVO {
 
+    @Schema(description = "回复ID", example = "1")
     private Long id;
 
+    @Schema(description = "根评论ID", example = "1001")
     private Long rootCommentId;
 
+    @Schema(description = "上级回复ID", example = "1001")
     private Long parentReplyId;
 
+    @Schema(description = "回复者UUID", example = "550e8400-e29b-41d4-a716-446655440000")
     private String userUuid;
 
+    @Schema(description = "回复者昵称", example = "marmot")
     private String nickname;
 
+    @Schema(description = "被回复者UUID", example = "550e8400-e29b-41d4-a716-446655440000")
     private String targetUserUuid;
 
+    @Schema(description = "被回复者昵称", example = "marmot")
     private String targetNickname;
 
+    @Schema(description = "评论内容", example = "写得很好")
     private String content;
 
+    @Schema(description = "回复点赞数", example = "1")
+    private Integer likeCount;
+
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 }

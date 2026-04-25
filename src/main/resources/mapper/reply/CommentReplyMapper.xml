@@ -23,6 +23,22 @@
             limit 1
     </select>
 
+    <select id="selectInteractableCommentReplyInfoById" resultType="com.marmot.qilu.modules.reply.vo.CommentReplyInfoVO">
+        select
+            id,
+            post_id as postId,
+            root_comment_id as rootCommentId,
+            parent_reply_id as parentReplyId,
+            user_uuid as userUuid,
+            target_user_uuid as targetUserUuid
+        from comment_reply
+        where id = #{replyId}
+          and post_id = #{postId}
+          and root_comment_id = #{commentId}
+          and status = 1
+            limit 1
+    </select>
+
     <update id="deleteCommentReply">
         update comment_reply
         set status = 0,
@@ -43,6 +59,7 @@
             cr.target_user_uuid as targetUserUuid,
             tu.nickname as targetNickname,
             cr.content,
+            cr.like_count as likeCount,
             cr.created_at as createdAt
         from comment_reply cr
                  left join user u on cr.user_uuid = u.uuid
@@ -51,5 +68,24 @@
           and cr.status = 1
         order by cr.created_at asc
     </select>
+
+    <update id="increaseReplyLikeCount">
+        update comment_reply
+        set like_count = like_count + 1,
+            updated_at = now()
+        where id = #{replyId}
+          and status = 1
+    </update>
+
+    <update id="decreaseReplyLikeCount">
+        update comment_reply
+        set like_count = case
+            when like_count > 0 then like_count - 1
+            else 0
+            end,
+            updated_at = now()
+        where id = #{replyId}
+          and status = 1
+    </update>
 
 </mapper>

@@ -6,13 +6,12 @@ import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
-import org.apache.ibatis.annotations.Param;
 
 public interface PostService {
 
     void checkPostInteractable(Long postId, String currUserUuid);
 
-    String getPostAuthorUuid(Long postId);
+    String getAuthorUuid(Long postId);
 
     void createPost(PostCreateDTO dto);
 

@@ -16,4 +16,12 @@ public interface PostCommentService {
     void deletePostComment(Long postId, Long commentId);
 
     List<PostCommentListItemVO> listPostComments(Long postId);
+
+    int increaseCommentLikeCount(Long commentId);
+
+    int decreaseCommentLikeCount(Long commentId);
+
+    int increaseCommentReplyCount(Long commentId);
+
+    int decreaseCommentReplyCount(Long commentId);
 }

@@ -12,6 +12,7 @@ import com.marmot.qilu.modules.reply.dto.CommentReplyCreateDTO;
 import com.marmot.qilu.modules.reply.entity.CommentReply;
 import com.marmot.qilu.modules.reply.mapper.CommentReplyMapper;
 import com.marmot.qilu.modules.reply.service.CommentReplyService;
+import com.marmot.qilu.modules.reply.vo.CommentReplyInfoVO;
 import com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,11 +65,16 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
         String currUserUuid = UserContext.requireUuid();
 
-        String targetUserUuid;
+        String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
+        validateContent(normalizedContent);
+
         Long parentReplyId = dto.getParentReplyId();
+        boolean replyToComment = parentReplyId == null;
+
+        String targetUserUuid;
         ReplyEvent event = new ReplyEvent();
 
-        if (parentReplyId == null) {
+        if (replyToComment) {
             postCommentService.checkPostCommentInteractable(postId, commentId, currUserUuid);
             targetUserUuid = postCommentService.getAuthorUuidById(commentId);
 
@@ -76,7 +82,6 @@ public class CommentReplyServiceImpl implements CommentReplyService {
             event.setEntityId(commentId);
         } else {
             validateReplyId(parentReplyId);
-
             checkCommentReplyInteractable(postId, commentId, parentReplyId, currUserUuid);
             targetUserUuid = getAuthorUuidById(parentReplyId);
 
@@ -84,31 +89,35 @@ public class CommentReplyServiceImpl implements CommentReplyService {
             event.setEntityId(parentReplyId);
         }
 
-        String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
-        validateContent(normalizedContent);
+        CommentReply reply = new CommentReply();
+        reply.setStatus(STATUS_NORMAL);
+        reply.setUserUuid(currUserUuid);
+        reply.setPostId(postId);
+        reply.setRootCommentId(commentId);
+        reply.setContent(normalizedContent);
+        reply.setParentReplyId(parentReplyId);
+        reply.setTargetUserUuid(targetUserUuid);
 
-        CommentReply commentReply = new CommentReply();
-        commentReply.setStatus(STATUS_NORMAL);
-        commentReply.setUserUuid(currUserUuid);
-        commentReply.setPostId(postId);
-        commentReply.setRootCommentId(commentId);
-        commentReply.setContent(normalizedContent);
-        commentReply.setParentReplyId(parentReplyId);
-        commentReply.setTargetUserUuid(targetUserUuid);
-
-        int inserted = commentReplyMapper.insert(commentReply);
+        int inserted = commentReplyMapper.insert(reply);
         if (inserted != 1) {
             throw new IllegalStateException("create reply failed");
         }
 
-        sendReplyEvent(event, commentReply);
+        if (replyToComment) {
+            int rows = postCommentService.increaseCommentReplyCount(commentId);
+            if (rows != 1) {
+                throw new IllegalStateException("increase comment reply count failed");
+            }
+        }
+
+        sendReplyEvent(event, reply);
 
         log.info(
                 "create comment reply success, userUuid={}, postId={}, commentId={}, replyId={}, parentReplyId={}",
                 currUserUuid,
                 postId,
                 commentId,
-                commentReply.getId(),
+                reply.getId(),
                 parentReplyId
         );
     }
@@ -122,11 +131,27 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
         String currUserUuid = UserContext.requireUuid();
 
-        postCommentService.checkPostCommentInteractable(postId, commentId, currUserUuid);
+        checkCommentReplyInteractable(postId, commentId, replyId, currUserUuid);
+
+        CommentReplyInfoVO replyInfo = commentReplyMapper
+                .selectCommentReplyInfoById(postId, commentId, replyId);
+
+        if(replyInfo == null) {
+            throw new NotFoundException("reply not found");
+        }
+
+        boolean replyToComment = replyInfo.getParentReplyId() == null;
 
         int deleted = commentReplyMapper.deleteCommentReply(replyId, currUserUuid);
         if (deleted != 1) {
             throw new NotFoundException("reply not found or no permission");
+        }
+
+        if(replyToComment) {
+            int rows = postCommentService.decreaseCommentReplyCount(commentId);
+            if(rows != 1) {
+                throw new IllegalStateException("delete reply failed");
+            }
         }
 
         log.info(
@@ -150,8 +175,22 @@ public class CommentReplyServiceImpl implements CommentReplyService {
         return commentReplyMapper.selectNormalCommentRepliesByCommentId(commentId);
     }
 
+    @Override
+    public int increaseReplyLikeCount(Long replyId) {
+        return commentReplyMapper.increaseReplyLikeCount(replyId);
+    }
+
+    @Override
+    public int decreaseReplyLikeCount(Long replyId) {
+        return commentReplyMapper.decreaseReplyLikeCount(replyId);
+    }
+
     private void sendReplyEvent(ReplyEvent event, CommentReply commentReply) {
         if (event == null || commentReply == null) {
+            return;
+        }
+
+        if(commentReply.getUserUuid().equals(commentReply.getTargetUserUuid())) {
             return;
         }
 

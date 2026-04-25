@@ -25,6 +25,8 @@ public class CommentReply {
 
     private String content;
 
+    private Integer likeCount;
+
     /**
      * 0-删除 1-正常
      */
