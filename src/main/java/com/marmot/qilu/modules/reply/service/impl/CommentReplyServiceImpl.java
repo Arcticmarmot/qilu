@@ -158,7 +158,7 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
         postCommentService.checkPostCommentInteractable(postId, commentId, currUserUuid);
 
-        return commentReplyMapper.selectNormalCommentRepliesByCommentId(commentId);
+        return commentReplyMapper.selectNormalCommentRepliesByCommentId(currUserUuid, commentId);
     }
 
     @Override

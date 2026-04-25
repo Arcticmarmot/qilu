@@ -138,7 +138,7 @@ public class PostCommentServiceImpl implements PostCommentService {
 
         postService.checkPostInteractable(postId, currUserUuid);
 
-        return postCommentMapper.selectNormalPostCommentsByPostId(postId);
+        return postCommentMapper.selectNormalPostCommentsByPostId(currUserUuid, postId);
     }
 
     @Override

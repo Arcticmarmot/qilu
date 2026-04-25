@@ -41,9 +41,18 @@
             pc.content,
             pc.like_count as likeCount,
             pc.reply_count as replyCount,
+            case
+                when l.id is not null then true
+                else false
+                end as likedByMe,
             pc.created_at as createdAt
         from post_comment pc
             left join user u on pc.user_uuid = u.uuid
+            left join entity_like l
+                on l.entity_type = 'COMMENT'
+                and l.entity_id = pc.id
+                and l.user_uuid = #{currUserUuid}
+                and l.status = 1
         where pc.post_id = #{postId}
           and pc.status = 1
         order by pc.created_at asc

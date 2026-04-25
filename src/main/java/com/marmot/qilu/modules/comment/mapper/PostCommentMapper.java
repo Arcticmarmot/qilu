@@ -20,7 +20,7 @@ public interface PostCommentMapper extends BaseMapper<PostComment> {
     int deletePostComment(@Param("commentId") Long commentId,
                           @Param("currUserUuid") String currUserUuid);
 
-    List<PostCommentListItemVO> selectNormalPostCommentsByPostId(@Param("postId") Long postId);
+    List<PostCommentListItemVO> selectNormalPostCommentsByPostId(@Param("currUserUuid") String currUserUuid, @Param("postId") Long postId);
 
     int increaseCommentLikeCount(@Param("commentId") Long commentId);
 

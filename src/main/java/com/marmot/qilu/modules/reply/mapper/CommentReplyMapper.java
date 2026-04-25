@@ -20,7 +20,7 @@ public interface CommentReplyMapper extends BaseMapper<CommentReply> {
     int deleteCommentReply(@Param("replyId") Long replyId,
                           @Param("currUserUuid") String currUserUuid);
 
-    List<CommentReplyListItemVO> selectNormalCommentRepliesByCommentId(@Param("commentId") Long commentId);
+    List<CommentReplyListItemVO> selectNormalCommentRepliesByCommentId(@Param("currUserUuid") String currUserUuid, @Param("commentId") Long commentId);
 
     int increaseReplyLikeCount(@Param("replyId") Long replyId);
 

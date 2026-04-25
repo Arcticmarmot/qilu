@@ -38,6 +38,9 @@ public class CommentReplyListItemVO {
     @Schema(description = "回复点赞数", example = "1")
     private Integer likeCount;
 
+    @Schema(description = "当前登录用户是否已点赞", example = "false")
+    private Boolean likedByMe;
+
     @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 }

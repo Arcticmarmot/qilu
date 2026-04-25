@@ -44,10 +44,19 @@
             tu.nickname as targetNickname,
             cr.content,
             cr.like_count as likeCount,
+            case
+                when l.id is not null then true
+                else false
+                end as likedByMe,
             cr.created_at as createdAt
         from comment_reply cr
-                 left join user u on cr.user_uuid = u.uuid
-                 left join user tu on cr.target_user_uuid = tu.uuid
+            left join user u on cr.user_uuid = u.uuid
+            left join user tu on cr.target_user_uuid = tu.uuid
+            left join entity_like l
+                on l.entity_type = 'REPLY'
+                and l.entity_id = cr.id
+                and l.user_uuid = #{currUserUuid}
+                and l.status = 1
         where cr.root_comment_id = #{commentId}
           and cr.status = 1
         order by cr.created_at asc
