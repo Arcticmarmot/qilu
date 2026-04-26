@@ -79,7 +79,7 @@
             p.visibility as visibility,
             p.like_count as likeCount,
             p.comment_count as commentCount,
-            substring(p.content, 1, 20) as contentPreview,
+            p.content_snippet as contentSnippet,
             case
                 when l.id is not null then true
                 else false
@@ -93,6 +93,7 @@
                   visibility,
                   like_count,
                   comment_count,
+                  content_snippet,
                   created_at
               from post
               where status = 1
@@ -154,7 +155,7 @@
             p.visibility as visibility,
             p.like_count as likeCount,
             p.comment_count as commentCount,
-            substring(p.content, 1, 20) as contentPreview,
+            p.content_snippet as contentSnippet,
             case
                 when l.id is not null then true
                 else false
@@ -168,6 +169,7 @@
                   visibility,
                   like_count,
                   comment_count,
+                  content_snippet,
                   created_at
               from post
               where status = 1

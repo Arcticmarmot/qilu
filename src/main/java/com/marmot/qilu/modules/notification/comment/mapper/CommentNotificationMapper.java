@@ -12,8 +12,7 @@ import java.util.List;
 @Mapper
 public interface CommentNotificationMapper extends BaseMapper<CommentNotification> {
 
-    List<CommentNotificationListItemVO> selectCommentNotifications(@Param("currUserUuid") String currUserUuid,
-                                                                   @Param("previewLength") int previewLength);
+    List<CommentNotificationListItemVO> selectCommentNotifications(@Param("currUserUuid") String currUserUuid);
 
     int updateCommentNotificationsRead(@Param("currUserUuid") String currUserUuid);
 

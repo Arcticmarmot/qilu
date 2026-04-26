@@ -24,7 +24,7 @@ public class PostPageItemVO {
     private String title;
 
     @Schema(description = "正文预览", example = "今天阳光很好...")
-    private String contentPreview;
+    private String contentSnippet;
 
     @Schema(description = "可见性：1公开 2仅自己", example = "1")
     private Integer visibility;

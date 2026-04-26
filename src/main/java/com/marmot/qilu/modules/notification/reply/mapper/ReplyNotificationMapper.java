@@ -11,8 +11,7 @@ import java.util.List;
 @Mapper
 public interface ReplyNotificationMapper extends BaseMapper<ReplyNotification> {
 
-    List<ReplyNotificationListItemVO> selectReplyNotifications(@Param("currUserUuid") String currUserUuid,
-                                                               @Param("previewLength") int previewLength);
+    List<ReplyNotificationListItemVO> selectReplyNotifications(@Param("currUserUuid") String currUserUuid);
 
     int updateReplyNotificationsRead(@Param("currUserUuid") String currUserUuid);
 

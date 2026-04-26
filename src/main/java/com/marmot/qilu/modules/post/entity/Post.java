@@ -20,6 +20,8 @@ public class Post {
 
     private String content;
 
+    private String contentSnippet;
+
     /**
      * 0 deleted
      * 1 normal

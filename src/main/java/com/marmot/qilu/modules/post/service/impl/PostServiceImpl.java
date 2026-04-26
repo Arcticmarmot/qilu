@@ -67,18 +67,21 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createPost(PostCreateDTO dto) {
-        String currUserUuid = UserContext.requireUuid();
-
         if(dto == null) {
             throw new BadRequestException("request body must not be null");
         }
-        String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
-        validateContent(normalizedContent);
+
+        String currUserUuid = UserContext.requireUuid();
+
+        String normContent = ContentUtils.normalizeContent(dto.getContent());
+        String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
+        validateContent(contentSnippet);
 
         Post post = new Post();
         post.setUserUuid(currUserUuid);
         post.setTitle(dto.getTitle());
-        post.setContent(normalizedContent);
+        post.setContent(normContent);
+        post.setContentSnippet(contentSnippet);
         post.setVisibility(dto.getVisibility());
         post.setStatus(STATUS_NORMAL);
         int inserted = postMapper.insert(post);
@@ -86,6 +89,65 @@ public class PostServiceImpl implements PostService {
             throw new IllegalStateException("create post failed");
         }
         log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePost(Long postId, PostUpdateDTO dto) {
+        validatePostId(postId);
+        if(dto == null) {
+            throw new BadRequestException("request body must not be null");
+        }
+
+        String currUserUuid = UserContext.requireUuid();
+        checkPostInteractable(postId, currUserUuid);
+
+        String normContent = ContentUtils.normalizeContent(dto.getContent());
+        String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
+        validateContent(contentSnippet);
+
+        int updated = postMapper.update(
+                null,
+                new LambdaUpdateWrapper<Post>()
+                        .eq(Post::getId, postId)
+                        .eq(Post::getUserUuid, currUserUuid)
+                        .eq(Post::getStatus, STATUS_NORMAL)
+                        .set(Post::getTitle, dto.getTitle())
+                        .set(Post::getContent, normContent)
+                        .set(Post::getContentSnippet, contentSnippet)
+                        .set(Post::getVisibility, dto.getVisibility())
+        );
+
+        if(updated != 1) {
+            throw new IllegalStateException("update post failed");
+        }
+
+        log.info("update post success, userUuid={}, postId={}", currUserUuid, postId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePost(Long postId) {
+        validatePostId(postId);
+
+        String currUserUuid = UserContext.requireUuid();
+        checkPostInteractable(postId, currUserUuid);
+
+        int deleted = postMapper.update(
+                null,
+                new LambdaUpdateWrapper<Post>()
+                        .eq(Post::getId, postId)
+                        .eq(Post::getUserUuid, currUserUuid)
+                        .eq(Post::getStatus, STATUS_NORMAL)
+                        .set(Post::getStatus, STATUS_DELETED)
+                        .set(Post::getDeletedAt, LocalDateTime.now())
+        );
+
+        if(deleted != 1) {
+            throw new IllegalStateException("delete post failed");
+        }
+
+        log.info("delete post success, userUuid={}, postId={}", currUserUuid, postId);
     }
 
     @Override
@@ -147,47 +209,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updatePost(Long postId, PostUpdateDTO dto) {
-        String currUserUuid = UserContext.requireUuid();
-
-        int updated = postMapper.update(
-                null,
-                new LambdaUpdateWrapper<Post>()
-                        .eq(Post::getId, postId)
-                        .eq(Post::getUserUuid, currUserUuid)
-                        .eq(Post::getStatus, STATUS_NORMAL)
-                        .set(Post::getTitle, dto.getTitle())
-                        .set(Post::getContent, dto.getContent())
-                        .set(Post::getVisibility, dto.getVisibility())
-        );
-        if(updated == 0) {
-            throw new NotFoundException("post not found or no permission");
-        }
-        log.info("update post success, userUuid={}, postId={}", currUserUuid, postId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deletePost(Long postId) {
-        String currUserUuid = UserContext.requireUuid();
-
-        int deleted = postMapper.update(
-                null,
-                new LambdaUpdateWrapper<Post>()
-                        .eq(Post::getId, postId)
-                        .eq(Post::getUserUuid, currUserUuid)
-                        .eq(Post::getStatus, STATUS_NORMAL)
-                        .set(Post::getStatus, STATUS_DELETED)
-                        .set(Post::getDeletedAt, LocalDateTime.now())
-        );
-        if(deleted == 0) {
-            throw new NotFoundException("post not found or no permission");
-        }
-        log.info("delete post success, userUuid={}, postId={}", currUserUuid, postId);
-    }
-
-    @Override
     public int increasePostLikeCount(Long postId) {
         return postMapper.increasePostLikeCount(postId);
     }
@@ -207,14 +228,14 @@ public class PostServiceImpl implements PostService {
         return postMapper.decreasePostCommentCount(postId);
     }
 
-
     private void validatePostId(Long postId) {
         if(postId == null || postId <= 0) {
             throw new BadRequestException("post id must not be blank");
         }
     }
+
     private void validateContent(String content) {
-        if (content.isEmpty()) {
+        if (content == null || content.isEmpty()) {
             throw new BadRequestException("content must not be blank");
         }
         if (content.length() > MAX_POST_CONTENT_LENGTH) {

@@ -17,7 +17,7 @@ public final class ContentUtils {
         return buildContentPreview(content, POST_TITLE_PREVIEW_LENGTH);
     }
 
-    public static String buildPostContentPreview(String content) {
+    public static String buildPostContentSnippet(String content) {
         return buildContentPreview(content, POST_CONTENT_PREVIEW_LENGTH);
     }
 

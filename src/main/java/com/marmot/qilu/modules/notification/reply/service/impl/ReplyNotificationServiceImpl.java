@@ -63,7 +63,7 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     public List<ReplyNotificationListItemVO> listReplyNotifications() {
         String currUserUuid = UserContext.requireUuid();
 
-        return replyNotificationMapper.selectReplyNotifications(currUserUuid, COMMENT_CONTENT_PREVIEW_LENGTH);
+        return replyNotificationMapper.selectReplyNotifications(currUserUuid);
     }
 
     @Override
