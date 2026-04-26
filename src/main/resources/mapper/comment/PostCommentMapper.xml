@@ -21,6 +21,16 @@
           and status = 1
             limit 1
     </select>
+    
+    <select id="selectPostCommentPreviewById" resultType="com.marmot.qilu.modules.comment.vo.PostCommentPreview">
+        select
+            user_uuid as authorUuid,
+            content
+        from post_comment
+        where id = #{commentId}
+            and status = 1
+            limit 1
+    </select>
 
     <update id="deletePostComment">
         update post_comment

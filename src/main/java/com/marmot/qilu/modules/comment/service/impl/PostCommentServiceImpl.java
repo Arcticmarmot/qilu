@@ -10,8 +10,10 @@ import com.marmot.qilu.modules.comment.dto.PostCommentCreateDTO;
 import com.marmot.qilu.modules.comment.entity.PostComment;
 import com.marmot.qilu.modules.comment.mapper.PostCommentMapper;
 import com.marmot.qilu.modules.comment.service.PostCommentService;
+import com.marmot.qilu.modules.comment.vo.PostCommentPreview;
 import com.marmot.qilu.modules.comment.vo.PostCommentListItemVO;
 import com.marmot.qilu.modules.post.service.PostService;
+import com.marmot.qilu.modules.post.vo.PostPreview;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class PostCommentServiceImpl implements PostCommentService {
     }
 
     @Override
-    public String getAuthorUuidById(Long commentId) {
+    public String getAuthorUuid(Long commentId) {
         if (commentId == null || commentId <= 0) {
             throw new BadRequestException("comment id is invalid");
         }
@@ -56,6 +58,19 @@ public class PostCommentServiceImpl implements PostCommentService {
             throw new NotFoundException("comment not found");
         }
         return authorUuid;
+    }
+
+    @Override
+    public PostCommentPreview getPostCommentPreview(Long commentId) {
+        if (commentId == null || commentId <= 0) {
+            throw new BadRequestException("comment id is invalid");
+        }
+
+        PostCommentPreview preview = postCommentMapper.selectPostCommentPreviewById(commentId);
+        if(preview == null) {
+            throw new NotFoundException("comment not found");
+        }
+        return preview;
     }
 
     @Override
@@ -70,7 +85,10 @@ public class PostCommentServiceImpl implements PostCommentService {
         String currUserUuid = UserContext.requireUuid();
 
         postService.checkPostInteractable(postId, currUserUuid);
-        String postAuthorUuid = postService.getAuthorUuid(postId);
+
+        PostPreview preview = postService.getPostPreview(postId);
+        String postAuthorUuid = preview.getAuthorUuid();
+        String postSnippet = ContentUtils.buildPostTitlePreview(preview.getTitle());
 
         String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
         validateContent(normalizedContent);
@@ -92,7 +110,7 @@ public class PostCommentServiceImpl implements PostCommentService {
             throw new IllegalStateException("increase post comment count failed");
         }
 
-        sendCommentEvent(postComment);
+        sendCommentEvent(postComment, postSnippet);
 
         log.info(
                 "create post comment success, userUuid={}, postId={}, commentId={}",
@@ -161,7 +179,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         return postCommentMapper.decreaseCommentReplyCount(commentId);
     }
 
-    private void sendCommentEvent(PostComment postComment) {
+    private void sendCommentEvent(PostComment postComment, String snippet) {
         if (postComment == null) {
             return;
         }
@@ -176,6 +194,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         event.setActorUuid(postComment.getUserUuid());
         event.setReceiverUuid(postComment.getPostAuthorUuid());
         event.setContentPreview(contentPreview);
+        event.setPostSnippet(snippet);
         event.setOccurredAt(now());
 
         commentProducer.sendCommentEvent(event);

@@ -15,6 +15,7 @@ import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
+import com.marmot.qilu.modules.post.vo.PostPreview;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,11 +45,23 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String getAuthorUuid(Long postId) {
+        validatePostId(postId);
         String authorUuid= postMapper.selectUserUuidById(postId);
         if (authorUuid == null) {
             throw new NotFoundException("post not found");
         }
         return authorUuid;
+    }
+
+    @Override
+    public PostPreview getPostPreview(Long postId) {
+        validatePostId(postId);
+
+        PostPreview preview = postMapper.selectPostPreviewById(postId);
+        if(preview == null) {
+            throw new NotFoundException("post not found");
+        }
+        return preview;
     }
 
     @Override
@@ -194,6 +207,12 @@ public class PostServiceImpl implements PostService {
         return postMapper.decreasePostCommentCount(postId);
     }
 
+
+    private void validatePostId(Long postId) {
+        if(postId == null || postId <= 0) {
+            throw new BadRequestException("post id must not be blank");
+        }
+    }
     private void validateContent(String content) {
         if (content.isEmpty()) {
             throw new BadRequestException("content must not be blank");

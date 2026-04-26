@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.List;
 
-import static com.marmot.qilu.common.util.ContentUtils.COMMENT_PREVIEW_LENGTH;
+import static com.marmot.qilu.common.util.ContentUtils.COMMENT_CONTENT_PREVIEW_LENGTH;
 
 @Slf4j
 @Service
@@ -63,7 +63,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
     public List<CommentNotificationListItemVO> listCommentNotifications() {
         String currUserUuid = UserContext.requireUuid();
 
-        return commentNotificationMapper.selectCommentNotifications(currUserUuid, COMMENT_PREVIEW_LENGTH);
+        return commentNotificationMapper.selectCommentNotifications(currUserUuid, COMMENT_CONTENT_PREVIEW_LENGTH);
     }
 
     @Override
@@ -136,6 +136,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
         notification.setReceiverUuid(event.getReceiverUuid());
         notification.setPostId(event.getPostId());
         notification.setContentPreview(event.getContentPreview());
+        notification.setPostSnippet(event.getPostSnippet());
         notification.setIsRead(UNREAD);
         notification.setBizKey(buildNotificationBizKey(event));
         return notification;

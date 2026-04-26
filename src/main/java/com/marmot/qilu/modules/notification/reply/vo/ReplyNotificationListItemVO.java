@@ -30,7 +30,7 @@ public class ReplyNotificationListItemVO {
     private Long entityId;
 
     @Schema(description = "关联实体预览")
-    private String entityPreview;
+    private String entitySnippet;
 
     @Schema(description = "回复内容预览")
     private String contentPreview;

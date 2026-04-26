@@ -12,12 +12,7 @@
             u.nickname as actorNickname,
             n.entity_type as entityType,
             n.entity_id as entityId,
-            case
-                when n.entity_type = 'POST' then coalesce(nullif(substring(p.title, 1, 30), ''), 'post')
-                when n.entity_type = 'COMMENT' then coalesce(nullif(substring(c.content, 1, 30), ''), 'comment')
-                when n.entity_type = 'REPLY' then coalesce(nullif(substring(r.content, 1, 30), ''), 'reply')
-                else ''
-            end as entityPreview,
+            n.entity_snippet as entitySnippet,
             n.is_read as isRead,
             n.created_at as createdAt
         from like_notification n

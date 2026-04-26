@@ -2,8 +2,9 @@ package com.marmot.qilu.common.util;
 
 public final class ContentUtils {
 
-    public static final int POST_PREVIEW_LENGTH = 16;
-    public static final int COMMENT_PREVIEW_LENGTH = 16;
+    public static final int POST_TITLE_PREVIEW_LENGTH = 16;
+    public static final int POST_CONTENT_PREVIEW_LENGTH = 16;
+    public static final int COMMENT_CONTENT_PREVIEW_LENGTH = 16;
 
     private ContentUtils() {
     }
@@ -12,12 +13,16 @@ public final class ContentUtils {
         return content == null ? "" : content.trim();
     }
 
+    public static String buildPostTitlePreview(String content) {
+        return buildContentPreview(content, POST_TITLE_PREVIEW_LENGTH);
+    }
+
     public static String buildPostContentPreview(String content) {
-        return buildContentPreview(content, POST_PREVIEW_LENGTH);
+        return buildContentPreview(content, POST_CONTENT_PREVIEW_LENGTH);
     }
 
     public static String buildCommentContentPreview(String content) {
-        return buildContentPreview(content, COMMENT_PREVIEW_LENGTH);
+        return buildContentPreview(content, COMMENT_CONTENT_PREVIEW_LENGTH);
     }
 
     private static String buildContentPreview(String content, int length) {

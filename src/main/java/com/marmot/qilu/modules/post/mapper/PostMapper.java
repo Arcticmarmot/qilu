@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.marmot.qilu.modules.post.entity.Post;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
+import com.marmot.qilu.modules.post.vo.PostPreview;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,6 +16,8 @@ public interface PostMapper extends BaseMapper<Post> {
     Integer existsInteractablePostById(@Param("postId") Long postId, @Param("currUserUuid") String currUserUuid);
 
     String selectUserUuidById(@Param("postId") Long postId);
+
+    PostPreview selectPostPreviewById(@Param("postId") Long postId);
 
     Long countMyPosts(@Param("currUserUuid") String currUserUuid);
 

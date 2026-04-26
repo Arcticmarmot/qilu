@@ -21,6 +21,8 @@ public class ReplyEvent {
 
     private ReplyEntityType entityType;
 
+    private String entitySnippet;
+
     private String contentPreview;
 
     private LocalDateTime occurredAt;

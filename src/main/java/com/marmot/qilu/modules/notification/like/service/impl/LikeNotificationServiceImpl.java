@@ -132,6 +132,7 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         likeNotification.setActorUuid(event.getActorUuid());
         likeNotification.setEntityType(event.getEntityType().name());
         likeNotification.setEntityId(event.getEntityId());
+        likeNotification.setEntitySnippet(event.getEntitySnippet());
         likeNotification.setBizKey(buildNotificationBizKey(event));
         likeNotification.setIsRead(UNREAD);
         return likeNotification;

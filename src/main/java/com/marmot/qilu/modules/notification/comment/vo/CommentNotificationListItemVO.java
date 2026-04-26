@@ -27,7 +27,7 @@ public class CommentNotificationListItemVO {
     private Long postId;
 
     @Schema(description = "关联实体预览")
-    private String entityPreview;
+    private String postSnippet;
 
     @Schema(description = "评论内容预览")
     private String contentPreview;

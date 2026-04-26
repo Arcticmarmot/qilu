@@ -13,11 +13,7 @@
             u.nickname as actorNickname,
             n.entity_type as entityType,
             n.entity_id as entityId,
-            case
-                when n.entity_type = 'COMMENT' then substring(c.content, 1, #{previewLength})
-                when n.entity_type = 'REPLY' then substring(r.content, 1, #{previewLength})
-                else null
-            end as entityPreview,
+            n.entity_snippet as entitySnippet,
             n.content_preview as contentPreview,
             n.is_read as isRead,
             n.created_at as createdAt

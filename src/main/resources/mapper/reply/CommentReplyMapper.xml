@@ -23,6 +23,16 @@
             limit 1
     </select>
 
+    <select id="selectCommentReplyPreviewById" resultType="com.marmot.qilu.modules.reply.vo.CommentReplyPreview">
+        select
+            user_uuid as authorUuid,
+            content
+        from comment_reply
+        where id = #{replyId}
+            and status = 1
+        limit 1
+    </select>
+
     <update id="deleteCommentReply">
         update comment_reply
         set status = 0,

@@ -21,6 +21,8 @@ public class CommentNotification {
 
     private Long postId;
 
+    private String postSnippet;
+
     private String contentPreview;
 
     private String bizKey;

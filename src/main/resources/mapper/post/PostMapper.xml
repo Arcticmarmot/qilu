@@ -24,6 +24,16 @@
         limit 1
     </select>
 
+    <select id="selectPostPreviewById" resultType="com.marmot.qilu.modules.post.vo.PostPreview">
+        select
+            user_uuid as authorUuid,
+            title
+        from post
+            where id = #{postId}
+            and status = 1
+        limit 1
+    </select>
+
     <select id="selectMyPostDetail" resultType="com.marmot.qilu.modules.post.vo.PostDetailVO">
         select
             p.id,

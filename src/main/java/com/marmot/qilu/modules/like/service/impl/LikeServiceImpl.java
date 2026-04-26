@@ -7,12 +7,16 @@ import com.marmot.qilu.common.event.like.LikeEntityType;
 import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.common.event.like.LikeProducer;
 import com.marmot.qilu.common.exception.BadRequestException;
+import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.comment.service.PostCommentService;
+import com.marmot.qilu.modules.comment.vo.PostCommentPreview;
 import com.marmot.qilu.modules.like.entity.Like;
 import com.marmot.qilu.modules.like.mapper.LikeMapper;
 import com.marmot.qilu.modules.like.service.LikeService;
 import com.marmot.qilu.modules.post.service.PostService;
+import com.marmot.qilu.modules.post.vo.PostPreview;
 import com.marmot.qilu.modules.reply.service.CommentReplyService;
+import com.marmot.qilu.modules.reply.vo.CommentReplyPreview;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -261,48 +265,56 @@ public class LikeServiceImpl implements LikeService {
     }
 
     private void sendPostLikeEvent(Long postId, String currUserUuid) {
-        String receiverUuid = postService.getAuthorUuid(postId);
+        PostPreview preview = postService.getPostPreview(postId);
+        String receiverUuid = preview.getAuthorUuid();
+        String entitySnippet = ContentUtils.buildPostTitlePreview(preview.getTitle());
 
         if (receiverUuid.equals(currUserUuid)) {
             return;
         }
 
-        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, postId, POST);
+        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, postId, POST, entitySnippet);
 
         likeProducer.sendLikeEvent(event);
     }
 
     private void sendCommentLikeEvent(Long commentId, String currUserUuid) {
-        String receiverUuid = postCommentService.getAuthorUuidById(commentId);
+        PostCommentPreview preview = postCommentService.getPostCommentPreview(commentId);
+        String receiverUuid = preview.getAuthorUuid();
+        String entitySnippet = ContentUtils.buildCommentContentPreview(preview.getContent());
 
         if (receiverUuid.equals(currUserUuid)) {
             return;
         }
 
-        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, commentId, COMMENT);
+        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, commentId, COMMENT, entitySnippet);
 
         likeProducer.sendLikeEvent(event);
     }
 
     private void sendReplyLikeEvent(Long replyId, String currUserUuid) {
-        String receiverUuid = commentReplyService.getAuthorUuidById(replyId);
+        CommentReplyPreview preview = commentReplyService.getCommentReplyPreview(replyId);
+        String receiverUuid = preview.getAuthorUuid();
+        String entitySnippet = ContentUtils.buildCommentContentPreview(preview.getContent());
 
         if (receiverUuid.equals(currUserUuid)) {
             return;
         }
 
-        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, replyId, REPLY);
+        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, replyId, REPLY, entitySnippet);
 
         likeProducer.sendLikeEvent(event);
     }
 
-    private LikeEvent buildLikeEvent(String currUserUuid, String receiverUuid, Long entityId, LikeEntityType entityType) {
+    private LikeEvent buildLikeEvent(String currUserUuid, String receiverUuid, Long entityId,
+                                     LikeEntityType entityType, String entitySnippet) {
         LikeEvent event = new LikeEvent();
         event.setEventId(UUID.randomUUID().toString());
         event.setActorUuid(currUserUuid);
         event.setReceiverUuid(receiverUuid);
         event.setEntityType(entityType);
         event.setEntityId(entityId);
+        event.setEntitySnippet(entitySnippet);
         event.setOccurredAt(now());
         return event;
     }

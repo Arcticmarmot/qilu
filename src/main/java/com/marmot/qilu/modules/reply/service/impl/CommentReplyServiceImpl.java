@@ -8,11 +8,13 @@ import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.comment.service.PostCommentService;
+import com.marmot.qilu.modules.comment.vo.PostCommentPreview;
 import com.marmot.qilu.modules.reply.dto.CommentReplyCreateDTO;
 import com.marmot.qilu.modules.reply.entity.CommentReply;
 import com.marmot.qilu.modules.reply.mapper.CommentReplyMapper;
 import com.marmot.qilu.modules.reply.service.CommentReplyService;
 import com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO;
+import com.marmot.qilu.modules.reply.vo.CommentReplyPreview;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,7 @@ public class CommentReplyServiceImpl implements CommentReplyService {
     }
 
     @Override
-    public String getAuthorUuidById(Long replyId) {
+    public String getAuthorUuid(Long replyId) {
         validateEntityId(replyId);
 
         String authorUuid = commentReplyMapper.selectUserUuidById(replyId);
@@ -55,6 +57,17 @@ public class CommentReplyServiceImpl implements CommentReplyService {
             throw new NotFoundException("reply not found");
         }
         return authorUuid;
+    }
+
+    @Override
+    public CommentReplyPreview getCommentReplyPreview(Long replyId) {
+        validateEntityId(replyId);
+
+        CommentReplyPreview preview = commentReplyMapper.selectCommentReplyPreviewById(replyId);
+        if(preview == null) {
+            throw new NotFoundException("reply not found");
+        }
+        return preview;
     }
 
     @Override
@@ -71,19 +84,26 @@ public class CommentReplyServiceImpl implements CommentReplyService {
         boolean replyToComment = parentReplyId == null;
 
         String targetUserUuid;
+        String entitySnippet;
         ReplyEvent event = new ReplyEvent();
 
         if (replyToComment) {
             postCommentService.checkPostCommentInteractable(postId, commentId, currUserUuid);
-            targetUserUuid = postCommentService.getAuthorUuidById(commentId);
+            PostCommentPreview preview  = postCommentService.getPostCommentPreview(commentId);
+            targetUserUuid = preview.getAuthorUuid();
+            entitySnippet = ContentUtils.buildCommentContentPreview(preview.getContent());
 
+            event.setEntitySnippet(entitySnippet);
             event.setEntityType(ReplyEntityType.COMMENT);
             event.setEntityId(commentId);
         } else {
             validateEntityId(parentReplyId);
             checkCommentReplyInteractable(postId, commentId, parentReplyId, currUserUuid);
-            targetUserUuid = getAuthorUuidById(parentReplyId);
+            CommentReplyPreview preview = getCommentReplyPreview(parentReplyId);
+            targetUserUuid = preview.getAuthorUuid();
+            entitySnippet = ContentUtils.buildCommentContentPreview(preview.getContent());
 
+            event.setEntitySnippet(entitySnippet);
             event.setEntityType(ReplyEntityType.REPLY);
             event.setEntityId(parentReplyId);
         }

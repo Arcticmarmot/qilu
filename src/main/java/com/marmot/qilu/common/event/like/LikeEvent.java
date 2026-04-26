@@ -19,5 +19,7 @@ public class LikeEvent {
 
     private LikeEntityType entityType;
 
+    private String entitySnippet;
+
     private LocalDateTime occurredAt;
 }

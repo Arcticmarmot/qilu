@@ -12,7 +12,7 @@
             n.actor_uuid as actorUuid,
             u.nickname as actorNickname,
             n.post_id as postId,
-            substring(p.title, 1, #{previewLength}) as entityPreview,
+            n.post_snippet as postSnippet,
             n.content_preview as contentPreview,
             n.is_read as isRead,
             n.created_at as createdAt

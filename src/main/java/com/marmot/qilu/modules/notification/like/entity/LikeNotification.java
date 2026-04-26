@@ -21,6 +21,8 @@ public class LikeNotification {
 
     private Long entityId;
 
+    private String entitySnippet;
+
     private String bizKey;
 
     private Integer isRead;

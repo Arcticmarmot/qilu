@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.List;
 
-import static com.marmot.qilu.common.util.ContentUtils.COMMENT_PREVIEW_LENGTH;
+import static com.marmot.qilu.common.util.ContentUtils.COMMENT_CONTENT_PREVIEW_LENGTH;
 
 @Slf4j
 @Service
@@ -63,7 +63,7 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     public List<ReplyNotificationListItemVO> listReplyNotifications() {
         String currUserUuid = UserContext.requireUuid();
 
-        return replyNotificationMapper.selectReplyNotifications(currUserUuid, COMMENT_PREVIEW_LENGTH);
+        return replyNotificationMapper.selectReplyNotifications(currUserUuid, COMMENT_CONTENT_PREVIEW_LENGTH);
     }
 
     @Override
@@ -138,6 +138,7 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
         notification.setReceiverUuid(event.getReceiverUuid());
         notification.setEntityId(event.getEntityId());
         notification.setEntityType(event.getEntityType().name());
+        notification.setEntitySnippet(event.getEntitySnippet());
         notification.setContentPreview(event.getContentPreview());
         notification.setIsRead(UNREAD);
         notification.setBizKey(buildNotificationBizKey(event));

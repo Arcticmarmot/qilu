@@ -23,6 +23,8 @@ public class ReplyNotification {
 
     private Long entityId;
 
+    private String entitySnippet;
+
     private String contentPreview;
 
     private String bizKey;

@@ -27,7 +27,7 @@ public class LikeNotificationListItemVO {
     private Long entityId;
 
     @Schema(description = "关联实体预览")
-    private String entityPreview;
+    private String entitySnippet;
 
     @Schema(description = "是否已读：0未读 1已读", example = "0")
     private Integer isRead;
