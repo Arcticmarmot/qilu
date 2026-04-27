@@ -47,10 +47,10 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
             incrementUnreadCount(likeNotification.getReceiverUuid());
         } catch (DuplicateKeyException e) {
             log.warn(
-                    "duplicate like notification ignored, eventId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                    "duplicate like notification ignored, eventId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                     event.getEventId(),
-                    event.getEntityType(),
-                    event.getEntityId(),
+                    event.getCreationType(),
+                    event.getCreationId(),
                     event.getActorUuid(),
                     event.getReceiverUuid()
             );
@@ -119,8 +119,8 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         if (event.getEventId() == null
                 || event.getActorUuid() == null
                 || event.getReceiverUuid() == null
-                || event.getEntityId() == null
-                || event.getEntityType() == null
+                || event.getCreationId() == null
+                || event.getCreationType() == null
                 || event.getOccurredAt() == null) {
             throw new IllegalArgumentException("like event is invalid");
         }
@@ -130,9 +130,9 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
         LikeNotification likeNotification = new LikeNotification();
         likeNotification.setReceiverUuid(event.getReceiverUuid());
         likeNotification.setActorUuid(event.getActorUuid());
-        likeNotification.setEntityType(event.getEntityType().name());
-        likeNotification.setEntityId(event.getEntityId());
-        likeNotification.setEntitySnippet(event.getEntitySnippet());
+        likeNotification.setCreationType(event.getCreationType().name());
+        likeNotification.setCreationId(event.getCreationId());
+        likeNotification.setCreationSnippet(event.getCreationSnippet());
         likeNotification.setBizKey(buildNotificationBizKey(event));
         likeNotification.setIsRead(UNREAD);
         return likeNotification;
@@ -140,8 +140,8 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
 
     private String buildNotificationBizKey(LikeEvent event) {
         return String.join(":",
-                event.getEntityType().name(),
-                event.getEntityId().toString(),
+                event.getCreationType().name(),
+                event.getCreationId().toString(),
                 event.getActorUuid(),
                 event.getReceiverUuid()
         );

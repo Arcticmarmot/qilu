@@ -15,11 +15,11 @@ public class LikeEvent {
 
     private String receiverUuid;
 
-    private Long entityId;
+    private Long creationId;
 
-    private LikeEntityType entityType;
+    private LikeCreationType creationType;
 
-    private String entitySnippet;
+    private String creationSnippet;
 
     private LocalDateTime occurredAt;
 }

@@ -1,5 +1,7 @@
 package com.marmot.qilu.modules.notification.comment.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @TableName("comment_notification")
 public class CommentNotification {
 
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long commentId;
@@ -23,7 +26,7 @@ public class CommentNotification {
 
     private String postSnippet;
 
-    private String contentPreview;
+    private String contentSnippet;
 
     private String bizKey;
 

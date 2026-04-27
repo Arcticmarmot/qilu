@@ -122,7 +122,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
                 || event.getPostId() == null
                 || event.getCommentId() == null
                 || event.getOccurredAt() == null
-                || event.getContentPreview() == null) {
+                || event.getContentSnippet() == null) {
             throw new IllegalArgumentException("comment event is invalid");
         }
     }
@@ -133,7 +133,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
         notification.setActorUuid(event.getActorUuid());
         notification.setReceiverUuid(event.getReceiverUuid());
         notification.setPostId(event.getPostId());
-        notification.setContentPreview(event.getContentPreview());
+        notification.setContentSnippet(event.getContentSnippet());
         notification.setPostSnippet(event.getPostSnippet());
         notification.setIsRead(UNREAD);
         notification.setBizKey(buildNotificationBizKey(event));

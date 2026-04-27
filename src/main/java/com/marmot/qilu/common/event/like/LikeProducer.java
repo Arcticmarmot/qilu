@@ -23,10 +23,10 @@ public class LikeProducer {
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
                         log.error(
-                                "send like event failed, eventId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                                "send like event failed, eventId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                                 event.getEventId(),
-                                event.getEntityType(),
-                                event.getEntityId(),
+                                event.getCreationType(),
+                                event.getCreationId(),
                                 event.getActorUuid(),
                                 event.getReceiverUuid(),
                                 ex
@@ -35,10 +35,10 @@ public class LikeProducer {
                     }
 
                     log.info(
-                            "send like event success, eventId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                            "send like event success, eventId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                             event.getEventId(),
-                            event.getEntityType(),
-                            event.getEntityId(),
+                            event.getCreationType(),
+                            event.getCreationId(),
                             event.getActorUuid(),
                             event.getReceiverUuid()
                     );

@@ -1,5 +1,7 @@
 package com.marmot.qilu.modules.notification.reply.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @TableName("reply_notification")
 public class ReplyNotification {
 
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long replyId;
@@ -19,13 +22,13 @@ public class ReplyNotification {
 
     private String actorUuid;
 
-    private String entityType;
+    private String creationType;
 
-    private Long entityId;
+    private Long creationId;
 
-    private String entitySnippet;
+    private String creationSnippet;
 
-    private String contentPreview;
+    private String contentSnippet;
 
     private String bizKey;
 

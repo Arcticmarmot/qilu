@@ -26,11 +26,11 @@ public class CommentNotificationListItemVO {
     @Schema(description = "关联帖子ID", example = "1001")
     private Long postId;
 
-    @Schema(description = "关联实体预览")
+    @Schema(description = "关联帖子预览")
     private String postSnippet;
 
     @Schema(description = "评论内容预览")
-    private String contentPreview;
+    private String contentSnippet;
 
     @Schema(description = "是否已读：0未读 1已读", example = "0")
     private Integer isRead;

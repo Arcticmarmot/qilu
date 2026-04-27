@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(description = "创建评论回复请求")
-public class CommentReplyCreateDTO {
+public class ReplyCreateDTO {
 
     @Schema(description = "上层回复ID", example = "1")
     @NotBlank(message = "parentReplyId must not be blank")

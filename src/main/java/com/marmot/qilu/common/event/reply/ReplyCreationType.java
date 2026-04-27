@@ -1,6 +1,6 @@
 package com.marmot.qilu.common.event.reply;
 
-public enum ReplyEntityType {
+public enum ReplyCreationType {
     COMMENT,
     REPLY,
 }

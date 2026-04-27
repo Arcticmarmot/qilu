@@ -36,10 +36,10 @@ public class LikeNotificationConsumer {
             log.debug("consume like event success, eventId={}", event.getEventId());
         } catch (Exception e) {
             log.error(
-                    "consume like event failed, eventId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                    "consume like event failed, eventId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                     event.getEventId(),
-                    event.getEntityType(),
-                    event.getEntityId(),
+                    event.getCreationType(),
+                    event.getCreationId(),
                     event.getActorUuid(),
                     event.getReceiverUuid(),
                     e

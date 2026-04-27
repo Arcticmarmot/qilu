@@ -13,7 +13,7 @@
             u.nickname as actorNickname,
             n.post_id as postId,
             n.post_snippet as postSnippet,
-            n.content_preview as contentPreview,
+            n.content_snippet as contentSnippet,
             n.is_read as isRead,
             n.created_at as createdAt
         from comment_notification n

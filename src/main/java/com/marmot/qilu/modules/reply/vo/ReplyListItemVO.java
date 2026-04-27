@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Schema(description = "评论回复列表项")
-public class CommentReplyListItemVO {
+public class ReplyListItemVO {
 
     @Schema(description = "回复ID", example = "1")
     private Long id;

@@ -14,18 +14,18 @@ public final class ContentUtils {
     }
 
     public static String buildPostTitlePreview(String content) {
-        return buildContentPreview(content, POST_TITLE_PREVIEW_LENGTH);
+        return buildContentSnippet(content, POST_TITLE_PREVIEW_LENGTH);
     }
 
     public static String buildPostContentSnippet(String content) {
-        return buildContentPreview(content, POST_CONTENT_PREVIEW_LENGTH);
+        return buildContentSnippet(content, POST_CONTENT_PREVIEW_LENGTH);
     }
 
-    public static String buildCommentContentPreview(String content) {
-        return buildContentPreview(content, COMMENT_CONTENT_PREVIEW_LENGTH);
+    public static String buildCommentContentSnippet(String content) {
+        return buildContentSnippet(content, COMMENT_CONTENT_PREVIEW_LENGTH);
     }
 
-    private static String buildContentPreview(String content, int length) {
+    private static String buildContentSnippet(String content, int length) {
         String normalized = content == null ? "" : content
                 .replace("\r", " ")
                 .replace("\n", " ")

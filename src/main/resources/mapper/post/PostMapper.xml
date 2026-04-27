@@ -52,9 +52,9 @@
         from post p
                  left join user as u
                            on u.uuid = p.user_uuid
-                 left join entity_like as l
-                               on  l.entity_type = 'POST'
-                               and l.entity_id = p.id
+                 left join creation_like as l
+                               on  l.creation_type = 'POST'
+                               and l.creation_id = p.id
                                and l.user_uuid = #{currUserUuid}
                                and l.status = 1
         where p.id = #{postId}
@@ -102,9 +102,9 @@
                   limit #{offset}, #{size}
              ) p
                  left join user u on p.user_uuid = u.uuid
-                 left join entity_like as l
-                    on  l.entity_type = 'POST'
-                    and l.entity_id = p.id
+                 left join creation_like as l
+                    on  l.creation_type = 'POST'
+                    and l.creation_id = p.id
                     and l.user_uuid = #{currUserUuid}
                     and l.status = 1
         order by p.created_at desc
@@ -128,9 +128,9 @@
         from post p
         left join user as u
             on u.uuid = p.user_uuid
-        left join entity_like as l
-            on  l.entity_type = 'POST'
-            and l.entity_id = p.id
+        left join creation_like as l
+            on  l.creation_type = 'POST'
+            and l.creation_id = p.id
             and l.user_uuid = #{currUserUuid}
             and l.status = 1
         where p.id = #{postId}
@@ -178,9 +178,9 @@
                   limit #{offset}, #{size}
         ) p
         left join user u on p.user_uuid = u.uuid
-        left join entity_like as l
-            on  l.entity_type = 'POST'
-            and l.entity_id = p.id
+        left join creation_like as l
+            on  l.creation_type = 'POST'
+            and l.creation_id = p.id
             and l.user_uuid = #{currUserUuid}
             and l.status = 1
         order by p.created_at desc

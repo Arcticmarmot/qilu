@@ -23,11 +23,11 @@ public class ReplyProducer {
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
                         log.error(
-                                "send reply event failed, eventId={}, replyId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                                "send reply event failed, eventId={}, replyId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                                 event.getEventId(),
                                 event.getReplyId(),
-                                event.getEntityType(),
-                                event.getEntityId(),
+                                event.getCreationType(),
+                                event.getCreationId(),
                                 event.getActorUuid(),
                                 event.getReceiverUuid(),
                                 ex
@@ -36,11 +36,11 @@ public class ReplyProducer {
                     }
 
                     log.info(
-                            "send reply event success, eventId={}, replyId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                            "send reply event success, eventId={}, replyId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                             event.getEventId(),
                             event.getReplyId(),
-                            event.getEntityType(),
-                            event.getEntityId(),
+                            event.getCreationType(),
+                            event.getCreationId(),
                             event.getActorUuid(),
                             event.getReceiverUuid()
                     );

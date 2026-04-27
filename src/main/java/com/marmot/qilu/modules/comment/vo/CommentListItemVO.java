@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Schema(description = "帖子评论列表项")
-public class PostCommentListItemVO {
+@Schema(description = "评论列表项")
+public class CommentListItemVO {
 
     @Schema(description = "评论ID", example = "1")
     private Long id;

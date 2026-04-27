@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(description = "创建帖子评论请求")
-public class PostCommentCreateDTO {
+public class CommentCreateDTO {
 
     @Schema(description = "评论内容", example = "后会无期")
     @NotBlank(message = "content must not be blank")

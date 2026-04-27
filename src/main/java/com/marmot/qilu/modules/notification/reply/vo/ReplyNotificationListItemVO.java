@@ -23,17 +23,17 @@ public class ReplyNotificationListItemVO {
     @Schema(description = "触发动作的用户昵称")
     private String actorNickname;
 
-    @Schema(description = "关联实体类型，例如 COMMENT REPLY")
-    private String entityType;
+    @Schema(description = "关联创作类型，例如 COMMENT REPLY")
+    private String creationType;
 
-    @Schema(description = "关联实体ID", example = "1001")
-    private Long entityId;
+    @Schema(description = "关联创作ID", example = "1001")
+    private Long creationId;
 
-    @Schema(description = "关联实体预览")
-    private String entitySnippet;
+    @Schema(description = "关联创作预览")
+    private String creationSnippet;
 
     @Schema(description = "回复内容预览")
-    private String contentPreview;
+    private String contentSnippet;
 
     @Schema(description = "是否已读：0未读 1已读", example = "0")
     private Integer isRead;

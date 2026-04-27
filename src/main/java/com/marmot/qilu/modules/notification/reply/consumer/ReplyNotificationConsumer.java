@@ -36,11 +36,11 @@ public class ReplyNotificationConsumer {
             log.debug("consume reply event success, eventId={}", event.getEventId());
         } catch (Exception e) {
             log.error(
-                    "consume reply event failed, eventId={}, replyId={}, entityType={}, entityId={}, actorUuid={}, receiverUuid={}",
+                    "consume reply event failed, eventId={}, replyId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",
                     event.getEventId(),
                     event.getReplyId(),
-                    event.getEntityType(),
-                    event.getEntityId(),
+                    event.getCreationType(),
+                    event.getCreationId(),
                     event.getActorUuid(),
                     event.getReceiverUuid(),
                     e

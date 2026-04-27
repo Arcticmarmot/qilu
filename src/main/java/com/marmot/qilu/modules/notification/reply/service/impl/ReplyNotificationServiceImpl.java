@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.List;
 
-import static com.marmot.qilu.common.util.ContentUtils.COMMENT_CONTENT_PREVIEW_LENGTH;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -49,11 +47,11 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
             incrementUnreadCount(notification.getReceiverUuid());
         } catch (DuplicateKeyException e) {
             log.warn(
-                    "duplicate reply notification ignored, eventId={}, replyId={}, entityType={}, entityId={}, receiverUuid={}",
+                    "duplicate reply notification ignored, eventId={}, replyId={}, creationType={}, creationId={}, receiverUuid={}",
                     event.getEventId(),
                     event.getReplyId(),
-                    event.getEntityType(),
-                    event.getEntityId(),
+                    event.getCreationType(),
+                    event.getCreationId(),
                     event.getReceiverUuid()
             );
         }
@@ -122,11 +120,11 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
         if (event.getEventId() == null
                 || event.getActorUuid() == null
                 || event.getReceiverUuid() == null
-                || event.getEntityId() == null
-                || event.getEntityType() == null
+                || event.getCreationId() == null
+                || event.getCreationType() == null
                 || event.getReplyId() == null
                 || event.getOccurredAt() == null
-                || event.getContentPreview() == null) {
+                || event.getContentSnippet() == null) {
             throw new IllegalArgumentException("reply event is invalid");
         }
     }
@@ -136,10 +134,10 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
         notification.setReplyId(event.getReplyId());
         notification.setActorUuid(event.getActorUuid());
         notification.setReceiverUuid(event.getReceiverUuid());
-        notification.setEntityId(event.getEntityId());
-        notification.setEntityType(event.getEntityType().name());
-        notification.setEntitySnippet(event.getEntitySnippet());
-        notification.setContentPreview(event.getContentPreview());
+        notification.setCreationId(event.getCreationId());
+        notification.setCreationType(event.getCreationType().name());
+        notification.setCreationSnippet(event.getCreationSnippet());
+        notification.setContentSnippet(event.getContentSnippet());
         notification.setIsRead(UNREAD);
         notification.setBizKey(buildNotificationBizKey(event));
         return notification;
@@ -148,8 +146,8 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
     private String buildNotificationBizKey(ReplyEvent event) {
         return String.join(":",
                 event.getReplyId().toString(),
-                event.getEntityType().name(),
-                event.getEntityId().toString(),
+                event.getCreationType().name(),
+                event.getCreationId().toString(),
                 event.getReceiverUuid()
         );
     }

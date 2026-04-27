@@ -1,6 +1,6 @@
 package com.marmot.qilu.common.event.like;
 
-public enum LikeEntityType {
+public enum LikeCreationType {
     POST,
     COMMENT,
     REPLY,

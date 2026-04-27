@@ -3,11 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.marmot.qilu.modules.comment.mapper.PostCommentMapper">
+<mapper namespace="com.marmot.qilu.modules.comment.mapper.CommentMapper">
 
-    <select id="existsInteractablePostCommentById" resultType="java.lang.Integer">
+    <select id="existsInteractableCommentById" resultType="java.lang.Integer">
         select 1
-        from post_comment
+        from creation_comment
         where id = #{commentId}
           and post_id = #{postId}
           and status = 1
@@ -16,24 +16,24 @@
 
     <select id="selectUserUuidById" resultType="java.lang.String">
         select user_uuid
-        from post_comment
+        from creation_comment
         where id = #{commentId}
           and status = 1
             limit 1
     </select>
     
-    <select id="selectPostCommentPreviewById" resultType="com.marmot.qilu.modules.comment.vo.PostCommentPreview">
+    <select id="selectCommentPreviewById" resultType="com.marmot.qilu.modules.comment.vo.CommentPreview">
         select
             user_uuid as authorUuid,
             content
-        from post_comment
+        from creation_comment
         where id = #{commentId}
             and status = 1
             limit 1
     </select>
 
-    <update id="deletePostComment">
-        update post_comment
+    <update id="deleteComment">
+        update creation_comment
         set status = 0,
             updated_at = now()
         where id = #{commentId}
@@ -41,8 +41,8 @@
           and status = 1
     </update>
 
-    <select id="selectNormalPostCommentsByPostId"
-            resultType="com.marmot.qilu.modules.comment.vo.PostCommentListItemVO">
+    <select id="selectNormalCommentsByPostId"
+            resultType="com.marmot.qilu.modules.comment.vo.CommentListItemVO">
         select
             pc.id,
             pc.post_id as postId,
@@ -56,11 +56,11 @@
                 else false
                 end as likedByMe,
             pc.created_at as createdAt
-        from post_comment pc
+        from creation_comment pc
             left join user u on pc.user_uuid = u.uuid
-            left join entity_like l
-                on l.entity_type = 'COMMENT'
-                and l.entity_id = pc.id
+            left join creation_like l
+                on l.creation_type = 'COMMENT'
+                and l.creation_id = pc.id
                 and l.user_uuid = #{currUserUuid}
                 and l.status = 1
         where pc.post_id = #{postId}
@@ -69,7 +69,7 @@
     </select>
 
     <update id="increaseCommentLikeCount">
-        update post_comment
+        update creation_comment
         set like_count = like_count + 1,
             updated_at = now()
         where id = #{commentId}
@@ -77,7 +77,7 @@
     </update>
 
     <update id="decreaseCommentLikeCount">
-        update post_comment
+        update creation_comment
         set like_count = case
             when like_count > 0 then like_count - 1
             else 0
@@ -88,7 +88,7 @@
     </update>
 
     <update id="increaseCommentReplyCount">
-        update post_comment
+        update creation_comment
         set reply_count = reply_count + 1,
             updated_at = now()
         where id = #{commentId}
@@ -96,7 +96,7 @@
     </update>
 
     <update id="decreaseCommentReplyCount">
-        update post_comment
+        update creation_comment
         set reply_count = case
             when reply_count > 0 then reply_count - 1
             else 0

@@ -3,11 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.marmot.qilu.modules.reply.mapper.CommentReplyMapper">
+<mapper namespace="com.marmot.qilu.modules.reply.mapper.ReplyMapper">
 
-    <select id="existsInteractableCommentReplyById" resultType="java.lang.Integer">
+    <select id="existsInteractableReplyById" resultType="java.lang.Integer">
         select 1
-        from comment_reply
+        from creation_reply
         where id = #{replyId}
           and post_id = #{postId}
           and root_comment_id = #{commentId}
@@ -17,24 +17,24 @@
 
     <select id="selectUserUuidById" resultType="java.lang.String">
         select user_uuid
-        from comment_reply
+        from creation_reply
         where id = #{replyId}
           and status = 1
             limit 1
     </select>
 
-    <select id="selectCommentReplyPreviewById" resultType="com.marmot.qilu.modules.reply.vo.CommentReplyPreview">
+    <select id="selectReplyPreviewById" resultType="com.marmot.qilu.modules.reply.vo.ReplyPreview">
         select
             user_uuid as authorUuid,
             content
-        from comment_reply
+        from creation_reply
         where id = #{replyId}
             and status = 1
         limit 1
     </select>
 
-    <update id="deleteCommentReply">
-        update comment_reply
+    <update id="deleteReply">
+        update creation_reply
         set status = 0,
             updated_at = now()
         where id = #{replyId}
@@ -42,8 +42,8 @@
           and status = 1
     </update>
 
-    <select id="selectNormalCommentRepliesByCommentId"
-            resultType="com.marmot.qilu.modules.reply.vo.CommentReplyListItemVO">
+    <select id="selectNormalRepliesByCommentId"
+            resultType="com.marmot.qilu.modules.reply.vo.ReplyListItemVO">
         select
             cr.id,
             cr.root_comment_id as rootCommentId,
@@ -59,12 +59,12 @@
                 else false
                 end as likedByMe,
             cr.created_at as createdAt
-        from comment_reply cr
+        from creation_reply cr
             left join user u on cr.user_uuid = u.uuid
             left join user tu on cr.target_user_uuid = tu.uuid
-            left join entity_like l
-                on l.entity_type = 'REPLY'
-                and l.entity_id = cr.id
+            left join creation_like l
+                on l.creation_type = 'REPLY'
+                and l.creation_id = cr.id
                 and l.user_uuid = #{currUserUuid}
                 and l.status = 1
         where cr.root_comment_id = #{commentId}
@@ -73,7 +73,7 @@
     </select>
 
     <update id="increaseReplyLikeCount">
-        update comment_reply
+        update creation_reply
         set like_count = like_count + 1,
             updated_at = now()
         where id = #{replyId}
@@ -81,7 +81,7 @@
     </update>
 
     <update id="decreaseReplyLikeCount">
-        update comment_reply
+        update creation_reply
         set like_count = case
             when like_count > 0 then like_count - 1
             else 0

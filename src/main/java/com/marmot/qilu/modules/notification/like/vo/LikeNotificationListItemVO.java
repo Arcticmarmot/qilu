@@ -21,13 +21,13 @@ public class LikeNotificationListItemVO {
     private String actorNickname;
 
     @Schema(description = "关联实体类型，例如 POST")
-    private String entityType;
+    private String creationType;
 
     @Schema(description = "关联实体ID", example = "1001")
-    private Long entityId;
+    private Long creationId;
 
     @Schema(description = "关联实体预览")
-    private String entitySnippet;
+    private String creationSnippet;
 
     @Schema(description = "是否已读：0未读 1已读", example = "0")
     private Integer isRead;

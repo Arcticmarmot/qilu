@@ -1,6 +1,5 @@
 package com.marmot.qilu.common.event.reply;
 
-import com.marmot.qilu.common.event.like.LikeEntityType;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -17,13 +16,13 @@ public class ReplyEvent {
 
     private String receiverUuid;
 
-    private Long entityId;
+    private Long creationId;
 
-    private ReplyEntityType entityType;
+    private ReplyCreationType creationType;
 
-    private String entitySnippet;
+    private String creationSnippet;
 
-    private String contentPreview;
+    private String contentSnippet;
 
     private LocalDateTime occurredAt;
 }

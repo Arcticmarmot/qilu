@@ -11,21 +11,21 @@
             n.reply_id as replyId,
             n.actor_uuid as actorUuid,
             u.nickname as actorNickname,
-            n.entity_type as entityType,
-            n.entity_id as entityId,
-            n.entity_snippet as entitySnippet,
-            n.content_preview as contentPreview,
+            n.creation_type as creationType,
+            n.creation_id as creationId,
+            n.creation_snippet as creationSnippet,
+            n.content_snippet as contentSnippet,
             n.is_read as isRead,
             n.created_at as createdAt
         from reply_notification n
         left join user u
             on u.uuid = n.actor_uuid
-        left join post_comment c
-            on n.entity_type = 'COMMENT'
-            and c.id = n.entity_id
-        left join comment_reply r
-            on n.entity_type = 'REPLY'
-            and r.id = n.entity_id
+        left join creation_comment c
+            on n.creation_type = 'COMMENT'
+            and c.id = n.creation_id
+        left join creation_reply r
+            on n.creation_type = 'REPLY'
+            and r.id = n.creation_id
         where n.receiver_uuid = #{currUserUuid}
         order by n.created_at desc
     </select>

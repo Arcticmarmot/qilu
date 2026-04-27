@@ -6,12 +6,12 @@ import com.marmot.qilu.common.event.comment.CommentProducer;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.common.util.ContentUtils;
-import com.marmot.qilu.modules.comment.dto.PostCommentCreateDTO;
-import com.marmot.qilu.modules.comment.entity.PostComment;
-import com.marmot.qilu.modules.comment.mapper.PostCommentMapper;
-import com.marmot.qilu.modules.comment.service.PostCommentService;
-import com.marmot.qilu.modules.comment.vo.PostCommentPreview;
-import com.marmot.qilu.modules.comment.vo.PostCommentListItemVO;
+import com.marmot.qilu.modules.comment.dto.CommentCreateDTO;
+import com.marmot.qilu.modules.comment.entity.Comment;
+import com.marmot.qilu.modules.comment.mapper.CommentMapper;
+import com.marmot.qilu.modules.comment.service.CommentService;
+import com.marmot.qilu.modules.comment.vo.CommentPreview;
+import com.marmot.qilu.modules.comment.vo.CommentListItemVO;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.PostPreview;
 import lombok.RequiredArgsConstructor;
@@ -22,26 +22,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static com.marmot.qilu.common.util.ContentUtils.buildCommentContentPreview;
+import static com.marmot.qilu.common.util.ContentUtils.buildCommentContentSnippet;
 import static java.time.LocalDateTime.now;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostCommentServiceImpl implements PostCommentService {
+public class CommentServiceImpl implements CommentService {
 
     private static final int STATUS_NORMAL = 1;
     private static final int MAX_COMMENT_CONTENT_LENGTH = 1024;
 
-    private final PostCommentMapper postCommentMapper;
+    private final CommentMapper commentMapper;
     private final PostService postService;
     private final CommentProducer commentProducer;
 
     @Override
-    public void checkPostCommentInteractable(Long postId, Long commentId, String currUserUuid) {
+    public void checkCommentInteractable(Long postId, Long commentId, String currUserUuid) {
         postService.checkPostInteractable(postId, currUserUuid);
 
-        Integer exists = postCommentMapper.existsInteractablePostCommentById(postId, commentId);
+        Integer exists = commentMapper.existsInteractableCommentById(postId, commentId);
         if (exists == null) {
             throw new NotFoundException("comment not found or not interactable");
         }
@@ -53,7 +53,7 @@ public class PostCommentServiceImpl implements PostCommentService {
             throw new BadRequestException("comment id is invalid");
         }
 
-        String authorUuid = postCommentMapper.selectUserUuidById(commentId);
+        String authorUuid = commentMapper.selectUserUuidById(commentId);
         if (authorUuid == null) {
             throw new NotFoundException("comment not found");
         }
@@ -61,12 +61,12 @@ public class PostCommentServiceImpl implements PostCommentService {
     }
 
     @Override
-    public PostCommentPreview getPostCommentPreview(Long commentId) {
+    public CommentPreview getCommentPreview(Long commentId) {
         if (commentId == null || commentId <= 0) {
             throw new BadRequestException("comment id is invalid");
         }
 
-        PostCommentPreview preview = postCommentMapper.selectPostCommentPreviewById(commentId);
+        CommentPreview preview = commentMapper.selectCommentPreviewById(commentId);
         if(preview == null) {
             throw new NotFoundException("comment not found");
         }
@@ -75,7 +75,7 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createPostComment(Long postId, PostCommentCreateDTO dto) {
+    public void createComment(Long postId, CommentCreateDTO dto) {
         validatePostId(postId);
 
         if (dto == null) {
@@ -93,14 +93,14 @@ public class PostCommentServiceImpl implements PostCommentService {
         String normalizedContent = ContentUtils.normalizeContent(dto.getContent());
         validateContent(normalizedContent);
 
-        PostComment postComment = new PostComment();
-        postComment.setPostId(postId);
-        postComment.setPostAuthorUuid(postAuthorUuid);
-        postComment.setUserUuid(currUserUuid);
-        postComment.setContent(normalizedContent);
-        postComment.setStatus(STATUS_NORMAL);
+        Comment comment = new Comment();
+        comment.setPostId(postId);
+        comment.setPostAuthorUuid(postAuthorUuid);
+        comment.setUserUuid(currUserUuid);
+        comment.setContent(normalizedContent);
+        comment.setStatus(STATUS_NORMAL);
 
-        int inserted = postCommentMapper.insert(postComment);
+        int inserted = commentMapper.insert(comment);
         if (inserted != 1) {
             throw new IllegalStateException("create comment failed");
         }
@@ -110,27 +110,27 @@ public class PostCommentServiceImpl implements PostCommentService {
             throw new IllegalStateException("increase post comment count failed");
         }
 
-        sendCommentEvent(postComment, postSnippet);
+        sendCommentEvent(comment, postSnippet);
 
         log.info(
                 "create post comment success, userUuid={}, postId={}, commentId={}",
                 currUserUuid,
                 postId,
-                postComment.getId()
+                comment.getId()
         );
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deletePostComment(Long postId, Long commentId) {
+    public void deleteComment(Long postId, Long commentId) {
         validatePostId(postId);
         validateCommentId(commentId);
 
         String currUserUuid = UserContext.requireUuid();
 
-        checkPostCommentInteractable(postId, commentId, currUserUuid);
+        checkCommentInteractable(postId, commentId, currUserUuid);
 
-        int deleted = postCommentMapper.deletePostComment(commentId, currUserUuid);
+        int deleted = commentMapper.deleteComment(commentId, currUserUuid);
         if (deleted != 1) {
             throw new NotFoundException("comment not found or no permission");
         }
@@ -149,51 +149,51 @@ public class PostCommentServiceImpl implements PostCommentService {
     }
 
     @Override
-    public List<PostCommentListItemVO> listPostComments(Long postId) {
+    public List<CommentListItemVO> listComments(Long postId) {
         validatePostId(postId);
 
         String currUserUuid = UserContext.requireUuid();
 
         postService.checkPostInteractable(postId, currUserUuid);
 
-        return postCommentMapper.selectNormalPostCommentsByPostId(currUserUuid, postId);
+        return commentMapper.selectNormalCommentsByPostId(currUserUuid, postId);
     }
 
     @Override
     public int increaseCommentLikeCount(Long commentId) {
-        return postCommentMapper.increaseCommentLikeCount(commentId);
+        return commentMapper.increaseCommentLikeCount(commentId);
     }
 
     @Override
     public int decreaseCommentLikeCount(Long commentId) {
-        return postCommentMapper.decreaseCommentLikeCount(commentId);
+        return commentMapper.decreaseCommentLikeCount(commentId);
     }
 
     @Override
     public int increaseCommentReplyCount(Long commentId) {
-        return postCommentMapper.increaseCommentReplyCount(commentId);
+        return commentMapper.increaseCommentReplyCount(commentId);
     }
 
     @Override
     public int decreaseCommentReplyCount(Long commentId) {
-        return postCommentMapper.decreaseCommentReplyCount(commentId);
+        return commentMapper.decreaseCommentReplyCount(commentId);
     }
 
-    private void sendCommentEvent(PostComment postComment, String snippet) {
-        if (postComment == null) {
+    private void sendCommentEvent(Comment comment, String snippet) {
+        if (comment == null) {
             return;
         }
 
         CommentEvent event = new CommentEvent();
-        String contentPreview = buildCommentContentPreview(postComment.getContent());
-        validateContentPreview(contentPreview);
+        String contentSnippet = buildCommentContentSnippet(comment.getContent());
+        validateContentSnippet(contentSnippet);
 
         event.setEventId(UUID.randomUUID().toString());
-        event.setCommentId(postComment.getId());
-        event.setPostId(postComment.getPostId());
-        event.setActorUuid(postComment.getUserUuid());
-        event.setReceiverUuid(postComment.getPostAuthorUuid());
-        event.setContentPreview(contentPreview);
+        event.setCommentId(comment.getId());
+        event.setPostId(comment.getPostId());
+        event.setActorUuid(comment.getUserUuid());
+        event.setReceiverUuid(comment.getPostAuthorUuid());
+        event.setContentSnippet(contentSnippet);
         event.setPostSnippet(snippet);
         event.setOccurredAt(now());
 
@@ -212,7 +212,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         }
     }
 
-    private void validateContentPreview(String preview) {
+    private void validateContentSnippet(String preview) {
         if (preview == null || preview.isEmpty()) {
             throw new BadRequestException("preview cannot be blank");
         }

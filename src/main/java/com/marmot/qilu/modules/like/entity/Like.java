@@ -9,15 +9,15 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@TableName("entity_like")
+@TableName("creation_like")
 public class Like {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private Long entityId;
+    private Long creationId;
 
-    private String entityType;
+    private String creationType;
 
     private String userUuid;
 

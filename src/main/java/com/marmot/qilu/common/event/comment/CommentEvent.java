@@ -21,7 +21,7 @@ public class CommentEvent {
 
     private String postSnippet;
 
-    private String contentPreview;
+    private String contentSnippet;
 
     private LocalDateTime occurredAt;
 }
