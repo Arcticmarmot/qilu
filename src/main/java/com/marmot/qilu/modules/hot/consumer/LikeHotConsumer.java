@@ -8,7 +8,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-import static com.marmot.qilu.common.kafka.KafkaTopics.TOPIC_COMMENT_EVENTS;
 import static com.marmot.qilu.common.kafka.KafkaTopics.TOPIC_LIKE_EVENTS;
 
 @Slf4j
@@ -18,7 +17,7 @@ public class LikeHotConsumer {
 
     private static final String GROUP_HOT = "qilu-like-hot-group";
 
-    private HotPostService hotPostService;
+    private final HotPostService hotPostService;
 
     @KafkaListener(
             topics = TOPIC_LIKE_EVENTS,

@@ -17,7 +17,7 @@ public class CommentHotConsumer {
 
     private static final String GROUP_HOT = "qilu-comment-hot-group";
 
-    private HotPostService hotPostService;
+    private final HotPostService hotPostService;
 
     @KafkaListener(
             topics = TOPIC_COMMENT_EVENTS,

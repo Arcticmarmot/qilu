@@ -17,6 +17,8 @@ public interface PostMapper extends BaseMapper<Post> {
 
     String selectUserUuidById(@Param("postId") Long postId);
 
+    List<PostPageItemVO> selectPostByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds);
+
     PostPreview selectPostPreviewById(@Param("postId") Long postId);
 
     Long countMyPosts(@Param("currUserUuid") String currUserUuid);

@@ -12,6 +12,10 @@ public class ReplyEvent {
 
     private Long replyId;
 
+    private Long postId;
+
+    private Long commentId;
+
     private String actorUuid;
 
     private String receiverUuid;

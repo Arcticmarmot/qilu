@@ -110,7 +110,7 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalStateException("increase post comment count failed");
         }
 
-        sendCommentEvent(comment, postSnippet);
+        sendCommentEvent(postId, comment, postSnippet);
 
         log.info(
                 "create post comment success, userUuid={}, postId={}, commentId={}",
@@ -179,7 +179,7 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.decreaseCommentReplyCount(commentId);
     }
 
-    private void sendCommentEvent(Comment comment, String snippet) {
+    private void sendCommentEvent(Long postId, Comment comment, String snippet) {
         if (comment == null) {
             return;
         }
@@ -189,6 +189,7 @@ public class CommentServiceImpl implements CommentService {
         validateContentSnippet(contentSnippet);
 
         event.setEventId(UUID.randomUUID().toString());
+        event.setPostId(postId);
         event.setCommentId(comment.getId());
         event.setPostId(comment.getPostId());
         event.setActorUuid(comment.getUserUuid());

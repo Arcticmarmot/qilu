@@ -11,6 +11,8 @@ public class LikeEvent {
 
     private String eventId;
 
+    private Long postId;
+
     private String actorUuid;
 
     private String receiverUuid;

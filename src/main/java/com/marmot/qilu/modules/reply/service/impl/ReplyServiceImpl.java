@@ -86,6 +86,7 @@ public class ReplyServiceImpl implements ReplyService {
         String targetUserUuid;
         String creationSnippet;
         ReplyEvent event = new ReplyEvent();
+        event.setPostId(postId);
 
         if (replyToComment) {
             commentService.checkCommentInteractable(postId, commentId, currUserUuid);

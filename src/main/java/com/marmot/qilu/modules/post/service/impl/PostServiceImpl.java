@@ -23,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,6 +54,20 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundException("post not found");
         }
         return authorUuid;
+    }
+
+    @Override
+    public List<PostPageItemVO> getPostsByIds(List<Long> postIds) {
+        String currUserUuid = UserContext.requireUuid();
+
+        List<PostPageItemVO> posts =  postMapper.selectPostByIds(currUserUuid, postIds);
+
+        Map<Long, PostPageItemVO> postMap = posts.stream().collect(Collectors.toMap(PostPageItemVO::getId, item -> item));
+
+        return postIds.stream()
+                .map(postMap::get)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override

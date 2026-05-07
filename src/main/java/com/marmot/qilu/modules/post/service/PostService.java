@@ -8,11 +8,15 @@ import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import com.marmot.qilu.modules.post.vo.PostPreview;
 
+import java.util.List;
+
 public interface PostService {
 
     void checkPostInteractable(Long postId, String currUserUuid);
 
     String getAuthorUuid(Long postId);
+
+    List<PostPageItemVO> getPostsByIds(List<Long> postIds);
 
     PostPreview getPostPreview(Long postId);
 

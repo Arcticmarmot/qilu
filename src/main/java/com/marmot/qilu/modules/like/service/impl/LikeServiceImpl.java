@@ -161,7 +161,7 @@ public class LikeServiceImpl implements LikeService {
         }
 
         if (liked) {
-            sendCommentLikeEvent(commentId, currUserUuid);
+            sendCommentLikeEvent(postId, commentId, currUserUuid);
             log.info("like comment success, userUuid={}, postId={}, commentId={}", currUserUuid, postId, commentId);
         }
     }
@@ -235,7 +235,7 @@ public class LikeServiceImpl implements LikeService {
         }
 
         if (liked) {
-            sendReplyLikeEvent(replyId, currUserUuid);
+            sendReplyLikeEvent(postId, replyId, currUserUuid);
             log.info("like reply success, userUuid={}, postId={}, commentId={}, reply={}",
                     currUserUuid, postId, commentId, replyId);
         }
@@ -273,43 +273,38 @@ public class LikeServiceImpl implements LikeService {
             return;
         }
 
-        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, postId, POST, creationSnippet);
+        LikeEvent event = buildLikeEvent(postId, currUserUuid, receiverUuid, postId, POST, creationSnippet);
 
         likeProducer.sendLikeEvent(event);
     }
 
-    private void sendCommentLikeEvent(Long commentId, String currUserUuid) {
+    private void sendCommentLikeEvent(Long postId, Long commentId, String currUserUuid) {
         CommentPreview preview = commentService.getCommentPreview(commentId);
         String receiverUuid = preview.getAuthorUuid();
         String creationSnippet = ContentUtils.buildCommentContentSnippet(preview.getContent());
-
         if (receiverUuid.equals(currUserUuid)) {
             return;
         }
-
-        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, commentId, COMMENT, creationSnippet);
-
+        LikeEvent event = buildLikeEvent(postId, currUserUuid, receiverUuid, commentId, COMMENT, creationSnippet);
         likeProducer.sendLikeEvent(event);
     }
 
-    private void sendReplyLikeEvent(Long replyId, String currUserUuid) {
+    private void sendReplyLikeEvent(Long postId, Long replyId, String currUserUuid) {
         ReplyPreview preview = replyService.getReplyPreview(replyId);
         String receiverUuid = preview.getAuthorUuid();
         String creationSnippet = ContentUtils.buildCommentContentSnippet(preview.getContent());
-
         if (receiverUuid.equals(currUserUuid)) {
             return;
         }
-
-        LikeEvent event = buildLikeEvent(currUserUuid, receiverUuid, replyId, REPLY, creationSnippet);
-
+        LikeEvent event = buildLikeEvent(postId, currUserUuid, receiverUuid, replyId, REPLY, creationSnippet);
         likeProducer.sendLikeEvent(event);
     }
 
-    private LikeEvent buildLikeEvent(String currUserUuid, String receiverUuid, Long creationId,
+    private LikeEvent buildLikeEvent(Long postId, String currUserUuid, String receiverUuid, Long creationId,
                                      LikeCreationType creationType, String creationSnippet) {
         LikeEvent event = new LikeEvent();
         event.setEventId(UUID.randomUUID().toString());
+        event.setPostId(postId);
         event.setActorUuid(currUserUuid);
         event.setReceiverUuid(receiverUuid);
         event.setCreationType(creationType);

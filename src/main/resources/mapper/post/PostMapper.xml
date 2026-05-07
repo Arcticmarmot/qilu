@@ -70,6 +70,47 @@
           and p.user_uuid = #{currUserUuid}
     </select>
 
+    <select id="selectPostByIds" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
+        select
+            p.id,
+            p.user_uuid as userUuid,
+            u.nickname as nickname,
+            p.title,
+            p.visibility as visibility,
+            p.like_count as likeCount,
+            p.comment_count as commentCount,
+            p.content_snippet as contentSnippet,
+            case
+                when l.id is not null then true
+                else false
+                end as likedByMe,
+            p.created_at as createdAt
+        from (select
+                  id,
+                  user_uuid,
+                  title,
+                  content,
+                  visibility,
+                  like_count,
+                  comment_count,
+                  content_snippet,
+                  created_at
+              from post
+              where status = 1
+                and visibility = 1
+                and id in
+                <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+                    #{postId}
+                </foreach>
+             ) p
+                 left join user u on p.user_uuid = u.uuid
+                 left join creation_like as l
+                           on  l.creation_type = 'POST'
+                           and l.creation_id = p.id
+                           and l.user_uuid = #{currUserUuid}
+                           and l.status = 1
+    </select>
+
     <select id="selectMyPostPage" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
         select
             p.id,

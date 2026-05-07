@@ -11,13 +11,13 @@ public class CommentEvent {
 
     private String eventId;
 
+    private Long postId;
+
     private Long commentId;
 
     private String actorUuid;
 
     private String receiverUuid;
-
-    private Long postId;
 
     private String postSnippet;
 
