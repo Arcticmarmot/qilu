@@ -53,6 +53,16 @@ logging:
     root: info
     com.marmot.qilu: debug
 
+storage:
+  endpoint: http://localhost:9000
+  public-endpoint: http://localhost:9000
+  access-key: qilu_minio
+  secret-key: qilu_minio
+  bucket: qilu-media
+  max-file-size: 10485760
+  post-image-prefix: post-image
+  avatar-prefix: avatar
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
