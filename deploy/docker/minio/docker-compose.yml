@@ -1,37 +1,18 @@
 services:
   minio:
-    # MinIO 对象存储服务端
-    # 9000: S3 API 端口，Spring Boot 后端通过这个端口上传、删除、访问对象
-    # 9001: 控制台端口，浏览器访问 http://localhost:9001 管理 bucket 和文件
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
     container_name: qilu-minio
-
     ports:
       - "9000:9000"
       - "9001:9001"
-
     environment:
-      # MinIO root 用户，相当于本地开发环境的管理员 access key
-      # 可用于登录控制台，也可用于后端调用 S3 API
       MINIO_ROOT_USER: qilu-minio
-
-      # MinIO root 密码，相当于本地开发环境的管理员 secret key
-      # 生产环境不要把真实密钥提交到 git
       MINIO_ROOT_PASSWORD: qilu-minio
-
     volumes:
-      # MinIO 会把 bucket、object、元数据都存到容器内 /data
-      # 这里用 Docker volume 持久化 /data，删除容器不会丢文件
-      # 只有执行 docker compose down -v 或手动删除 volume 才会清空数据
       - minio-data:/data
-
-    # server /data 表示使用 /data 作为对象数据目录
-    # --console-address ":9001" 表示控制台监听 9001 端口
     command: server /data --console-address ":9001"
 
     restart: unless-stopped
 
 volumes:
-  # Docker 命名卷，实际数据由 Docker 管理
-  # 可通过 docker volume inspect 查看真实路径
   minio-data:
