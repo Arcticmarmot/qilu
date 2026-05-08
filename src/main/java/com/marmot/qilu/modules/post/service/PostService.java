@@ -8,7 +8,9 @@ import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import com.marmot.qilu.modules.post.vo.PostPreview;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface PostService {
 
@@ -16,7 +18,9 @@ public interface PostService {
 
     String getAuthorUuid(Long postId);
 
-    List<PostPageItemVO> getPostsByIds(List<Long> postIds);
+    List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds);
+
+    Map<Long, LocalDateTime> getPublicPostCreatedAtMapByIds(List<Long> postIds);
 
     PostPreview getPostPreview(Long postId);
 

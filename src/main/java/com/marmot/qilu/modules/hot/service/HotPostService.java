@@ -16,5 +16,7 @@ public interface HotPostService {
 
     void increaseByReply(ReplyEvent event);
 
-    List<PostPageItemVO> getHotPosts(String range, PostPageQueryDTO dto);
+    List<PostPageItemVO> getHotPosts(PostPageQueryDTO dto);
+
+    void rebuildHotPostRank();
 }

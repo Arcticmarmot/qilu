@@ -2,6 +2,7 @@ package com.marmot.qilu.modules.post.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.marmot.qilu.modules.post.entity.Post;
+import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPreview;
@@ -17,7 +18,9 @@ public interface PostMapper extends BaseMapper<Post> {
 
     String selectUserUuidById(@Param("postId") Long postId);
 
-    List<PostPageItemVO> selectPostByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds);
+    List<PostPageItemVO> selectPublicPostByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds);
+
+    List<PostCreatedAtItem> selectPublicPostCreatedAtItemByIds(@Param("postIds") List<Long> postIds);
 
     PostPreview selectPostPreviewById(@Param("postId") Long postId);
 

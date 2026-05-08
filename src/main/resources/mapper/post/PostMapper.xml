@@ -70,7 +70,7 @@
           and p.user_uuid = #{currUserUuid}
     </select>
 
-    <select id="selectPostByIds" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
+    <select id="selectPublicPostByIds" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
         select
             p.id,
             p.user_uuid as userUuid,
@@ -109,6 +109,19 @@
                            and l.creation_id = p.id
                            and l.user_uuid = #{currUserUuid}
                            and l.status = 1
+    </select>
+
+    <select id="selectPublicPostCreatedAtItemByIds" resultType="com.marmot.qilu.modules.post.model.PostCreatedAtItem">
+        select
+            id,
+            created_at as createdAt
+        from post
+        where status = 1
+        and visibility = 1
+        and id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
     </select>
 
     <select id="selectMyPostPage" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">

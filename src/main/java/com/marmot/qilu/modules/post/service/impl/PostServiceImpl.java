@@ -11,11 +11,9 @@ import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
 import com.marmot.qilu.modules.post.entity.Post;
 import com.marmot.qilu.modules.post.mapper.PostMapper;
+import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
 import com.marmot.qilu.modules.post.service.PostService;
-import com.marmot.qilu.modules.post.vo.PostDetailVO;
-import com.marmot.qilu.modules.post.vo.PostPageItemVO;
-import com.marmot.qilu.modules.post.vo.PostPageVO;
-import com.marmot.qilu.modules.post.vo.PostPreview;
+import com.marmot.qilu.modules.post.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,10 +55,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostPageItemVO> getPostsByIds(List<Long> postIds) {
+    public List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds) {
         String currUserUuid = UserContext.requireUuid();
 
-        List<PostPageItemVO> posts =  postMapper.selectPostByIds(currUserUuid, postIds);
+        List<PostPageItemVO> posts =  postMapper.selectPublicPostByIds(currUserUuid, postIds);
 
         Map<Long, PostPageItemVO> postMap = posts.stream().collect(Collectors.toMap(PostPageItemVO::getId, item -> item));
 
@@ -68,6 +66,16 @@ public class PostServiceImpl implements PostService {
                 .map(postMap::get)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override
+    public Map<Long, LocalDateTime> getPublicPostCreatedAtMapByIds(List<Long> postIds) {
+        if (postIds == null || postIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return postMapper.selectPublicPostCreatedAtItemByIds(postIds).stream()
+                .collect(Collectors.toMap(PostCreatedAtItem::getId, PostCreatedAtItem::getCreatedAt));
     }
 
     @Override
