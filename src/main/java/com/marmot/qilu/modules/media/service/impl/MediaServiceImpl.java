@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -78,6 +79,12 @@ public class MediaServiceImpl implements MediaFileService {
                 originalFilename,
                 size
         );
+    }
+
+    @Override
+    public int markMediaFilesUsed(List<Long> mediaIds) {
+        String currUserUuid = UserContext.requireUuid();
+        return mediaFileMapper.markMediaFilesUsed(currUserUuid, mediaIds);
     }
 
     private MediaFile buildUnusedMediaFile(String currUserUuid, String objectKey, String url, String contentType, long size) {

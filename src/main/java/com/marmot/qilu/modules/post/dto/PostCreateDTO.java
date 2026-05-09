@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Schema(description = "创建帖子请求")
@@ -24,4 +26,8 @@ public class PostCreateDTO {
     @Min(value = 1, message = "visibility must be 1 or 2")
     @Max(value = 2, message = "visibility must be 1 or 2")
     private Integer visibility;
+
+    @Schema(description = "媒体id组")
+    @Size(max = 10, message = "media count not exceed 9")
+    private List<Long> mediaIds;
 }

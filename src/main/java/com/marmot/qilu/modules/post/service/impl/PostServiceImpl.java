@@ -6,11 +6,14 @@ import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ForbiddenException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.common.util.ContentUtils;
+import com.marmot.qilu.modules.media.service.MediaFileService;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
 import com.marmot.qilu.modules.post.entity.Post;
+import com.marmot.qilu.modules.post.entity.PostMedia;
 import com.marmot.qilu.modules.post.mapper.PostMapper;
+import com.marmot.qilu.modules.post.mapper.PostMediaMapper;
 import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.*;
@@ -35,6 +38,8 @@ public class PostServiceImpl implements PostService {
     private static final int MAX_POST_CONTENT_LENGTH = 4096;
 
     private final PostMapper postMapper;
+    private final PostMediaMapper postMediaMapper;
+    private final MediaFileService mediaFileService;
 
     @Override
     public void checkPostInteractable(Long postId, String currUserUuid) {
@@ -102,6 +107,9 @@ public class PostServiceImpl implements PostService {
         String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
         validateContent(contentSnippet);
 
+        List<Long> mediaIds = dto.getMediaIds();
+        validateMediaIds(mediaIds);
+
         Post post = new Post();
         post.setUserUuid(currUserUuid);
         post.setTitle(dto.getTitle());
@@ -113,7 +121,46 @@ public class PostServiceImpl implements PostService {
         if(inserted != 1) {
             throw new IllegalStateException("create post failed");
         }
+
+        if(mediaIds != null && !mediaIds.isEmpty()) {
+            bindPostMedia(post.getId(), mediaIds);
+
+            int updated = mediaFileService.markMediaFilesUsed(mediaIds);
+            if(updated != mediaIds.size()) {
+                throw new BadRequestException("media ids are invalid");
+            }
+        }
         log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
+    }
+
+    private void bindPostMedia(Long postId, List<Long> mediaIds) {
+        for(int i = 0; i < mediaIds.size(); i++) {
+            PostMedia postMedia = new PostMedia();
+            postMedia.setPostId(postId);
+            postMedia.setMediaId(mediaIds.get(i));
+            postMedia.setSortOrder(i);
+
+            int inserted = postMediaMapper.insert(postMedia);
+            if(inserted != 1) {
+                throw new IllegalStateException("create post media failed");
+            }
+        }
+    }
+
+    private void validateMediaIds(List<Long> mediaIds) {
+        if (mediaIds == null || mediaIds.isEmpty()) {
+            return;
+        }
+
+        if (mediaIds.size() > 10) {
+            throw new BadRequestException("media count must not exceed 10");
+        }
+
+        for (Long mediaId : mediaIds) {
+            if (mediaId == null || mediaId <= 0) {
+                throw new BadRequestException("media ids are invalid");
+            }
+        }
     }
 
     @Override
