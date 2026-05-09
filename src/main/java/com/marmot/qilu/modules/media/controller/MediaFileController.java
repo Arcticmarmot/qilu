@@ -1,8 +1,8 @@
 package com.marmot.qilu.modules.media.controller;
 
 import com.marmot.qilu.common.api.ApiResponse;
-import com.marmot.qilu.modules.media.service.MediaService;
-import com.marmot.qilu.modules.media.vo.MediaUploadVO;
+import com.marmot.qilu.modules.media.service.MediaFileService;
+import com.marmot.qilu.modules.media.vo.MediaFileUploadVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +16,17 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/media")
 @RequiredArgsConstructor
-public class MediaController {
+public class MediaFileController {
 
-    private final MediaService mediaService;
+    private final MediaFileService mediaFileService;
 
     @Operation(
             summary = "上传帖子图片",
             description = "将当前登录用户上传的图片保存到对象存储中"
     )
     @PostMapping("/images")
-    public ApiResponse<MediaUploadVO> uploadPostImage(@RequestPart("file")MultipartFile file) {
-        MediaUploadVO vo = mediaService.uploadPostImage(file);
+    public ApiResponse<MediaFileUploadVO> uploadPostImage(@RequestPart("file")MultipartFile file) {
+        MediaFileUploadVO vo = mediaFileService.uploadPostImage(file);
         return ApiResponse.success(vo);
     }
 }

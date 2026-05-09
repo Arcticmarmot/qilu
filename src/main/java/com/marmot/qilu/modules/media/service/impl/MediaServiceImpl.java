@@ -3,8 +3,11 @@ package com.marmot.qilu.modules.media.service.impl;
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.storage.StorageProperties;
-import com.marmot.qilu.modules.media.service.MediaService;
-import com.marmot.qilu.modules.media.vo.MediaUploadVO;
+import com.marmot.qilu.modules.media.constant.MediaFileStatus;
+import com.marmot.qilu.modules.media.entity.MediaFile;
+import com.marmot.qilu.modules.media.mapper.MediaFileMapper;
+import com.marmot.qilu.modules.media.service.MediaFileService;
+import com.marmot.qilu.modules.media.vo.MediaFileUploadVO;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +22,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MediaServiceImpl implements MediaService {
+public class MediaServiceImpl implements MediaFileService {
 
     private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
             "image/jpeg",
@@ -27,11 +30,12 @@ public class MediaServiceImpl implements MediaService {
             "image/webp"
     );
 
+    private final MediaFileMapper mediaFileMapper;
     private final MinioClient minioClient;
     private final StorageProperties storageProperties;
 
     @Override
-    public MediaUploadVO uploadPostImage(MultipartFile file) {
+    public MediaFileUploadVO uploadPostImage(MultipartFile file) {
         validateImageFile(file);
         String currUserUuid = UserContext.requireUuid();
 
@@ -42,6 +46,52 @@ public class MediaServiceImpl implements MediaService {
         String objectKey = buildObjectKey(currUserUuid, originalFilename);
         String url = buildPublicUrl(objectKey);
 
+        uploadToObjectStorage(file, objectKey, contentType, size);
+
+        MediaFile mediaFile = buildUnusedMediaFile(
+                currUserUuid,
+                objectKey,
+                url,
+                contentType,
+                size
+        );
+
+        int inserted = mediaFileMapper.insert(mediaFile);
+
+        if(inserted != 1) {
+            throw new IllegalStateException("create media file failed");
+        }
+
+        log.info(
+                "upload post image success, userUuid={}, mediaId={}, objectKey={}, size={}",
+                currUserUuid,
+                mediaFile.getId(),
+                objectKey,
+                size
+        );
+
+        return new MediaFileUploadVO(
+                mediaFile.getId(),
+                objectKey,
+                url,
+                contentType,
+                originalFilename,
+                size
+        );
+    }
+
+    private MediaFile buildUnusedMediaFile(String currUserUuid, String objectKey, String url, String contentType, long size) {
+        MediaFile mediaFile = new MediaFile();
+        mediaFile.setUserUuid(currUserUuid);
+        mediaFile.setObjectKey(objectKey);
+        mediaFile.setUrl(url);
+        mediaFile.setContentType(contentType);
+        mediaFile.setSize(size);
+        mediaFile.setStatus(MediaFileStatus.UNUSED);
+        return mediaFile;
+    }
+
+    private void uploadToObjectStorage(MultipartFile file, String objectKey, String contentType, long size) {
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -51,16 +101,8 @@ public class MediaServiceImpl implements MediaService {
                             .contentType(contentType)
                             .build()
             );
-            log.info("upload image success, userUuid={}, objectKey={}, size={}", currUserUuid, objectKey, size);
-            return new MediaUploadVO(
-                    objectKey,
-                    url,
-                    originalFilename,
-                    contentType,
-                    size
-            );
         } catch (Exception e) {
-            log.error("upload image failed, userUuid={}, objectKey={}", currUserUuid, objectKey, e);
+            log.error("upload object to storage failed, objectKey={}", objectKey, e);
             throw new IllegalStateException("upload image failed");
         }
     }
