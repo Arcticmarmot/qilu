@@ -1,5 +1,6 @@
 package com.marmot.qilu.modules.post.service;
 
+import com.marmot.qilu.modules.post.dto.PostBranchCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
@@ -25,6 +26,8 @@ public interface PostService {
     PostPreview getPostPreview(Long postId);
 
     void createPost(PostCreateDTO dto);
+
+    void createBranchPost(Long parentPostId, PostBranchCreateDTO dto);
 
     PostDetailVO getMyPostDetail(Long postId);
 

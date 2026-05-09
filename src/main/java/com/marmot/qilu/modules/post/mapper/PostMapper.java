@@ -6,6 +6,7 @@ import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPreview;
+import com.marmot.qilu.modules.post.vo.PostTreeInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +18,8 @@ public interface PostMapper extends BaseMapper<Post> {
     Integer existsInteractablePostById(@Param("postId") Long postId, @Param("currUserUuid") String currUserUuid);
 
     String selectUserUuidById(@Param("postId") Long postId);
+
+    PostTreeInfo selectPostTreeInfo(@Param("postId") Long postId);
 
     List<PostPageItemVO> selectPublicPostByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds);
 

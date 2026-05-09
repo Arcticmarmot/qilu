@@ -15,6 +15,12 @@ public class Post {
     @TableId(type= IdType.AUTO)
     private Long id;
 
+    private Long parentId;
+
+    private Long rootId;
+
+    private String branchPrompt;
+
     private String userUuid;
 
     private String title;

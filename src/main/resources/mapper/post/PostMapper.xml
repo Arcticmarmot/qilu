@@ -23,6 +23,20 @@
           and status = 1
         limit 1
     </select>
+    
+    <select id="selectPostTreeInfo" resultType="com.marmot.qilu.modules.post.vo.PostTreeInfo">
+        select
+            id,
+            parent_id as parentId,
+            root_id as rootId,
+            user_uuid as userUuid,
+            visibility,
+            status
+        from post
+        where id = #{postId}
+          and status = 1
+            limit 1
+    </select>
 
     <select id="selectPostPreviewById" resultType="com.marmot.qilu.modules.post.vo.PostPreview">
         select

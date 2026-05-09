@@ -1,5 +1,8 @@
 CREATE TABLE `post` (
                         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '帖子ID',
+                        `parent_id` BIGINT NULL COMMENT '父帖子ID',
+                        `root_id` BIGINT NULL COMMENT '根帖子ID',
+                        `branch_prompt` VARCHAR(128) NULL COMMENT '分支对话内容',
                         `user_uuid` CHAR(36) NOT NULL COMMENT '作者用户ID',
                         `title` VARCHAR(128) DEFAULT NULL COMMENT '标题',
                         `content` TEXT NOT NULL COMMENT '正文内容',
@@ -15,5 +18,7 @@ CREATE TABLE `post` (
                         KEY `idx_user_id` (`user_uuid`),
                         KEY `idx_status_created_at` (`status`, `created_at`),
                         KEY `idx_status_visibility_created_at` (`status`, `visibility`, `created_at`),
-                        KEY `idx_user_status_created_at` (`user_uuid`, `status`, `created_at`)
+                        KEY `idx_user_status_created_at` (`user_uuid`, `status`, `created_at`),
+                        KEY `idx_post_parent_status_created` (`parent_id`, `status`, `created_at`),
+                        KEY `idx_post_root_status_created` (`root_id`, `status`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='帖子主表';

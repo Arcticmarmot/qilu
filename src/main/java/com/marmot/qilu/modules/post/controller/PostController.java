@@ -1,6 +1,7 @@
 package com.marmot.qilu.modules.post.controller;
 
 import com.marmot.qilu.common.api.ApiResponse;
+import com.marmot.qilu.modules.post.dto.PostBranchCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
@@ -27,6 +28,15 @@ public class PostController {
     @PostMapping
     public ApiResponse<Long> createPost(@Valid @RequestBody PostCreateDTO dto) {
         postService.createPost(dto);
+        return ApiResponse.success();
+    }
+
+    @Operation(summary = "创建分支帖子", description = "在指定父帖子下创建一个分支帖子，parentId 和 rootId 由后端根据父帖子自动确定")
+    @PostMapping("/{postId}/branches")
+    public ApiResponse<Void> createBranchPost(
+            @Parameter(description = "父帖子ID") @PathVariable Long postId,
+            @Valid @RequestBody PostBranchCreateDTO dto) {
+        postService.createBranchPost(postId, dto);
         return ApiResponse.success();
     }
 

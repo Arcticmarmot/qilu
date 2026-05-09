@@ -7,6 +7,7 @@ import com.marmot.qilu.common.exception.ForbiddenException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.media.service.MediaFileService;
+import com.marmot.qilu.modules.post.dto.PostBranchCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostCreateDTO;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
@@ -36,6 +37,7 @@ public class PostServiceImpl implements PostService {
     private static final int STATUS_DELETED = 0;
     private static final int STATUS_NORMAL = 1;
     private static final int MAX_POST_CONTENT_LENGTH = 4096;
+    private static final int MAX_BRANCH_PROMPT_LENGTH = 128;
 
     private final PostMapper postMapper;
     private final PostMediaMapper postMediaMapper;
@@ -118,9 +120,29 @@ public class PostServiceImpl implements PostService {
         post.setContentSnippet(contentSnippet);
         post.setVisibility(dto.getVisibility());
         post.setStatus(STATUS_NORMAL);
+        post.setParentId(null);
+        post.setRootId(null);
+        post.setBranchPrompt(null);
+
         int inserted = postMapper.insert(post);
         if(inserted != 1) {
             throw new IllegalStateException("create post failed");
+        }
+
+        Long postId = post.getId();
+        if(postId == null) {
+            throw new IllegalStateException("post id is not generated");
+        }
+
+        int updatedRootId = postMapper.update(
+                null,
+                new LambdaUpdateWrapper<Post>()
+                        .eq(Post::getId, postId)
+                        .set(Post::getRootId, postId)
+        );
+
+        if(updatedRootId != 1) {
+            throw new IllegalStateException("update post root id failed");
         }
 
         if(mediaIds != null && !mediaIds.isEmpty()) {
@@ -133,6 +155,64 @@ public class PostServiceImpl implements PostService {
         }
         log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
     }
+
+    @Override
+    public void createBranchPost(Long parentPostId, PostBranchCreateDTO dto) {
+        validatePostId(parentPostId);
+
+        if(dto == null) {
+            throw new BadRequestException("request body must not be null");
+        }
+
+        String currUserUuid = UserContext.requireUuid();
+        String normBranchPrompt = ContentUtils.normalizeContent(dto.getBranchPrompt());
+        validateBranchPrompt(normBranchPrompt);
+        String normContent = ContentUtils.normalizeContent(dto.getContent());
+        String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
+        validateContent(contentSnippet);
+
+        List<Long> mediaIds = dto.getMediaIds();
+        validateMediaIds(mediaIds);
+
+        PostTreeInfo parentInfo = postMapper.selectPostTreeInfo(parentPostId);
+        if(parentInfo == null) {
+            throw new NotFoundException("parent post not found");
+        }
+
+        Long rootId = parentInfo.getRootId();
+        if(rootId == null) {
+            rootId = parentInfo.getId();
+        }
+
+        Post post = new Post();
+        post.setUserUuid(currUserUuid);
+        post.setTitle(dto.getTitle());
+        post.setContent(normContent);
+        post.setContentSnippet(contentSnippet);
+        post.setVisibility(dto.getVisibility());
+        post.setStatus(STATUS_NORMAL);
+
+        // branch post
+        post.setParentId(parentInfo.getId());
+        post.setRootId(rootId);
+        post.setBranchPrompt(normBranchPrompt);
+
+        int inserted = postMapper.insert(post);
+        if(inserted != 1) {
+            throw new IllegalStateException("create post branch failed");
+        }
+
+        if(mediaIds != null && !mediaIds.isEmpty()) {
+            bindPostMedia(post.getId(), mediaIds);
+
+            int updated = mediaFileService.markMediaFilesUsed(mediaIds);
+            if(updated != mediaIds.size()) {
+                throw new BadRequestException("media ids are invalid");
+            }
+        }
+
+        log.info("create post branch success, userUuid={}, parentPostId={}, postId={}",
+                currUserUuid, parentPostId, post.getId());    }
 
     private void bindPostMedia(Long postId, List<Long> mediaIds) {
         for(int i = 0; i < mediaIds.size(); i++) {
@@ -353,6 +433,16 @@ public class PostServiceImpl implements PostService {
         }
         if (content.length() > MAX_POST_CONTENT_LENGTH) {
             throw new BadRequestException("content too long");
+        }
+    }
+
+    private void validateBranchPrompt(String branchPrompt) {
+        if(branchPrompt == null || branchPrompt.isEmpty()) {
+            throw new BadRequestException("branch prompt must not be blank");
+        }
+
+        if(branchPrompt.length() > MAX_BRANCH_PROMPT_LENGTH) {
+            throw new BadRequestException("branch prompt too long");
         }
     }
 }
