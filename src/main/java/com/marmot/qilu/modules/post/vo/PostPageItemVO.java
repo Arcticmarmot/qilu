@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,9 @@ public class PostPageItemVO {
 
     @Schema(description = "帖子标题", example = "春天")
     private String title;
+
+    @Schema(description = "帖子封面", example = "https://xxx.com/xxx")
+    private String coverUrl;
 
     @Schema(description = "正文预览", example = "今天阳光很好...")
     private String contentSnippet;

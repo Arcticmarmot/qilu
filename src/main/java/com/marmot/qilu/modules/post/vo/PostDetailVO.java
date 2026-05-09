@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,9 @@ public class PostDetailVO {
 
     @Schema(description = "帖子标题", example = "春天")
     private String title;
+
+    @Schema(description = "帖子图片信息组")
+    private List<PostMediaVO> mediaList;
 
     @Schema(description = "帖子正文")
     private String content;

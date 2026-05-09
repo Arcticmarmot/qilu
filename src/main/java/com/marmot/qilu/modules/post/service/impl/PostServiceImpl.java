@@ -63,9 +63,10 @@ public class PostServiceImpl implements PostService {
     public List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds) {
         String currUserUuid = UserContext.requireUuid();
 
-        List<PostPageItemVO> posts =  postMapper.selectPublicPostByIds(currUserUuid, postIds);
+        List<PostPageItemVO> records =  postMapper.selectPublicPostByIds(currUserUuid, postIds);
+        fillPostPageCoverUrl(records);
 
-        Map<Long, PostPageItemVO> postMap = posts.stream().collect(Collectors.toMap(PostPageItemVO::getId, item -> item));
+        Map<Long, PostPageItemVO> postMap = records.stream().collect(Collectors.toMap(PostPageItemVO::getId, item -> item));
 
         return postIds.stream()
                 .map(postMap::get)
@@ -230,6 +231,8 @@ public class PostServiceImpl implements PostService {
         if(vo == null) {
             throw new NotFoundException("post not found");
         }
+
+        fillPostDetailMediaList(vo);
         return vo;
     }
 
@@ -243,6 +246,7 @@ public class PostServiceImpl implements PostService {
         Long total = postMapper.countMyPosts(currUserUuid);
 
         List<PostPageItemVO> records = postMapper.selectMyPostPage(offset, size, currUserUuid);
+        fillPostPageCoverUrl(records);
         PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
         pageVO.setCurrent(current);
         pageVO.setSize(size);
@@ -259,6 +263,7 @@ public class PostServiceImpl implements PostService {
         if(vo == null) {
             throw new NotFoundException("post not found");
         }
+        fillPostDetailMediaList(vo);
         return vo;
     }
 
@@ -272,12 +277,48 @@ public class PostServiceImpl implements PostService {
         Long total = postMapper.countPublicPosts();
 
         List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size, currUserUuid);
+        fillPostPageCoverUrl(records);
         PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
         pageVO.setCurrent(current);
         pageVO.setSize(size);
         pageVO.setTotal(total);
         pageVO.setRecords(records);
         return pageVO;
+    }
+
+    private void fillPostPageCoverUrl(List<PostPageItemVO> records) {
+        if(records == null || records.isEmpty()) {
+            return;
+        }
+
+        List<Long> postIds = records.stream()
+                .map(PostPageItemVO::getId)
+                .filter(Objects::nonNull)
+                .toList();
+
+        if(postIds.isEmpty()) {
+            return;
+        }
+
+        List<PostMediaVO> coverList = postMediaMapper.selectCoverMediaByPostIds(postIds);
+
+        Map<Long, String> coverUrlMap = coverList.stream().collect(
+                Collectors.toMap(PostMediaVO::getPostId, PostMediaVO::getUrl,
+                        (oldValue, newValue) -> oldValue)
+        );
+
+        for(PostPageItemVO record: records) {
+            record.setCoverUrl(coverUrlMap.get(record.getId()));
+        }
+    }
+
+    private void fillPostDetailMediaList(PostDetailVO vo) {
+        if(vo == null) {
+            return;
+        }
+
+        List<PostMediaVO> mediaList = postMediaMapper.selectPostMediaListById(vo.getId());
+        vo.setMediaList(mediaList);
     }
 
     @Override

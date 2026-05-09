@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.marmot.qilu.modules.post.mapper.PostMediaMapper">
+    <select id="selectCoverMediaByPostIds" resultType="com.marmot.qilu.modules.post.vo.PostMediaVO">
+        select
+            pm.post_id as postId,
+            mf.id as mediaId,
+            mf.url as url,
+            pm.sort_order as sortOrder
+        from post_media pm
+            inner join media_file mf
+                on mf.id = pm.media_id
+                and mf.status = 1
+        where pm.sort_order = 0
+            and pm.post_id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </select>
+
+    <select id="selectPostMediaListById" resultType="com.marmot.qilu.modules.post.vo.PostMediaVO">
+        select
+            pm.post_id as postId,
+            mf.id as mediaId,
+            mf.url as url,
+            pm.sort_order as sortOrder
+        from post_media pm
+            inner join media_file mf
+                on mf.id = pm.media_id
+                and mf.status = 1
+        where pm.post_id = #{postId}
+        order by pm.sort_order asc
+    </select>
+</mapper>
