@@ -14,13 +14,16 @@ public class PostUpdateDTO {
     @Size(max = 128, message = "title length must not exceed 128")
     private String title;
 
+    @Schema(description = "分支对话", example = "得到的和失去的一样多")
+    @Size(max = 128, message = "title length must not exceed 128")
+    private String branchPrompt;
+
     @Schema(description = "帖子正文", example = "全世界的老虎全部融化成黄油")
     @NotBlank(message = "content must not be blank")
     @Size(max = 4096, message = "content length must not exceed 4096")
     private String content;
 
     @Schema(description = "可见性：1公开 2仅自己", example = "2")
-    @NotNull(message = "visibility must not be null")
     @Min(value = 1, message = "visibility must be 1 or 2")
     @Max(value = 2, message = "visibility must be 1 or 2")
     private Integer visibility;

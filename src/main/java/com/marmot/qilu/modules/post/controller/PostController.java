@@ -46,20 +46,12 @@ public class PostController {
         return ApiResponse.success();
     }
 
-    @Operation(summary = "更新分支帖子基本信息", description = "更新当前登录用户自己的分支帖子内容和分支提示语")
-    @PutMapping("/{postId}/branch")
-    public ApiResponse<Void> updateBranchPost(@Parameter(description = "分支帖子ID") @PathVariable Long postId,
-                                              @Valid @RequestBody BranchPostUpdateDTO dto) {
-        postService.updatePostBranch(postId, dto);
-        return ApiResponse.success();
-    }
-
-    @Operation(summary = "更新帖子树结构", description = "移动帖子节点到新的父节点下，或将其独立为根节点")
-    @PutMapping("/{postId}/tree")
-    public ApiResponse<Void> updatePostTree(
+    @Operation(summary = "更新帖子父节点", description = "移动帖子节点到新的父节点下，或将其独立为根节点")
+    @PutMapping("/{postId}/parent")
+    public ApiResponse<Void> updatePostParent(
             @Parameter(description = "帖子节点ID") @PathVariable Long postId,
-            @Valid @RequestBody PostTreeUpdateDTO dto) {
-        postService.updatePostTree(postId, dto);
+            @Valid @RequestBody PostParentUpdateDTO dto) {
+        postService.updatePostParent(postId, dto);
         return ApiResponse.success();
     }
 

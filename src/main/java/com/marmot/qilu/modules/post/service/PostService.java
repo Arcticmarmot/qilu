@@ -5,7 +5,6 @@ import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import com.marmot.qilu.modules.post.model.PostPreview;
-import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,9 +18,7 @@ public interface PostService {
 
     void updatePost(Long postId, PostUpdateDTO dto);
 
-    void updatePostBranch(Long postId, BranchPostUpdateDTO dto);
-
-    void updatePostTree(Long postId, PostTreeUpdateDTO dto);
+    void updatePostParent(Long postId, PostParentUpdateDTO dto);
 
     void deletePost(Long postId);
 

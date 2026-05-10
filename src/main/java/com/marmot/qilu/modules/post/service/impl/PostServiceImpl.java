@@ -167,20 +167,49 @@ public class PostServiceImpl implements PostService {
         String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
         validateContent(contentSnippet);
 
-        int updated = postMapper.update(
-                null,
-                new LambdaUpdateWrapper<Post>()
-                        .eq(Post::getId, postId)
-                        .eq(Post::getUserUuid, currUserUuid)
-                        .eq(Post::getStatus, STATUS_NORMAL)
-                        .eq(Post::getRootId, postId)
-                        .isNull(Post::getParentId)
-                        .isNull(Post::getBranchPrompt)
-                        .set(Post::getTitle, dto.getTitle())
-                        .set(Post::getContent, normContent)
-                        .set(Post::getContentSnippet, contentSnippet)
-                        .set(Post::getVisibility, dto.getVisibility())
-        );
+        PostTreeInfo currTreeInfo = postMapper.selectPostTreeInfo(postId);
+        if(currTreeInfo == null || !Objects.equals(currTreeInfo.getUserUuid(), currUserUuid)) {
+            throw new NotFoundException("post not found or no permission");
+        }
+
+        Long parentId = currTreeInfo.getParentId();
+        int updated;
+        if(parentId == null) {
+            Integer visibility = dto.getVisibility();
+            validateVisibility(visibility);
+            updated = postMapper.update(
+                    null,
+                    new LambdaUpdateWrapper<Post>()
+                            .eq(Post::getId, postId)
+                            .eq(Post::getUserUuid, currUserUuid)
+                            .eq(Post::getStatus, STATUS_NORMAL)
+                            .eq(Post::getRootId, postId)
+                            .isNull(Post::getParentId)
+                            .isNull(Post::getBranchPrompt)
+                            .set(Post::getTitle, dto.getTitle())
+                            .set(Post::getContent, normContent)
+                            .set(Post::getContentSnippet, contentSnippet)
+                            .set(Post::getVisibility, dto.getVisibility())
+            );
+
+        } else {
+            String branchPrompt = ContentUtils.normalizeContent(dto.getBranchPrompt());
+            validateBranchPrompt(branchPrompt);
+            updated = postMapper.update(
+                    null,
+                    new LambdaUpdateWrapper<Post>()
+                            .eq(Post::getId, postId)
+                            .eq(Post::getUserUuid, currUserUuid)
+                            .eq(Post::getStatus, STATUS_NORMAL)
+                            .isNotNull(Post::getParentId)
+                            .isNotNull(Post::getBranchPrompt)
+                            .isNotNull(Post::getRootId)
+                            .set(Post::getBranchPrompt, branchPrompt)
+                            .set(Post::getTitle, dto.getTitle())
+                            .set(Post::getContent, normContent)
+                            .set(Post::getContentSnippet, contentSnippet)
+            );
+        }
 
         if(updated != 1) {
             throw new IllegalStateException("update post failed");
@@ -191,46 +220,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updatePostBranch(Long postId, BranchPostUpdateDTO dto) {
-        validatePostId(postId);
-        if(dto == null) {
-            throw new BadRequestException("request body must not be null");
-        }
-
-        String currUserUuid = UserContext.requireUuid();
-
-        String normContent = ContentUtils.normalizeContent(dto.getContent());
-        String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
-        validateContent(contentSnippet);
-
-        String branchPrompt = ContentUtils.normalizeContent(dto.getBranchPrompt());
-        validateBranchPrompt(branchPrompt);
-
-        int updated = postMapper.update(
-                null,
-                new LambdaUpdateWrapper<Post>()
-                        .eq(Post::getId, postId)
-                        .eq(Post::getUserUuid, currUserUuid)
-                        .eq(Post::getStatus, STATUS_NORMAL)
-                        .isNotNull(Post::getParentId)
-                        .isNotNull(Post::getBranchPrompt)
-                        .isNotNull(Post::getRootId)
-                        .set(Post::getBranchPrompt, branchPrompt)
-                        .set(Post::getTitle, dto.getTitle())
-                        .set(Post::getContent, normContent)
-                        .set(Post::getContentSnippet, contentSnippet)
-        );
-
-        if(updated != 1) {
-            throw new IllegalStateException("update post failed");
-        }
-
-        log.info("update post branch success, userUuid={}, postId={}", currUserUuid, postId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updatePostTree(Long postId, PostTreeUpdateDTO dto) {
+    public void updatePostParent(Long postId, PostParentUpdateDTO dto) {
         validatePostId(postId);
 
         if(dto == null) {
@@ -288,7 +278,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private void updatePostAsBranch(Long postId, Long parentId, String currUserUuid,
-                                    PostTreeInfo currTreeInfo, PostTreeUpdateDTO dto) {
+                                    PostTreeInfo currTreeInfo, PostParentUpdateDTO dto) {
         validatePostId(parentId);
 
         if(Objects.equals(postId, parentId)) {
@@ -561,6 +551,17 @@ public class PostServiceImpl implements PostService {
     private void validatePostId(Long postId) {
         if(postId == null || postId <= 0) {
             throw new BadRequestException("post id must not be blank");
+        }
+    }
+
+
+    private void validateVisibility(Integer visibility) {
+        if(visibility == null) {
+            throw new BadRequestException("visibility must not be blank");
+        }
+
+        if(visibility != 1 && visibility != 2) {
+            throw new BadRequestException("visibility can only be 1 or 2");
         }
     }
 
