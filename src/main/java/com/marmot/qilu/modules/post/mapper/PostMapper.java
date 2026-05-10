@@ -9,6 +9,7 @@ import com.marmot.qilu.modules.post.model.PostPreview;
 import com.marmot.qilu.modules.post.model.PostTreeInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Property;
 
 import java.util.List;
 
@@ -17,9 +18,15 @@ public interface PostMapper extends BaseMapper<Post> {
 
     Integer existsInteractablePostById(@Param("postId") Long postId, @Param("currUserUuid") String currUserUuid);
 
+    Integer existsNormalBranchPostById(@Param("postId") Long postId);
+
     String selectUserUuidById(@Param("postId") Long postId);
 
     PostTreeInfo selectPostTreeInfo(@Param("postId") Long postId);
+
+    List<Long> selectSubtreePostIds(@Param("postId") Long postId);
+
+    int updateRootIdByIds(@Param("postIds") List<Long> postIds, @Param("rootId") Long rootId);
 
     List<PostPageItemVO> selectPublicPostByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds);
 

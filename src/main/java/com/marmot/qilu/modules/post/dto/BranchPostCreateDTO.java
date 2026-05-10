@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PostBranchCreateDTO {
+public class BranchPostCreateDTO {
 
     @Schema(description = "分支对话", example = "得到的和失去的一样多")
     @Size(max = 128, message = "title length must not exceed 128")
@@ -23,12 +23,6 @@ public class PostBranchCreateDTO {
     @NotBlank(message = "content must not be blank")
     @Size(max = 4096, message = "content length must not exceed 4096")
     private String content;
-
-    @Schema(description = "可见性：1公开 2仅自己", example = "1")
-    @NotNull(message = "visibility must not be null")
-    @Min(value = 1, message = "visibility must be 1 or 2")
-    @Max(value = 2, message = "visibility must be 1 or 2")
-    private Integer visibility;
 
     @Schema(description = "媒体id组")
     @Size(max = 10, message = "media count not exceed 9")

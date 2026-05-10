@@ -1,17 +1,13 @@
 package com.marmot.qilu.modules.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ForbiddenException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.common.util.ContentUtils;
 import com.marmot.qilu.modules.media.service.MediaFileService;
-import com.marmot.qilu.modules.post.dto.PostBranchCreateDTO;
-import com.marmot.qilu.modules.post.dto.PostCreateDTO;
-import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
-import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
+import com.marmot.qilu.modules.post.dto.*;
 import com.marmot.qilu.modules.post.entity.Post;
 import com.marmot.qilu.modules.post.entity.PostMedia;
 import com.marmot.qilu.modules.post.mapper.PostMapper;
@@ -45,60 +41,6 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final PostMediaMapper postMediaMapper;
     private final MediaFileService mediaFileService;
-
-    @Override
-    public void checkPostInteractable(Long postId, String currUserUuid) {
-        Integer exists = postMapper.existsInteractablePostById(postId, currUserUuid);
-        if(exists == null) {
-            throw new ForbiddenException("post not found or interactable");
-        }
-    }
-
-    @Override
-    public String getAuthorUuid(Long postId) {
-        validatePostId(postId);
-        String authorUuid= postMapper.selectUserUuidById(postId);
-        if (authorUuid == null) {
-            throw new NotFoundException("post not found");
-        }
-        return authorUuid;
-    }
-
-    @Override
-    public List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds) {
-        String currUserUuid = UserContext.requireUuid();
-
-        List<PostPageItemVO> records =  postMapper.selectPublicPostByIds(currUserUuid, postIds);
-        fillPostPageCoverUrl(records);
-
-        Map<Long, PostPageItemVO> postMap = records.stream().collect(Collectors.toMap(PostPageItemVO::getId, item -> item));
-
-        return postIds.stream()
-                .map(postMap::get)
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    @Override
-    public Map<Long, LocalDateTime> getPublicPostCreatedAtMapByIds(List<Long> postIds) {
-        if (postIds == null || postIds.isEmpty()) {
-            return Map.of();
-        }
-
-        return postMapper.selectPublicPostCreatedAtItemByIds(postIds).stream()
-                .collect(Collectors.toMap(PostCreatedAtItem::getId, PostCreatedAtItem::getCreatedAt));
-    }
-
-    @Override
-    public PostPreview getPostPreview(Long postId) {
-        validatePostId(postId);
-
-        PostPreview preview = postMapper.selectPostPreviewById(postId);
-        if(preview == null) {
-            throw new NotFoundException("post not found");
-        }
-        return preview;
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -161,7 +103,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createBranchPost(Long parentPostId, PostBranchCreateDTO dto) {
+    public void createBranchPost(Long parentPostId, BranchPostCreateDTO dto) {
         validatePostId(parentPostId);
 
         if(dto == null) {
@@ -174,18 +116,12 @@ public class PostServiceImpl implements PostService {
         String normContent = ContentUtils.normalizeContent(dto.getContent());
         String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
         validateContent(contentSnippet);
-
         List<Long> mediaIds = dto.getMediaIds();
         validateMediaIds(mediaIds);
 
         PostTreeInfo parentInfo = postMapper.selectPostTreeInfo(parentPostId);
-        if(parentInfo == null) {
-            throw new NotFoundException("parent post not found");
-        }
-
-        Long rootId = parentInfo.getRootId();
-        if(rootId == null) {
-            rootId = parentInfo.getId();
+        if(parentInfo == null || !Objects.equals(parentInfo.getUserUuid(), currUserUuid)) {
+            throw new NotFoundException("parent post not found or no permission");
         }
 
         Post post = new Post();
@@ -193,13 +129,11 @@ public class PostServiceImpl implements PostService {
         post.setTitle(dto.getTitle());
         post.setContent(normContent);
         post.setContentSnippet(contentSnippet);
-        post.setVisibility(dto.getVisibility());
-        post.setStatus(STATUS_NORMAL);
-
-        // branch post
-        post.setParentId(parentInfo.getId());
-        post.setRootId(rootId);
         post.setBranchPrompt(normBranchPrompt);
+        post.setVisibility(parentInfo.getVisibility());
+        post.setStatus(parentInfo.getStatus());
+        post.setParentId(parentInfo.getId());
+        post.setRootId(parentInfo.getRootId());
 
         int inserted = postMapper.insert(post);
         if(inserted != 1) {
@@ -216,36 +150,7 @@ public class PostServiceImpl implements PostService {
         }
 
         log.info("create post branch success, userUuid={}, parentPostId={}, postId={}",
-                currUserUuid, parentPostId, post.getId());    }
-
-    private void bindPostMedia(Long postId, List<Long> mediaIds) {
-        for(int i = 0; i < mediaIds.size(); i++) {
-            PostMedia postMedia = new PostMedia();
-            postMedia.setPostId(postId);
-            postMedia.setMediaId(mediaIds.get(i));
-            postMedia.setSortOrder(i);
-
-            int inserted = postMediaMapper.insert(postMedia);
-            if(inserted != 1) {
-                throw new IllegalStateException("create post media failed");
-            }
-        }
-    }
-
-    private void validateMediaIds(List<Long> mediaIds) {
-        if (mediaIds == null || mediaIds.isEmpty()) {
-            return;
-        }
-
-        if (mediaIds.size() > 10) {
-            throw new BadRequestException("media count must not exceed 10");
-        }
-
-        for (Long mediaId : mediaIds) {
-            if (mediaId == null || mediaId <= 0) {
-                throw new BadRequestException("media ids are invalid");
-            }
-        }
+                currUserUuid, parentPostId, post.getId());
     }
 
     @Override
@@ -257,7 +162,6 @@ public class PostServiceImpl implements PostService {
         }
 
         String currUserUuid = UserContext.requireUuid();
-        checkPostInteractable(postId, currUserUuid);
 
         String normContent = ContentUtils.normalizeContent(dto.getContent());
         String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
@@ -269,6 +173,9 @@ public class PostServiceImpl implements PostService {
                         .eq(Post::getId, postId)
                         .eq(Post::getUserUuid, currUserUuid)
                         .eq(Post::getStatus, STATUS_NORMAL)
+                        .eq(Post::getRootId, postId)
+                        .isNull(Post::getParentId)
+                        .isNull(Post::getBranchPrompt)
                         .set(Post::getTitle, dto.getTitle())
                         .set(Post::getContent, normContent)
                         .set(Post::getContentSnippet, contentSnippet)
@@ -284,11 +191,169 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void updatePostBranch(Long postId, BranchPostUpdateDTO dto) {
+        validatePostId(postId);
+        if(dto == null) {
+            throw new BadRequestException("request body must not be null");
+        }
+
+        String currUserUuid = UserContext.requireUuid();
+
+        String normContent = ContentUtils.normalizeContent(dto.getContent());
+        String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
+        validateContent(contentSnippet);
+
+        String branchPrompt = ContentUtils.normalizeContent(dto.getBranchPrompt());
+        validateBranchPrompt(branchPrompt);
+
+        int updated = postMapper.update(
+                null,
+                new LambdaUpdateWrapper<Post>()
+                        .eq(Post::getId, postId)
+                        .eq(Post::getUserUuid, currUserUuid)
+                        .eq(Post::getStatus, STATUS_NORMAL)
+                        .isNotNull(Post::getParentId)
+                        .isNotNull(Post::getBranchPrompt)
+                        .isNotNull(Post::getRootId)
+                        .set(Post::getBranchPrompt, branchPrompt)
+                        .set(Post::getTitle, dto.getTitle())
+                        .set(Post::getContent, normContent)
+                        .set(Post::getContentSnippet, contentSnippet)
+        );
+
+        if(updated != 1) {
+            throw new IllegalStateException("update post failed");
+        }
+
+        log.info("update post branch success, userUuid={}, postId={}", currUserUuid, postId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePostTree(Long postId, PostTreeUpdateDTO dto) {
+        validatePostId(postId);
+
+        if(dto == null) {
+            throw new BadRequestException("request body must not be null");
+        }
+
+        String currUserUuid = UserContext.requireUuid();
+
+        PostTreeInfo currTreeInfo = postMapper.selectPostTreeInfo(postId);
+
+        if(currTreeInfo == null || !Objects.equals(currTreeInfo.getUserUuid(), currUserUuid)) {
+            throw new NotFoundException("post not found or no permission");
+        }
+
+        Long parentId = dto.getParentId();
+        if(parentId == null) {
+            updatePostAsRoot(postId, currUserUuid, currTreeInfo);
+            return;
+        }
+
+        updatePostAsBranch(postId, parentId, currUserUuid, currTreeInfo, dto);
+    }
+
+    private void updatePostAsRoot(Long postId, String currUserUuid, PostTreeInfo currTreeInfo) {
+        if(currTreeInfo.getParentId() == null && Objects.equals(currTreeInfo.getRootId(), currTreeInfo.getId())) {
+            throw new BadRequestException("post is already a root post");
+        }
+
+        List<Long> subtreePostIds = postMapper.selectSubtreePostIds(postId);
+        if(subtreePostIds == null || subtreePostIds.isEmpty()) {
+            throw new IllegalStateException("query post subtree failed");
+        }
+
+        int updated = postMapper.update(
+                null,
+                new LambdaUpdateWrapper<Post>()
+                        .eq(Post::getId, postId)
+                        .eq(Post::getUserUuid, currUserUuid)
+                        .eq(Post::getStatus, STATUS_NORMAL)
+                        .set(Post::getParentId, null)
+                        .set(Post::getBranchPrompt, null)
+        );
+
+        if(updated != 1) {
+            throw new NotFoundException("post not found or no permission");
+        }
+
+        int updatedRoot = postMapper.updateRootIdByIds(subtreePostIds, postId);
+        if(updatedRoot != subtreePostIds.size()) {
+            throw new IllegalStateException("update post subtree root id failed");
+        }
+
+        log.info("update post tree as root success, userUuid={}, postId={}, parentPostId={}",
+                currUserUuid, postId, null);
+    }
+
+    private void updatePostAsBranch(Long postId, Long parentId, String currUserUuid,
+                                    PostTreeInfo currTreeInfo, PostTreeUpdateDTO dto) {
+        validatePostId(parentId);
+
+        if(Objects.equals(postId, parentId)) {
+            throw new BadRequestException("post cannot be moved to itself");
+        }
+
+        PostTreeInfo parentTreeInfo = postMapper.selectPostTreeInfo(parentId);
+        if(parentTreeInfo == null || !Objects.equals(parentTreeInfo.getUserUuid(), currUserUuid)) {
+            throw new NotFoundException("parent post not found");
+        }
+
+        List<Long> subtreePostIds = postMapper.selectSubtreePostIds(postId);
+        if(subtreePostIds == null || subtreePostIds.isEmpty()) {
+            throw new IllegalStateException("query post subtree failed");
+        }
+
+        if(subtreePostIds.contains(parentId)) {
+            throw new BadRequestException("post cannot be moved to its descendant");
+        }
+
+        String normBranchPrompt = ContentUtils.normalizeContent(dto.getBranchPrompt());
+        validateBranchPrompt(normBranchPrompt);
+
+        Long newRootId = parentTreeInfo.getRootId();
+        if(newRootId == null) {
+            throw new IllegalStateException("root id cannot be null");
+        }
+
+        int updated = postMapper.update(
+                null,
+                new LambdaUpdateWrapper<Post>()
+                        .eq(Post::getId, postId)
+                        .eq(Post::getUserUuid, currUserUuid)
+                        .eq(Post::getStatus, STATUS_NORMAL)
+                        .set(Post::getParentId, parentId)
+                        .set(Post::getBranchPrompt, normBranchPrompt)
+        );
+
+        if(updated != 1) {
+            throw new NotFoundException("post not found or no permission");
+        }
+
+        Long oldRootId = currTreeInfo.getRootId();
+        if(oldRootId == null) {
+            throw new IllegalStateException("root id cannot be null");
+        }
+
+        if(!Objects.equals(oldRootId, newRootId)) {
+            int updatedRoot = postMapper.updateRootIdByIds(subtreePostIds, newRootId);
+            if(updatedRoot != subtreePostIds.size()) {
+                throw new IllegalStateException("update post subtree root id failed");
+            }
+        }
+
+        log.info("update post tree as branch success, userUuid={}, postId={}, parentPostId={}",
+                currUserUuid, postId, parentId);
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deletePost(Long postId) {
         validatePostId(postId);
 
         String currUserUuid = UserContext.requireUuid();
-        checkPostInteractable(postId, currUserUuid);
 
         int deleted = postMapper.update(
                 null,
@@ -305,6 +370,69 @@ public class PostServiceImpl implements PostService {
         }
 
         log.info("delete post success, userUuid={}, postId={}", currUserUuid, postId);
+    }
+
+
+    @Override
+    public void checkPostInteractable(Long postId, String currUserUuid) {
+        Integer exists = postMapper.existsInteractablePostById(postId, currUserUuid);
+        if(exists == null) {
+            throw new ForbiddenException("post not found or interactable");
+        }
+    }
+
+    @Override
+    public void checkBranchPostNormal(Long postId) {
+        Integer exists = postMapper.existsNormalBranchPostById(postId);
+        if(exists == null) {
+            throw new ForbiddenException("post is not a branch post");
+        }
+    }
+
+    @Override
+    public String getAuthorUuid(Long postId) {
+        validatePostId(postId);
+        String authorUuid= postMapper.selectUserUuidById(postId);
+        if (authorUuid == null) {
+            throw new NotFoundException("post not found");
+        }
+        return authorUuid;
+    }
+
+    @Override
+    public List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds) {
+        String currUserUuid = UserContext.requireUuid();
+
+        List<PostPageItemVO> records =  postMapper.selectPublicPostByIds(currUserUuid, postIds);
+        fillPostPageCoverUrl(records);
+
+        Map<Long, PostPageItemVO> postMap = records.stream().collect(Collectors.toMap(PostPageItemVO::getId, item -> item));
+
+        return postIds.stream()
+                .map(postMap::get)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    @Override
+    public Map<Long, LocalDateTime> getPublicPostCreatedAtMapByIds(List<Long> postIds) {
+        if (postIds == null || postIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return postMapper.selectPublicPostCreatedAtItemByIds(postIds).stream()
+                .collect(Collectors.toMap(PostCreatedAtItem::getId, PostCreatedAtItem::getCreatedAt));
+    }
+
+    @Override
+    public PostPreview getPostPreview(Long postId) {
+        validatePostId(postId);
+
+        PostPreview preview = postMapper.selectPostPreviewById(postId);
+        if(preview == null) {
+            throw new NotFoundException("post not found");
+        }
+        return preview;
     }
 
     @Override
@@ -331,12 +459,7 @@ public class PostServiceImpl implements PostService {
 
         List<PostPageItemVO> records = postMapper.selectMyPostPage(offset, size, currUserUuid);
         fillPostPageCoverUrl(records);
-        PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
-        pageVO.setCurrent(current);
-        pageVO.setSize(size);
-        pageVO.setTotal(total);
-        pageVO.setRecords(records);
-        return pageVO;
+        return new PostPageVO<>(current, size, total, records);
     }
 
     @Override
@@ -362,12 +485,21 @@ public class PostServiceImpl implements PostService {
 
         List<PostPageItemVO> records = postMapper.selectPublicPostPage(offset, size, currUserUuid);
         fillPostPageCoverUrl(records);
-        PostPageVO<PostPageItemVO> pageVO = new PostPageVO<>();
-        pageVO.setCurrent(current);
-        pageVO.setSize(size);
-        pageVO.setTotal(total);
-        pageVO.setRecords(records);
-        return pageVO;
+        return new PostPageVO<>(current, size, total, records);
+    }
+
+    private void bindPostMedia(Long postId, List<Long> mediaIds) {
+        for(int i = 0; i < mediaIds.size(); i++) {
+            PostMedia postMedia = new PostMedia();
+            postMedia.setPostId(postId);
+            postMedia.setMediaId(mediaIds.get(i));
+            postMedia.setSortOrder(i);
+
+            int inserted = postMediaMapper.insert(postMedia);
+            if(inserted != 1) {
+                throw new IllegalStateException("create post media failed");
+            }
+        }
     }
 
     private void fillPostPageCoverUrl(List<PostPageItemVO> records) {
@@ -396,21 +528,13 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    private void fillPostDetailMediaList(PostDetailVO vo) {
-        if(vo == null) {
-            return;
-        }
-
-        List<PostMediaVO> mediaList = postMediaMapper.selectPostMediaListById(vo.getId());
-        vo.setMediaList(mediaList);
-    }
-
     private void fillPostDetailMediaList(List<PostDetailVO> records) {
         if(records == null || records.isEmpty()) {
             return;
         }
         for(PostDetailVO record: records) {
-            fillPostDetailMediaList(record);
+            List<PostMediaVO> mediaList = postMediaMapper.selectPostMediaListById(record.getId());
+            record.setMediaList(mediaList);
         }
     }
 
@@ -446,6 +570,22 @@ public class PostServiceImpl implements PostService {
         }
         if (content.length() > MAX_POST_CONTENT_LENGTH) {
             throw new BadRequestException("content too long");
+        }
+    }
+
+    private void validateMediaIds(List<Long> mediaIds) {
+        if (mediaIds == null || mediaIds.isEmpty()) {
+            return;
+        }
+
+        if (mediaIds.size() > 10) {
+            throw new BadRequestException("media count must not exceed 10");
+        }
+
+        for (Long mediaId : mediaIds) {
+            if (mediaId == null || mediaId <= 0) {
+                throw new BadRequestException("media ids are invalid");
+            }
         }
     }
 

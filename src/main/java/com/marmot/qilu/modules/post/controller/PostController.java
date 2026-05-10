@@ -1,10 +1,7 @@
 package com.marmot.qilu.modules.post.controller;
 
 import com.marmot.qilu.common.api.ApiResponse;
-import com.marmot.qilu.modules.post.dto.PostBranchCreateDTO;
-import com.marmot.qilu.modules.post.dto.PostCreateDTO;
-import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
-import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
+import com.marmot.qilu.modules.post.dto.*;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
@@ -26,19 +23,50 @@ public class PostController {
 
     private final PostService postService;
 
-    @Operation(summary = "创建帖子", description = "创建一篇新帖子，可设置为公开或仅自己可见")
+    @Operation(summary = "创建根帖子", description = "创建一篇新帖子，可设置为公开或仅自己可见")
     @PostMapping
-    public ApiResponse<Long> createPost(@Valid @RequestBody PostCreateDTO dto) {
+    public ApiResponse<Void> createPost(@Valid @RequestBody PostCreateDTO dto) {
         postService.createPost(dto);
         return ApiResponse.success();
     }
 
     @Operation(summary = "创建分支帖子", description = "在指定父帖子下创建一个分支帖子，parentId 和 rootId 由后端根据父帖子自动确定")
-    @PostMapping("/{postId}/branches")
+    @PostMapping("/{parentPostId}/branches")
     public ApiResponse<Void> createBranchPost(
-            @Parameter(description = "父帖子ID") @PathVariable Long postId,
-            @Valid @RequestBody PostBranchCreateDTO dto) {
-        postService.createBranchPost(postId, dto);
+            @Parameter(description = "父帖子ID") @PathVariable Long parentPostId,
+            @Valid @RequestBody BranchPostCreateDTO dto) {
+        postService.createBranchPost(parentPostId, dto);
+        return ApiResponse.success();
+    }
+
+    @Operation(summary = "更新帖子基本信息", description = "更新当前登录用户自己的帖子内容和可见性")
+    @PutMapping("/{postId}")
+    public ApiResponse<Void> updatePost(@Parameter(description = "根帖子ID") @PathVariable Long postId, @Valid @RequestBody PostUpdateDTO dto) {
+        postService.updatePost(postId, dto);
+        return ApiResponse.success();
+    }
+
+    @Operation(summary = "更新分支帖子基本信息", description = "更新当前登录用户自己的分支帖子内容和分支提示语")
+    @PutMapping("/{postId}/branch")
+    public ApiResponse<Void> updateBranchPost(@Parameter(description = "分支帖子ID") @PathVariable Long postId,
+                                              @Valid @RequestBody BranchPostUpdateDTO dto) {
+        postService.updatePostBranch(postId, dto);
+        return ApiResponse.success();
+    }
+
+    @Operation(summary = "更新帖子树结构", description = "移动帖子节点到新的父节点下，或将其独立为根节点")
+    @PutMapping("/{postId}/tree")
+    public ApiResponse<Void> updatePostTree(
+            @Parameter(description = "帖子节点ID") @PathVariable Long postId,
+            @Valid @RequestBody PostTreeUpdateDTO dto) {
+        postService.updatePostTree(postId, dto);
+        return ApiResponse.success();
+    }
+
+    @Operation(summary = "删除帖子", description = "删除当前登录用户自己的帖子，采用软删除")
+    @DeleteMapping("/{postId}")
+    public ApiResponse<Void> deletePost(@Parameter(description = "帖子ID") @PathVariable Long postId) {
+        postService.deletePost(postId);
         return ApiResponse.success();
     }
 
@@ -63,19 +91,5 @@ public class PostController {
     @GetMapping
     public ApiResponse<PostPageVO<PostPageItemVO>> getPublicPostPage(PostPageQueryDTO dto) {
         return ApiResponse.success(postService.getPublicPostPage(dto));
-    }
-
-    @Operation(summary = "更新帖子", description = "更新当前登录用户自己的帖子内容和可见性")
-    @PutMapping("/{postId}")
-    public ApiResponse<Void> updatePost(@Parameter(description = "帖子ID") @PathVariable Long postId, @Valid @RequestBody PostUpdateDTO dto) {
-        postService.updatePost(postId, dto);
-        return ApiResponse.success();
-    }
-
-    @Operation(summary = "删除帖子", description = "删除当前登录用户自己的帖子，采用软删除")
-    @DeleteMapping("/{postId}")
-    public ApiResponse<Void> deletePost(@Parameter(description = "帖子ID") @PathVariable Long postId) {
-        postService.deletePost(postId);
-        return ApiResponse.success();
     }
 }

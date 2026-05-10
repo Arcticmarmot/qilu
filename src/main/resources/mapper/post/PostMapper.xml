@@ -16,6 +16,16 @@
             limit 1
     </select>
 
+    <select id="existsNormalBranchPostById" resultType="java.lang.Integer">
+        select 1
+        from post
+        where id = #{postId}
+            and status = 1
+            and parent_id is not null
+            and branch_prompt is not null
+        limit 1
+    </select>
+
     <select id="selectUserUuidById" resultType="java.lang.String">
         select user_uuid
         from post
@@ -37,6 +47,35 @@
           and status = 1
             limit 1
     </select>
+
+    <select id="selectSubtreePostIds" resultType="java.lang.Long">
+        with recursive subtree as (
+            select id
+            from post
+            where id = #{postId}
+                and status = 1
+
+            union all
+
+            select p.id
+            from post p
+                inner join subtree s
+                    on p.parent_id = s.id
+            where p.status = 1
+        )
+        select id
+        from subtree
+    </select>
+    
+    <update id="updateRootIdByIds">
+        update post
+        set root_id = #{rootId}
+        where status = 1
+            and id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </update>
 
     <select id="selectPostPreviewById" resultType="com.marmot.qilu.modules.post.model.PostPreview">
         select

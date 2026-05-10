@@ -1,13 +1,11 @@
 package com.marmot.qilu.modules.post.service;
 
-import com.marmot.qilu.modules.post.dto.PostBranchCreateDTO;
-import com.marmot.qilu.modules.post.dto.PostCreateDTO;
-import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
-import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
+import com.marmot.qilu.modules.post.dto.*;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import com.marmot.qilu.modules.post.model.PostPreview;
+import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +13,21 @@ import java.util.Map;
 
 public interface PostService {
 
+    void createPost(PostCreateDTO dto);
+
+    void createBranchPost(Long parentPostId, BranchPostCreateDTO dto);
+
+    void updatePost(Long postId, PostUpdateDTO dto);
+
+    void updatePostBranch(Long postId, BranchPostUpdateDTO dto);
+
+    void updatePostTree(Long postId, PostTreeUpdateDTO dto);
+
+    void deletePost(Long postId);
+
     void checkPostInteractable(Long postId, String currUserUuid);
+
+    void checkBranchPostNormal(Long postId);
 
     String getAuthorUuid(Long postId);
 
@@ -25,10 +37,6 @@ public interface PostService {
 
     PostPreview getPostPreview(Long postId);
 
-    void createPost(PostCreateDTO dto);
-
-    void createBranchPost(Long parentPostId, PostBranchCreateDTO dto);
-
     List<PostDetailVO> getMyPostDetail(Long postId);
 
     PostPageVO<PostPageItemVO> getMyPostPage(PostPageQueryDTO dto);
@@ -36,10 +44,6 @@ public interface PostService {
     List<PostDetailVO> getPublicPostDetail(Long postId);
 
     PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto);
-
-    void updatePost(Long postId, PostUpdateDTO dto);
-
-    void deletePost(Long postId);
 
     int increasePostLikeCount(Long postId);
 
