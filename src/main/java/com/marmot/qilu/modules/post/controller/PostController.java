@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
+import java.util.List;
+
 @Tag(name = "Post", description = "帖子相关接口：公开帖子浏览、我的帖子管理")
 @RestController
 @RequestMapping("/posts")
@@ -40,9 +42,9 @@ public class PostController {
         return ApiResponse.success();
     }
 
-    @Operation(summary = "获取我的帖子详情", description = "返回当前登录用户自己的帖子详情，可查看自己的公开或私密帖子")
+    @Operation(summary = "获取我的帖子详情", description = "返回当前登录用户自己的帖子及其子帖子详情，以数组形式返回")
     @GetMapping("/me/{postId}")
-    public ApiResponse<PostDetailVO> getMyPostDetail(@Parameter(description = "帖子ID") @PathVariable Long postId) {
+    public ApiResponse<List<PostDetailVO>> getMyPostDetail(@Parameter(description = "帖子ID") @PathVariable Long postId) {
         return ApiResponse.success(postService.getMyPostDetail(postId));
     }
 
@@ -52,9 +54,9 @@ public class PostController {
         return ApiResponse.success(postService.getMyPostPage(dto));
     }
 
-    @Operation(summary = "获取公开帖子详情", description = "返回公开帖子详情，只能查看公开且正常状态的帖子")
+    @Operation(summary = "获取公开帖子详情", description = "返回公开帖子及其子帖子详情，以数组形式返回")
     @GetMapping("/{postId}")
-    public ApiResponse<PostDetailVO> getPublicPostDetail(@Parameter(description = "帖子ID") @PathVariable Long postId) {
+    public ApiResponse<List<PostDetailVO>> getPublicPostDetail(@Parameter(description = "帖子ID") @PathVariable Long postId) {
         return ApiResponse.success(postService.getPublicPostDetail(postId));
     }
     @Operation(summary = "获取公开帖子分页", description = "返回公开帖子列表，只包含 status=1 且 visibility=1 的帖子")
@@ -76,6 +78,4 @@ public class PostController {
         postService.deletePost(postId);
         return ApiResponse.success();
     }
-
-
 }

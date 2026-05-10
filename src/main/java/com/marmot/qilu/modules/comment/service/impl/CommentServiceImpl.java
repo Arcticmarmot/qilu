@@ -13,7 +13,7 @@ import com.marmot.qilu.modules.comment.service.CommentService;
 import com.marmot.qilu.modules.comment.vo.CommentPreview;
 import com.marmot.qilu.modules.comment.vo.CommentListItemVO;
 import com.marmot.qilu.modules.post.service.PostService;
-import com.marmot.qilu.modules.post.vo.PostPreview;
+import com.marmot.qilu.modules.post.model.PostPreview;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

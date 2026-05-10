@@ -1,4 +1,4 @@
-package com.marmot.qilu.modules.post.vo;
+package com.marmot.qilu.modules.post.model;
 
 import lombok.Getter;
 import lombok.Setter;

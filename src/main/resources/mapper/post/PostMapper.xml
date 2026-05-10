@@ -24,7 +24,7 @@
         limit 1
     </select>
     
-    <select id="selectPostTreeInfo" resultType="com.marmot.qilu.modules.post.vo.PostTreeInfo">
+    <select id="selectPostTreeInfo" resultType="com.marmot.qilu.modules.post.model.PostTreeInfo">
         select
             id,
             parent_id as parentId,
@@ -38,7 +38,7 @@
             limit 1
     </select>
 
-    <select id="selectPostPreviewById" resultType="com.marmot.qilu.modules.post.vo.PostPreview">
+    <select id="selectPostPreviewById" resultType="com.marmot.qilu.modules.post.model.PostPreview">
         select
             user_uuid as authorUuid,
             title
@@ -46,42 +46,6 @@
             where id = #{postId}
             and status = 1
         limit 1
-    </select>
-
-    <select id="selectMyPostDetail" resultType="com.marmot.qilu.modules.post.vo.PostDetailVO">
-        select
-            p.id,
-            p.user_uuid as userUuid,
-            u.nickname,
-            p.title,
-            p.content,
-            p.visibility as visibility,
-            p.like_count as likeCount,
-            p.comment_count as commentCount,
-            case
-                when l.id is not null then true
-                else false
-                end as likedByMe,
-            p.created_at as createdAt
-        from post p
-                 left join user as u
-                           on u.uuid = p.user_uuid
-                 left join creation_like as l
-                               on  l.creation_type = 'POST'
-                               and l.creation_id = p.id
-                               and l.user_uuid = #{currUserUuid}
-                               and l.status = 1
-        where p.id = #{postId}
-          and p.user_uuid = #{currUserUuid}
-          and p.status = 1
-            limit 1
-    </select>
-
-    <select id="countMyPosts" resultType="java.lang.Long">
-        select count(*)
-        from post p
-        where p.status = 1
-          and p.user_uuid = #{currUserUuid}
     </select>
 
     <select id="selectPublicPostByIds" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
@@ -95,47 +59,101 @@
             p.comment_count as commentCount,
             p.content_snippet as contentSnippet,
             case
-                when l.id is not null then true
-                else false
-                end as likedByMe,
+            when l.id is not null then true
+            else false
+            end as likedByMe,
             p.created_at as createdAt
         from (select
-                  id,
-                  user_uuid,
-                  title,
-                  content,
-                  visibility,
-                  like_count,
-                  comment_count,
-                  content_snippet,
-                  created_at
-              from post
-              where status = 1
-                and visibility = 1
-                and id in
-                <foreach collection="postIds" item="postId" open="(" separator="," close=")">
-                    #{postId}
-                </foreach>
-             ) p
-                 left join user u on p.user_uuid = u.uuid
-                 left join creation_like as l
-                           on  l.creation_type = 'POST'
-                           and l.creation_id = p.id
-                           and l.user_uuid = #{currUserUuid}
-                           and l.status = 1
-    </select>
-
-    <select id="selectPublicPostCreatedAtItemByIds" resultType="com.marmot.qilu.modules.post.model.PostCreatedAtItem">
-        select
-            id,
-            created_at as createdAt
+                id,
+                user_uuid,
+                title,
+                content,
+                visibility,
+                like_count,
+                comment_count,
+                content_snippet,
+                created_at
         from post
         where status = 1
         and visibility = 1
+        and parent_id is null
         and id in
         <foreach collection="postIds" item="postId" open="(" separator="," close=")">
             #{postId}
         </foreach>
+        ) p
+        left join user u on p.user_uuid = u.uuid
+        left join creation_like as l
+        on  l.creation_type = 'POST'
+        and l.creation_id = p.id
+        and l.user_uuid = #{currUserUuid}
+        and l.status = 1
+    </select>
+
+    <select id="selectPublicPostCreatedAtItemByIds" resultType="com.marmot.qilu.modules.post.model.PostCreatedAtItem">
+        select
+        id,
+        created_at as createdAt
+        from post
+        where status = 1
+        and visibility = 1
+        and parent_id is null
+        and id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </select>
+
+    <select id="selectMyPostDetail" resultType="com.marmot.qilu.modules.post.vo.PostDetailVO">
+        select
+            p.id,
+            p.parent_id as parentId,
+            p.root_id as rootId,
+            p.branch_prompt as branchPrompt,
+            p.user_uuid as userUuid,
+            u.nickname,
+            p.title,
+            p.content,
+            p.visibility as visibility,
+            p.like_count as likeCount,
+            p.comment_count as commentCount,
+            case
+                when l.id is not null then true
+                else false
+                end as likedByMe,
+            p.created_at as createdAt
+        from post p
+            left join user as u
+                on u.uuid = p.user_uuid
+            left join creation_like as l
+                on  l.creation_type = 'POST'
+                and l.creation_id = p.id
+                and l.user_uuid = #{currUserUuid}
+                and l.status = 1
+        where p.root_id = #{postId}
+          and p.user_uuid = #{currUserUuid}
+          and p.status = 1
+          and exists (
+            select 1
+            from post r
+            where r.id = #{postId}
+              and r.root_id = #{postId}
+              and r.parent_id is null
+              and r.user_uuid = #{currUserUuid}
+              and r.status = 1
+        )
+        order by
+            case when p.parent_id is null then 0 else 1 end,
+            p.created_at asc,
+            p.id asc
+    </select>
+
+    <select id="countMyPosts" resultType="java.lang.Long">
+        select count(*)
+        from post p
+        where p.status = 1
+          and p.user_uuid = #{currUserUuid}
+          and p.parent_id is null
     </select>
 
     <select id="selectMyPostPage" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
@@ -166,21 +184,25 @@
               from post
               where status = 1
                 and user_uuid = #{currUserUuid}
+                and parent_id is null
               order by created_at desc
                   limit #{offset}, #{size}
              ) p
                  left join user u on p.user_uuid = u.uuid
                  left join creation_like as l
-                    on  l.creation_type = 'POST'
-                    and l.creation_id = p.id
-                    and l.user_uuid = #{currUserUuid}
-                    and l.status = 1
+                           on  l.creation_type = 'POST'
+                               and l.creation_id = p.id
+                               and l.user_uuid = #{currUserUuid}
+                               and l.status = 1
         order by p.created_at desc
     </select>
 
     <select id="selectPublicPostDetail" resultType="com.marmot.qilu.modules.post.vo.PostDetailVO">
         select
             p.id,
+            p.parent_id as parentId,
+            p.root_id as rootId,
+            p.branch_prompt as branchPrompt,
             p.user_uuid as userUuid,
             u.nickname,
             p.title,
@@ -201,10 +223,22 @@
             and l.creation_id = p.id
             and l.user_uuid = #{currUserUuid}
             and l.status = 1
-        where p.id = #{postId}
+        where p.root_id = #{postId}
             and p.status = 1
             and p.visibility = 1
-        limit 1
+            and exists (
+                select 1
+                from post r
+                where r.id = #{postId}
+                and r.root_id = #{postId}
+                and r.parent_id is null
+                and r.status = 1
+                and r.visibility = 1
+        )
+        order by
+            case when p.parent_id is null then 0 else 1 end,
+            p.created_at asc,
+            p.id asc
     </select>
 
     <select id="countPublicPosts" resultType="java.lang.Long">
@@ -212,6 +246,7 @@
         from post p
         where p.status = 1
           and p.visibility = 1
+          and p.parent_id is null
     </select>
 
     <select id="selectPublicPostPage" resultType="com.marmot.qilu.modules.post.vo.PostPageItemVO">
@@ -242,6 +277,7 @@
               from post
               where status = 1
                 and visibility = 1
+                and parent_id is null
               order by created_at desc
                   limit #{offset}, #{size}
         ) p

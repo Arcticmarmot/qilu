@@ -5,8 +5,8 @@ import com.marmot.qilu.modules.post.entity.Post;
 import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
-import com.marmot.qilu.modules.post.vo.PostPreview;
-import com.marmot.qilu.modules.post.vo.PostTreeInfo;
+import com.marmot.qilu.modules.post.model.PostPreview;
+import com.marmot.qilu.modules.post.model.PostTreeInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,7 +29,7 @@ public interface PostMapper extends BaseMapper<Post> {
 
     Long countMyPosts(@Param("currUserUuid") String currUserUuid);
 
-    PostDetailVO selectMyPostDetail(@Param("postId") Long postId,
+    List<PostDetailVO> selectMyPostDetail(@Param("postId") Long postId,
                                         @Param("currUserUuid") String currUserUuid);
 
     List<PostPageItemVO> selectMyPostPage(@Param("offset") long offset,
@@ -38,7 +38,7 @@ public interface PostMapper extends BaseMapper<Post> {
 
     Long countPublicPosts();
 
-    PostDetailVO selectPublicPostDetail(@Param("postId") Long postId,
+    List<PostDetailVO> selectPublicPostDetail(@Param("postId") Long postId,
                                   @Param("currUserUuid") String currUserUuid);
 
     List<PostPageItemVO> selectPublicPostPage(@Param("offset") long offset,

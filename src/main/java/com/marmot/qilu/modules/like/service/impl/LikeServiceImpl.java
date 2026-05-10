@@ -14,7 +14,7 @@ import com.marmot.qilu.modules.like.entity.Like;
 import com.marmot.qilu.modules.like.mapper.LikeMapper;
 import com.marmot.qilu.modules.like.service.LikeService;
 import com.marmot.qilu.modules.post.service.PostService;
-import com.marmot.qilu.modules.post.vo.PostPreview;
+import com.marmot.qilu.modules.post.model.PostPreview;
 import com.marmot.qilu.modules.reply.service.ReplyService;
 import com.marmot.qilu.modules.reply.vo.ReplyPreview;
 import lombok.RequiredArgsConstructor;

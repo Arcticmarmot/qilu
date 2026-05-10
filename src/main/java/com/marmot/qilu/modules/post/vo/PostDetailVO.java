@@ -12,8 +12,17 @@ import java.util.List;
 @Schema(description = "帖子详情")
 public class PostDetailVO {
 
-    @Schema(description = "帖子ID", example = "101")
+    @Schema(description = "帖子ID", example = "102")
     private Long id;
+
+    @Schema(description = "父帖子ID", example = "101")
+    private Long parentId;
+
+    @Schema(description = "根帖子ID", example = "100")
+    private Long rootId;
+
+    @Schema(description = "分支对话", example = "去哪里")
+    private String branchPrompt;
 
     @Schema(description = "作者用户UUID")
     private String userUuid;

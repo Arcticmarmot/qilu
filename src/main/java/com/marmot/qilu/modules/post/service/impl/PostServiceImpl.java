@@ -1,6 +1,7 @@
 package com.marmot.qilu.modules.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ForbiddenException;
@@ -16,6 +17,8 @@ import com.marmot.qilu.modules.post.entity.PostMedia;
 import com.marmot.qilu.modules.post.mapper.PostMapper;
 import com.marmot.qilu.modules.post.mapper.PostMediaMapper;
 import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
+import com.marmot.qilu.modules.post.model.PostPreview;
+import com.marmot.qilu.modules.post.model.PostTreeInfo;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.*;
 import lombok.RequiredArgsConstructor;
@@ -157,6 +160,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void createBranchPost(Long parentPostId, PostBranchCreateDTO dto) {
         validatePostId(parentPostId);
 
@@ -304,16 +308,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDetailVO getMyPostDetail(Long postId) {
+    public List<PostDetailVO> getMyPostDetail(Long postId) {
         String currUserUuid = UserContext.requireUuid();
 
-        PostDetailVO vo = postMapper.selectMyPostDetail(postId, currUserUuid);
-        if(vo == null) {
+        List<PostDetailVO> records = postMapper.selectMyPostDetail(postId, currUserUuid);
+        if(records == null || records.isEmpty()) {
             throw new NotFoundException("post not found");
         }
 
-        fillPostDetailMediaList(vo);
-        return vo;
+        fillPostDetailMediaList(records);
+        return records;
     }
 
     @Override
@@ -336,15 +340,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDetailVO getPublicPostDetail(Long postId) {
+    public List<PostDetailVO> getPublicPostDetail(Long postId) {
         String currUserUuid = UserContext.requireUuid();
 
-        PostDetailVO vo = postMapper.selectPublicPostDetail(postId, currUserUuid);
-        if(vo == null) {
+        List<PostDetailVO> records = postMapper.selectPublicPostDetail(postId, currUserUuid);
+        if(records == null || records.isEmpty()) {
             throw new NotFoundException("post not found");
         }
-        fillPostDetailMediaList(vo);
-        return vo;
+        fillPostDetailMediaList(records);
+        return records;
     }
 
     @Override
@@ -399,6 +403,15 @@ public class PostServiceImpl implements PostService {
 
         List<PostMediaVO> mediaList = postMediaMapper.selectPostMediaListById(vo.getId());
         vo.setMediaList(mediaList);
+    }
+
+    private void fillPostDetailMediaList(List<PostDetailVO> records) {
+        if(records == null || records.isEmpty()) {
+            return;
+        }
+        for(PostDetailVO record: records) {
+            fillPostDetailMediaList(record);
+        }
     }
 
     @Override

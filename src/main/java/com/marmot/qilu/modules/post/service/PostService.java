@@ -7,7 +7,7 @@ import com.marmot.qilu.modules.post.dto.PostUpdateDTO;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
-import com.marmot.qilu.modules.post.vo.PostPreview;
+import com.marmot.qilu.modules.post.model.PostPreview;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,11 +29,11 @@ public interface PostService {
 
     void createBranchPost(Long parentPostId, PostBranchCreateDTO dto);
 
-    PostDetailVO getMyPostDetail(Long postId);
+    List<PostDetailVO> getMyPostDetail(Long postId);
 
     PostPageVO<PostPageItemVO> getMyPostPage(PostPageQueryDTO dto);
 
-    PostDetailVO getPublicPostDetail(Long postId);
+    List<PostDetailVO> getPublicPostDetail(Long postId);
 
     PostPageVO<PostPageItemVO> getPublicPostPage(PostPageQueryDTO dto);
 
