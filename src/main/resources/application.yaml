@@ -40,6 +40,10 @@ spring:
         spring.json.trusted.packages: "com.marmot.qilu.common.event.like,com.marmot.qilu.common.event.comment,com.marmot.qilu.common.event.reply"
     listener:
       ack-mode: manual
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 3s
+    socket-timeout: 10s
 
 mybatis-plus:
   configuration:
