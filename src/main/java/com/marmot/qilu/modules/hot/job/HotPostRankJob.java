@@ -20,7 +20,7 @@ public class HotPostRankJob {
         hotPostService.rebuildHotPostRank();
     }
 
-    @Scheduled(fixedDelay = 10 * 1000, initialDelay = 60 * 1000)
+    @Scheduled(fixedDelay = 3 * 60 * 1000, initialDelay = 60 * 1000)
     public void rebuildPostRank() {
         hotPostService.rebuildHotPostRank();
     }

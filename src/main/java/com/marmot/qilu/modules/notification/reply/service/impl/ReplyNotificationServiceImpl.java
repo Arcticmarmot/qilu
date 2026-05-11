@@ -2,10 +2,12 @@ package com.marmot.qilu.modules.notification.reply.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.event.reply.ReplyEvent;
+import com.marmot.qilu.modules.notification.enums.NotificationType;
 import com.marmot.qilu.modules.notification.reply.entity.ReplyNotification;
 import com.marmot.qilu.modules.notification.reply.mapper.ReplyNotificationMapper;
 import com.marmot.qilu.modules.notification.reply.service.ReplyNotificationService;
 import com.marmot.qilu.modules.notification.reply.vo.ReplyNotificationListItemVO;
+import com.marmot.qilu.modules.notification.sse.service.NotificationSseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -26,6 +28,7 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
 
     private final ReplyNotificationMapper replyNotificationMapper;
     private final StringRedisTemplate stringRedisTemplate;
+    private final NotificationSseService notificationSseService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -45,6 +48,7 @@ public class ReplyNotificationServiceImpl implements ReplyNotificationService {
             }
 
             incrementUnreadCount(notification.getReceiverUuid());
+            notificationSseService.sendNotificationCreated(event.getReceiverUuid(), NotificationType.REPLY);
         } catch (DuplicateKeyException e) {
             log.warn(
                     "duplicate reply notification ignored, eventId={}, replyId={}, creationType={}, creationId={}, receiverUuid={}",

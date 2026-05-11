@@ -6,6 +6,8 @@ import com.marmot.qilu.modules.notification.comment.entity.CommentNotification;
 import com.marmot.qilu.modules.notification.comment.mapper.CommentNotificationMapper;
 import com.marmot.qilu.modules.notification.comment.service.CommentNotificationService;
 import com.marmot.qilu.modules.notification.comment.vo.CommentNotificationListItemVO;
+import com.marmot.qilu.modules.notification.enums.NotificationType;
+import com.marmot.qilu.modules.notification.sse.service.NotificationSseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -26,6 +28,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
 
     private final CommentNotificationMapper commentNotificationMapper;
     private final StringRedisTemplate stringRedisTemplate;
+    private final NotificationSseService notificationSseService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -45,7 +48,7 @@ public class CommentNotificationServiceImpl implements CommentNotificationServic
             }
 
             incrementUnreadCount(notification.getReceiverUuid());
-
+            notificationSseService.sendNotificationCreated(event.getReceiverUuid(), NotificationType.COMMENT);
         } catch (DuplicateKeyException e) {
             log.warn(
                     "duplicate comment notification ignored, eventId={}, commentId={}, postId={}, receiverUuid={}",

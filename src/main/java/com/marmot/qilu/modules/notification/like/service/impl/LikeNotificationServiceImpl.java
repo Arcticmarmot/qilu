@@ -2,10 +2,12 @@ package com.marmot.qilu.modules.notification.like.service.impl;
 
 import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.event.like.LikeEvent;
+import com.marmot.qilu.modules.notification.enums.NotificationType;
 import com.marmot.qilu.modules.notification.like.entity.LikeNotification;
 import com.marmot.qilu.modules.notification.like.mapper.LikeNotificationMapper;
 import com.marmot.qilu.modules.notification.like.service.LikeNotificationService;
 import com.marmot.qilu.modules.notification.like.vo.LikeNotificationListItemVO;
+import com.marmot.qilu.modules.notification.sse.service.NotificationSseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -26,6 +28,7 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
 
     private final LikeNotificationMapper likeNotificationMapper;
     private final StringRedisTemplate stringRedisTemplate;
+    private final NotificationSseService notificationSseService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -45,6 +48,7 @@ public class LikeNotificationServiceImpl implements LikeNotificationService {
             }
 
             incrementUnreadCount(likeNotification.getReceiverUuid());
+            notificationSseService.sendNotificationCreated(event.getReceiverUuid(), NotificationType.LIKE);
         } catch (DuplicateKeyException e) {
             log.warn(
                     "duplicate like notification ignored, eventId={}, creationType={}, creationId={}, actorUuid={}, receiverUuid={}",

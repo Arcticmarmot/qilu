@@ -9,8 +9,6 @@ import com.marmot.qilu.modules.post.model.PostPreview;
 import com.marmot.qilu.modules.post.model.PostTreeInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Property;
-
 import java.util.List;
 
 @Mapper

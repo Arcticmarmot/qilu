@@ -5,6 +5,7 @@ import com.marmot.qilu.common.api.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,5 +21,10 @@ public class GlobalExceptionHandler {
     public ApiResponse<Void> handleException(Exception e) {
         log.error("unhandled system exception occurred", e);
         return ApiResponse.fail(ErrorCode.SYSTEM_ERROR, "server internal error");
+    }
+
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    public void handleAsyncRequestNotUsableException(AsyncRequestNotUsableException e) {
+        log.debug("async request not usable, client disconnected");
     }
 }
