@@ -1,6 +1,7 @@
 package com.marmot.qilu.modules.post.service;
 
 import com.marmot.qilu.modules.post.dto.*;
+import com.marmot.qilu.modules.post.model.PostSearchSource;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
@@ -27,6 +28,8 @@ public interface PostService {
     void checkBranchPostNormal(Long postId);
 
     String getAuthorUuid(Long postId);
+
+    PostSearchSource getPostSearchSource(Long postId);
 
     List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds);
 

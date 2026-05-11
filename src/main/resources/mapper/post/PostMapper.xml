@@ -33,6 +33,23 @@
           and status = 1
         limit 1
     </select>
+
+    <select id="selectPostSearchSourceById"
+            resultType="com.marmot.qilu.modules.post.model.PostSearchSource">
+        select
+            id,
+            root_id as rootId,
+            user_uuid as userUuid,
+            title,
+            content,
+            branch_prompt as branchPrompt,
+            status,
+            visibility,
+            created_at as createdAt
+        from post
+        where id = #{postId}
+            limit 1
+    </select>
     
     <select id="selectPostTreeInfo" resultType="com.marmot.qilu.modules.post.model.PostTreeInfo">
         select

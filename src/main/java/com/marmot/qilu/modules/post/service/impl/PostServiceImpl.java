@@ -14,6 +14,7 @@ import com.marmot.qilu.modules.post.mapper.PostMapper;
 import com.marmot.qilu.modules.post.mapper.PostMediaMapper;
 import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
 import com.marmot.qilu.modules.post.model.PostPreview;
+import com.marmot.qilu.modules.post.model.PostSearchSource;
 import com.marmot.qilu.modules.post.model.PostTreeInfo;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.*;
@@ -387,6 +388,17 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundException("post not found");
         }
         return authorUuid;
+    }
+
+    @Override
+    public PostSearchSource getPostSearchSource(Long postId) {
+        validatePostId(postId);
+
+        PostSearchSource source = postMapper.selectPostSearchSourceById(postId);
+        if(source == null) {
+            throw new NotFoundException("post not found or no permission");
+        }
+        return source;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.marmot.qilu.modules.post.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.marmot.qilu.modules.post.entity.Post;
 import com.marmot.qilu.modules.post.model.PostCreatedAtItem;
+import com.marmot.qilu.modules.post.model.PostSearchSource;
 import com.marmot.qilu.modules.post.vo.PostDetailVO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.model.PostPreview;
@@ -19,6 +20,8 @@ public interface PostMapper extends BaseMapper<Post> {
     Integer existsNormalBranchPostById(@Param("postId") Long postId);
 
     String selectUserUuidById(@Param("postId") Long postId);
+
+    PostSearchSource selectPostSearchSourceById(@Param("postId") Long postId);
 
     PostTreeInfo selectPostTreeInfo(@Param("postId") Long postId);
 
