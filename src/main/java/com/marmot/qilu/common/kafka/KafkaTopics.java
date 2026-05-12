@@ -6,4 +6,6 @@ public final class KafkaTopics {
     public static final String TOPIC_LIKE_EVENTS = "like_events";
     public static final String TOPIC_COMMENT_EVENTS = "comment_events";
     public static final String TOPIC_REPLY_EVENTS = "reply_events";
+
+    public static final String TOPIC_POST_SEARCH_INDEX_EVENTS = "qilu-post-search-index-events";
 }

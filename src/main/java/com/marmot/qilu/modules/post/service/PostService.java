@@ -29,7 +29,7 @@ public interface PostService {
 
     String getAuthorUuid(Long postId);
 
-    PostSearchSource getPostSearchSource(Long postId);
+    List<PostSearchSource> getPostSearchSourceList(List<Long> postIds);
 
     List<PostPageItemVO> getPublicPostsByIds(List<Long> postIds);
 

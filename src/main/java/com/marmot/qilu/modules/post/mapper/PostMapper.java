@@ -21,13 +21,19 @@ public interface PostMapper extends BaseMapper<Post> {
 
     String selectUserUuidById(@Param("postId") Long postId);
 
-    PostSearchSource selectPostSearchSourceById(@Param("postId") Long postId);
+    List<PostSearchSource> selectPostSearchSourceListByIds(@Param("postIds") List<Long> postIds);
 
-    PostTreeInfo selectPostTreeInfo(@Param("postId") Long postId);
+    PostTreeInfo selectInteractablePostTreeInfo(@Param("currUserUuid") String currUserUuid, @Param("postId") Long postId);
 
-    List<Long> selectSubtreePostIds(@Param("postId") Long postId);
+    List<Long> selectSubtreePostIdsById(@Param("postId") Long postId);
 
-    int updateRootIdByIds(@Param("postIds") List<Long> postIds, @Param("rootId") Long rootId);
+    List<Long> selectSubtreePostIdsByRootId(@Param("rootId") Long rootId);
+
+    int updateRootIdByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds, @Param("rootId") Long rootId);
+
+    int updateVisibilityByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds, @Param("visibility") Integer visibility);
+
+    int updateStatusByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds, @Param("status") Integer status);
 
     List<PostPageItemVO> selectPublicPostByIds(@Param("currUserUuid") String currUserUuid, @Param("postIds") List<Long> postIds);
 

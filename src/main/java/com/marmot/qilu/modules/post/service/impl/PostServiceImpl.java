@@ -2,6 +2,9 @@ package com.marmot.qilu.modules.post.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.event.search.PostSearchIndexAction;
+import com.marmot.qilu.common.event.search.PostSearchIndexEvent;
+import com.marmot.qilu.common.event.search.PostSearchIndexProducer;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ForbiddenException;
 import com.marmot.qilu.common.exception.NotFoundException;
@@ -22,11 +25,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,6 +49,7 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final PostMediaMapper postMediaMapper;
     private final MediaFileService mediaFileService;
+    private final PostSearchIndexProducer postSearchIndexProducer;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -59,12 +67,15 @@ public class PostServiceImpl implements PostService {
         List<Long> mediaIds = dto.getMediaIds();
         validateMediaIds(mediaIds);
 
+        Integer visibility = dto.getVisibility();
+        validateVisibility(visibility);
+
         Post post = new Post();
         post.setUserUuid(currUserUuid);
         post.setTitle(dto.getTitle());
         post.setContent(normContent);
         post.setContentSnippet(contentSnippet);
-        post.setVisibility(dto.getVisibility());
+        post.setVisibility(visibility);
         post.setStatus(STATUS_NORMAL);
         post.setParentId(null);
         post.setRootId(null);
@@ -99,6 +110,8 @@ public class PostServiceImpl implements PostService {
                 throw new BadRequestException("media ids are invalid");
             }
         }
+
+        sendPostSearchIndexEventAfterCommit(List.of(postId), postId, PostSearchIndexAction.SYNC, currUserUuid);
         log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
     }
 
@@ -120,8 +133,8 @@ public class PostServiceImpl implements PostService {
         List<Long> mediaIds = dto.getMediaIds();
         validateMediaIds(mediaIds);
 
-        PostTreeInfo parentInfo = postMapper.selectPostTreeInfo(parentPostId);
-        if(parentInfo == null || !Objects.equals(parentInfo.getUserUuid(), currUserUuid)) {
+        PostTreeInfo parentTreeInfo = postMapper.selectInteractablePostTreeInfo(currUserUuid, parentPostId);
+        if(parentTreeInfo == null) {
             throw new NotFoundException("parent post not found or no permission");
         }
 
@@ -131,10 +144,10 @@ public class PostServiceImpl implements PostService {
         post.setContent(normContent);
         post.setContentSnippet(contentSnippet);
         post.setBranchPrompt(normBranchPrompt);
-        post.setVisibility(parentInfo.getVisibility());
-        post.setStatus(parentInfo.getStatus());
-        post.setParentId(parentInfo.getId());
-        post.setRootId(parentInfo.getRootId());
+        post.setVisibility(parentTreeInfo.getVisibility());
+        post.setStatus(parentTreeInfo.getStatus());
+        post.setParentId(parentTreeInfo.getId());
+        post.setRootId(parentTreeInfo.getRootId());
 
         int inserted = postMapper.insert(post);
         if(inserted != 1) {
@@ -149,6 +162,9 @@ public class PostServiceImpl implements PostService {
                 throw new BadRequestException("media ids are invalid");
             }
         }
+        Long postId = post.getId();
+        Long rootId = post.getRootId();
+        sendPostSearchIndexEventAfterCommit(List.of(postId), rootId, PostSearchIndexAction.SYNC, currUserUuid);
 
         log.info("create post branch success, userUuid={}, parentPostId={}, postId={}",
                 currUserUuid, parentPostId, post.getId());
@@ -168,17 +184,21 @@ public class PostServiceImpl implements PostService {
         String contentSnippet = ContentUtils.buildPostContentSnippet(normContent);
         validateContent(contentSnippet);
 
-        PostTreeInfo currTreeInfo = postMapper.selectPostTreeInfo(postId);
-        if(currTreeInfo == null || !Objects.equals(currTreeInfo.getUserUuid(), currUserUuid)) {
+        PostTreeInfo currTreeInfo = postMapper.selectInteractablePostTreeInfo(currUserUuid, postId);
+        if(currTreeInfo == null) {
             throw new NotFoundException("post not found or no permission");
         }
 
         Long parentId = currTreeInfo.getParentId();
-        int updated;
+        Long rootId= currTreeInfo.getRootId();
         if(parentId == null) {
             Integer visibility = dto.getVisibility();
             validateVisibility(visibility);
-            updated = postMapper.update(
+            List<Long> subtreePostIds = postMapper.selectSubtreePostIdsById(postId);
+            if (subtreePostIds == null || subtreePostIds.isEmpty()) {
+                throw new IllegalStateException("query post subtree failed");
+            }
+            int updated = postMapper.update(
                     null,
                     new LambdaUpdateWrapper<Post>()
                             .eq(Post::getId, postId)
@@ -190,13 +210,21 @@ public class PostServiceImpl implements PostService {
                             .set(Post::getTitle, dto.getTitle())
                             .set(Post::getContent, normContent)
                             .set(Post::getContentSnippet, contentSnippet)
-                            .set(Post::getVisibility, dto.getVisibility())
             );
+            if(updated != 1) {
+                throw new IllegalStateException("update post failed");
+            }
+            int updatedVisibility = postMapper.updateVisibilityByIds(currUserUuid, subtreePostIds, visibility);
+            if(updatedVisibility != subtreePostIds.size()) {
+                throw new IllegalStateException("update post tree visibility failed");
+            }
 
+            sendPostSearchIndexEventAfterCommit(subtreePostIds, rootId,
+                    PostSearchIndexAction.SYNC, currUserUuid);
         } else {
             String branchPrompt = ContentUtils.normalizeContent(dto.getBranchPrompt());
             validateBranchPrompt(branchPrompt);
-            updated = postMapper.update(
+            int updated = postMapper.update(
                     null,
                     new LambdaUpdateWrapper<Post>()
                             .eq(Post::getId, postId)
@@ -210,10 +238,11 @@ public class PostServiceImpl implements PostService {
                             .set(Post::getContent, normContent)
                             .set(Post::getContentSnippet, contentSnippet)
             );
-        }
-
-        if(updated != 1) {
-            throw new IllegalStateException("update post failed");
+            if(updated != 1) {
+                throw new IllegalStateException("update post failed");
+            }
+            sendPostSearchIndexEventAfterCommit(List.of(postId), rootId,
+                    PostSearchIndexAction.SYNC, currUserUuid);
         }
 
         log.info("update post success, userUuid={}, postId={}", currUserUuid, postId);
@@ -230,9 +259,9 @@ public class PostServiceImpl implements PostService {
 
         String currUserUuid = UserContext.requireUuid();
 
-        PostTreeInfo currTreeInfo = postMapper.selectPostTreeInfo(postId);
+        PostTreeInfo currTreeInfo = postMapper.selectInteractablePostTreeInfo(currUserUuid, postId);
 
-        if(currTreeInfo == null || !Objects.equals(currTreeInfo.getUserUuid(), currUserUuid)) {
+        if(currTreeInfo == null) {
             throw new NotFoundException("post not found or no permission");
         }
 
@@ -250,7 +279,7 @@ public class PostServiceImpl implements PostService {
             throw new BadRequestException("post is already a root post");
         }
 
-        List<Long> subtreePostIds = postMapper.selectSubtreePostIds(postId);
+        List<Long> subtreePostIds = postMapper.selectSubtreePostIdsById(postId);
         if(subtreePostIds == null || subtreePostIds.isEmpty()) {
             throw new IllegalStateException("query post subtree failed");
         }
@@ -269,10 +298,13 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundException("post not found or no permission");
         }
 
-        int updatedRoot = postMapper.updateRootIdByIds(subtreePostIds, postId);
+        int updatedRoot = postMapper.updateRootIdByIds(currUserUuid, subtreePostIds, postId);
         if(updatedRoot != subtreePostIds.size()) {
             throw new IllegalStateException("update post subtree root id failed");
         }
+
+        sendPostSearchIndexEventAfterCommit(subtreePostIds, postId,
+                PostSearchIndexAction.SYNC, currUserUuid);
 
         log.info("update post tree as root success, userUuid={}, postId={}, parentPostId={}",
                 currUserUuid, postId, null);
@@ -286,12 +318,12 @@ public class PostServiceImpl implements PostService {
             throw new BadRequestException("post cannot be moved to itself");
         }
 
-        PostTreeInfo parentTreeInfo = postMapper.selectPostTreeInfo(parentId);
-        if(parentTreeInfo == null || !Objects.equals(parentTreeInfo.getUserUuid(), currUserUuid)) {
+        PostTreeInfo parentTreeInfo = postMapper.selectInteractablePostTreeInfo(currUserUuid, parentId);
+        if(parentTreeInfo == null) {
             throw new NotFoundException("parent post not found");
         }
 
-        List<Long> subtreePostIds = postMapper.selectSubtreePostIds(postId);
+        List<Long> subtreePostIds = postMapper.selectSubtreePostIdsById(postId);
         if(subtreePostIds == null || subtreePostIds.isEmpty()) {
             throw new IllegalStateException("query post subtree failed");
         }
@@ -328,10 +360,13 @@ public class PostServiceImpl implements PostService {
         }
 
         if(!Objects.equals(oldRootId, newRootId)) {
-            int updatedRoot = postMapper.updateRootIdByIds(subtreePostIds, newRootId);
+            int updatedRoot = postMapper.updateRootIdByIds(currUserUuid, subtreePostIds, newRootId);
             if(updatedRoot != subtreePostIds.size()) {
                 throw new IllegalStateException("update post subtree root id failed");
             }
+            sendPostSearchIndexEventAfterCommit(subtreePostIds, newRootId, PostSearchIndexAction.SYNC, currUserUuid);
+        } else {
+            sendPostSearchIndexEventAfterCommit(List.of(postId), newRootId, PostSearchIndexAction.SYNC, currUserUuid);
         }
 
         log.info("update post tree as branch success, userUuid={}, postId={}, parentPostId={}",
@@ -346,23 +381,34 @@ public class PostServiceImpl implements PostService {
 
         String currUserUuid = UserContext.requireUuid();
 
-        int deleted = postMapper.update(
-                null,
-                new LambdaUpdateWrapper<Post>()
-                        .eq(Post::getId, postId)
-                        .eq(Post::getUserUuid, currUserUuid)
-                        .eq(Post::getStatus, STATUS_NORMAL)
-                        .set(Post::getStatus, STATUS_DELETED)
-                        .set(Post::getDeletedAt, LocalDateTime.now())
-        );
+        PostTreeInfo currTreeInfo = postMapper.selectInteractablePostTreeInfo(currUserUuid, postId);
+        if(currTreeInfo == null) {
+            throw new NotFoundException("post not found or no permission");
+        }
 
-        if(deleted != 1) {
+        Long parentId = currTreeInfo.getParentId();
+        Long rootId = currTreeInfo.getRootId();
+        List<Long> subtreePostIds;
+        if(parentId == null) {
+            subtreePostIds = postMapper.selectSubtreePostIdsByRootId(postId);
+        } else {
+            subtreePostIds = postMapper.selectSubtreePostIdsById(postId);
+        }
+
+        if(subtreePostIds == null || subtreePostIds.isEmpty()) {
+            throw new IllegalStateException("query post subtree failed");
+        }
+
+        int deletedStatus = postMapper.updateStatusByIds(currUserUuid, subtreePostIds, STATUS_DELETED);
+        if(deletedStatus != subtreePostIds.size()) {
             throw new IllegalStateException("delete post failed");
         }
 
-        log.info("delete post success, userUuid={}, postId={}", currUserUuid, postId);
-    }
+        sendPostSearchIndexEventAfterCommit(subtreePostIds, rootId,
+                PostSearchIndexAction.DELETE, currUserUuid);
 
+        log.info("delete post tree success, userUuid={}, postId={}", currUserUuid, postId);
+    }
 
     @Override
     public void checkPostInteractable(Long postId, String currUserUuid) {
@@ -391,14 +437,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostSearchSource getPostSearchSource(Long postId) {
-        validatePostId(postId);
+    public List<PostSearchSource> getPostSearchSourceList(List<Long> postIds) {
+        validatePostIds(postIds);
 
-        PostSearchSource source = postMapper.selectPostSearchSourceById(postId);
-        if(source == null) {
-            throw new NotFoundException("post not found or no permission");
+        List<PostSearchSource> sourceList = postMapper.selectPostSearchSourceListByIds(postIds);
+        if(sourceList == null || sourceList.isEmpty()) {
+            return List.of();
         }
-        return source;
+        return sourceList;
+    }
+
+    private void validatePostIds(List<Long> postIds) {
+        for(Long postId: postIds) {
+            validatePostId(postId);
+        }
     }
 
     @Override
@@ -558,6 +610,34 @@ public class PostServiceImpl implements PostService {
     @Override
     public int decreasePostCommentCount(Long postId) {
         return postMapper.decreasePostCommentCount(postId);
+    }
+
+    private void sendPostSearchIndexEventAfterCommit(List<Long> postIds,
+                                                     Long rootId,
+                                                     PostSearchIndexAction action,
+                                                     String currUserUuid) {
+        PostSearchIndexEvent event = new PostSearchIndexEvent();
+        event.setEventId(UUID.randomUUID().toString());
+        event.setPostIds(postIds);
+        event.setRootId(rootId);
+        event.setAction(action);
+        event.setOperatorUuid(currUserUuid);
+        event.setOccurredAt(LocalDateTime.now());
+
+        runAfterCommit(() -> postSearchIndexProducer.sendPostSearchIndexEvent(event));
+    }
+
+    private void runAfterCommit(Runnable task) {
+        if(TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    task.run();
+                }
+            });
+            return;
+        }
+        task.run();
     }
 
     private void validatePostId(Long postId) {

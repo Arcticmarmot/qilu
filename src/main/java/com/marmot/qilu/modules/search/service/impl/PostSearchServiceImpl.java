@@ -31,26 +31,33 @@ public class PostSearchServiceImpl implements PostSearchService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public void syncPostIndex(Long postId) {
-        validatePostId(postId);
+    public void syncPostIndex(List<Long> postIds) {
+        validatePostIds(postIds);
 
-        PostSearchSource source = postService.getPostSearchSource(postId);
-        if(!isSearchable(source)) {
-            log.warn("sync post index failed, post is not searchable, postId={}", postId);
-            return;
+        List<PostSearchSource> sourceList = postService.getPostSearchSourceList(postIds);
+        for(PostSearchSource source: sourceList) {
+            Long postId = source.getId();
+            if(!isSearchable(source)) {
+                postSearchRepository.deleteById(postId);
+                log.warn("sync post index failed, post is not searchable, postId={}", postId);
+                return;
+            }
+
+            PostSearchDocument document = convertToDocument(source);
+            postSearchRepository.save(document);
         }
 
-        PostSearchDocument document = convertToDocument(source);
-        postSearchRepository.save(document);
 
-        log.info("index post success, postId={}", postId);
+        log.info("index post success, postIds={}", postIds);
     }
 
     @Override
-    public void deletePostIndex(Long postId) {
-        validatePostId(postId);
-        postSearchRepository.deleteById(postId);
-        log.info("delete post index success, postId={}", postId);
+    public void deletePostIndex(List<Long> postIds) {
+        validatePostIds(postIds);
+        for(Long postId: postIds) {
+            postSearchRepository.deleteById(postId);
+        }
+        log.info("delete post index success, postIds={}", postIds);
     }
 
     @Override
@@ -122,9 +129,11 @@ public class PostSearchServiceImpl implements PostSearchService {
         return document;
     }
 
-    private void validatePostId(Long postId) {
-        if(postId == null || postId <= 0) {
-            throw new BadRequestException("post id must not be blank");
+    private void validatePostIds(List<Long> postIds) {
+        for(Long postId: postIds) {
+            if(postId == null || postId <= 0) {
+                throw new BadRequestException("post id must not be blank");
+            }
         }
     }
 

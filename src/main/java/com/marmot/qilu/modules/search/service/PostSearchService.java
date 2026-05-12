@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface PostSearchService {
 
-    void syncPostIndex(Long post);
+    void syncPostIndex(List<Long> postIds);
 
-    void deletePostIndex(Long postId);
+    void deletePostIndex(List<Long> postIds);
 
     List<PostPageItemVO> searchPosts(String keyword);
 }

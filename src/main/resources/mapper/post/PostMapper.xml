@@ -34,7 +34,7 @@
         limit 1
     </select>
 
-    <select id="selectPostSearchSourceById"
+    <select id="selectPostSearchSourceListByIds"
             resultType="com.marmot.qilu.modules.post.model.PostSearchSource">
         select
             id,
@@ -47,11 +47,13 @@
             visibility,
             created_at as createdAt
         from post
-        where id = #{postId}
-            limit 1
+        where id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
     </select>
     
-    <select id="selectPostTreeInfo" resultType="com.marmot.qilu.modules.post.model.PostTreeInfo">
+    <select id="selectInteractablePostTreeInfo" resultType="com.marmot.qilu.modules.post.model.PostTreeInfo">
         select
             id,
             parent_id as parentId,
@@ -65,7 +67,7 @@
             limit 1
     </select>
 
-    <select id="selectSubtreePostIds" resultType="java.lang.Long">
+    <select id="selectSubtreePostIdsById" resultType="java.lang.Long">
         with recursive subtree as (
             select id
             from post
@@ -83,12 +85,42 @@
         select id
         from subtree
     </select>
-    
+
+    <select id="selectSubtreePostIdsByRootId" resultType="java.lang.Long">
+        select id
+        from post
+        where root_id = #{rootId}
+        and status = 1
+    </select>
+
     <update id="updateRootIdByIds">
         update post
         set root_id = #{rootId}
         where status = 1
-            and id in
+        and user_uuid = #{currUserUuid}
+        and id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </update>
+
+    <update id="updateVisibilityByIds">
+        update post
+        set visibility = #{visibility}
+        where status = 1
+        and user_uuid = #{currUserUuid}
+        and id in
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </update>
+
+    <update id="updateStatusByIds">
+        update post
+        set status = #{status}
+        where status = 1
+        and user_uuid = #{currUserUuid}
+        and id in
         <foreach collection="postIds" item="postId" open="(" separator="," close=")">
             #{postId}
         </foreach>
