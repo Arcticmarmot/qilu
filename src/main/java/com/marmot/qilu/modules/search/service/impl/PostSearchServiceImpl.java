@@ -109,10 +109,6 @@ public class PostSearchServiceImpl implements PostSearchService {
                 && Integer.valueOf(VISIBILITY_PUBLIC).equals(source.getVisibility());
     }
 
-    private void deletePostIndexAtRepository(Long postId) {
-
-    }
-
     private PostSearchDocument convertToDocument(PostSearchSource source) {
         PostSearchDocument document = new PostSearchDocument();
 
