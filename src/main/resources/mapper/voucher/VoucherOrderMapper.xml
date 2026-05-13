@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.marmot.qilu.modules.voucher.mapper.VoucherOrderMapper">
+
+    <update id="redeemByRedeemCode">
+        update voucher_order
+        set status = 2,
+            used_at = #{now}
+        where redeem_code = #{redeemCode}
+          and status = 1
+          and expire_at > #{now}
+    </update>
+
+</mapper>

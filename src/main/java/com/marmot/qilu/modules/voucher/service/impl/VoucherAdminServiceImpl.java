@@ -3,11 +3,14 @@ package com.marmot.qilu.modules.voucher.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.NotFoundException;
+import com.marmot.qilu.modules.voucher.constant.VoucherRedisKeys;
 import com.marmot.qilu.modules.voucher.dto.VoucherCreateDTO;
 import com.marmot.qilu.modules.voucher.dto.VoucherRedeemDTO;
 import com.marmot.qilu.modules.voucher.dto.VoucherSeckillCreateDTO;
 import com.marmot.qilu.modules.voucher.entity.Voucher;
+import com.marmot.qilu.modules.voucher.entity.VoucherOrder;
 import com.marmot.qilu.modules.voucher.entity.VoucherSeckill;
+import com.marmot.qilu.modules.voucher.enums.VoucherOrderStatus;
 import com.marmot.qilu.modules.voucher.mapper.VoucherMapper;
 import com.marmot.qilu.modules.voucher.mapper.VoucherOrderMapper;
 import com.marmot.qilu.modules.voucher.mapper.VoucherSeckillMapper;
@@ -17,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static com.marmot.qilu.common.util.ContentUtils.normalizeContent;
 
@@ -96,12 +101,74 @@ public class VoucherAdminServiceImpl implements VoucherAdminService {
 
     @Override
     public void preheatVoucherSeckill(Long seckillId) {
+        validateSeckillId(seckillId);
 
+        VoucherSeckill voucherSeckill = voucherSeckillMapper.selectOne(
+                Wrappers.<VoucherSeckill>lambdaQuery()
+                        .eq(VoucherSeckill::getId, seckillId)
+                        .eq(VoucherSeckill::getStatus, STATUS_NORMAL)
+        );
+        if(voucherSeckill == null) {
+            throw new NotFoundException("voucher seckill not found or disabled");
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if(!voucherSeckill.getEndTime().isAfter(now)) {
+            throw new BadRequestException("voucher seckill has ended");
+        }
+
+        String stockKey = VoucherRedisKeys.seckillStockKey(seckillId);
+        String userKey = VoucherRedisKeys.seckillUserKey(seckillId);
+
+        stringRedisTemplate.opsForValue().set(stockKey, String.valueOf(voucherSeckill.getRemainingStock()));
+        stringRedisTemplate.delete(userKey);
+
+        log.info("preheat voucher seckill success, seckillId={}, remainingStock={}",
+                seckillId, voucherSeckill.getRemainingStock());
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void redeemVoucherOrder(VoucherRedeemDTO dto) {
+        if(dto == null) {
+            throw new BadRequestException("voucher redeem dto is invalid");
+        }
+        String redeemCode = dto.getRedeemCode();
+        validateRedeemCode(redeemCode);
 
+        VoucherOrder voucherOrder = voucherOrderMapper.selectOne(
+                Wrappers.<VoucherOrder>lambdaQuery()
+                        .eq(VoucherOrder::getRedeemCode, redeemCode)
+        );
+
+        if (voucherOrder == null) {
+            throw new NotFoundException("redeem code is invalid");
+        }
+
+        if(!VoucherOrderStatus.UNUSED.getCode().equals(voucherOrder.getStatus())) {
+            throw new BadRequestException("voucher order is not unused");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if(!voucherOrder.getExpireAt().isAfter(now)) {
+            throw new BadRequestException("voucher order has expired");
+        }
+
+        int updated = voucherOrderMapper.redeemByRedeemCode(redeemCode, now);
+        if(updated != 1) {
+            throw new IllegalStateException("redeem voucher order failed");
+        }
+        log.info("redeem voucher order success, orderNo={}, userUuid={}, seckillId={}",
+                voucherOrder.getOrderNo(), voucherOrder.getUserUuid(), voucherOrder.getSeckillId());
+    }
+
+    private void validateRedeemCode(String redeemCode) {
+        if(redeemCode == null || redeemCode.trim().isBlank()) {
+            throw new BadRequestException("redeem code is required");
+        }
+
+        if(redeemCode.length() > MAX_REDEEM_CODE_LENGTH) {
+            throw new BadRequestException("redeem code is too long");
+        }
     }
 
     private void validateSeckillId(Long seckillId) {

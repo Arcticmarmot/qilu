@@ -28,7 +28,7 @@ public class VoucherOrder {
 
     private Integer status;
 
-    private LocalDateTime expiredAt;
+    private LocalDateTime expireAt;
 
     private LocalDateTime usedAt;
 
