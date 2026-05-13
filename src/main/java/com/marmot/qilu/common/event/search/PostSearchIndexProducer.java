@@ -21,24 +21,24 @@ public class PostSearchIndexProducer {
         String bizKey = String.valueOf(event.getEventId());
 
         kafkaTemplate.send(TOPIC_POST_SEARCH_INDEX_EVENTS, bizKey, event)
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error(
-                                "send post search index event failed, eventId={}, rootId={}, operatorUuid={}",
-                                event.getEventId(),
-                                event.getRootId(),
-                                event.getOperatorUuid(),
-                                ex
-                        );
-                        return;
-                    }
-
-                    log.info(
-                            "send post search index event success, eventId={}, rootId={}, operatorUuid={}",
+            .whenComplete((result, ex) -> {
+                if (ex != null) {
+                    log.error(
+                            "send post search index event failed, eventId={}, rootId={}, operatorUuid={}",
                             event.getEventId(),
                             event.getRootId(),
-                            event.getOperatorUuid()
+                            event.getOperatorUuid(),
+                            ex
                     );
+                    return;
+                }
+
+                log.info(
+                        "send post search index event success, eventId={}, rootId={}, operatorUuid={}",
+                        event.getEventId(),
+                        event.getRootId(),
+                        event.getOperatorUuid()
+                );
         });
 
     }

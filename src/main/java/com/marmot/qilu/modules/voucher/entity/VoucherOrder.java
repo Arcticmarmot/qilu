@@ -22,7 +22,7 @@ public class VoucherOrder {
 
     private Long seckillId;
 
-    private Long userUuid;
+    private String userUuid;
 
     private String redeemCode;
 

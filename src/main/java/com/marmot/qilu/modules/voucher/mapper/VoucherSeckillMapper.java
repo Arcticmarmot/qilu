@@ -6,4 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface VoucherSeckillMapper extends BaseMapper<VoucherSeckill> {
+
+    int decreaseRemainingStock(Long seckillId);
 }

@@ -37,7 +37,7 @@ spring:
       properties:
         spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.trusted.packages: "com.marmot.qilu.common.event.like,com.marmot.qilu.common.event.comment,com.marmot.qilu.common.event.reply,com.marmot.qilu.common.event.search"
+        spring.json.trusted.packages: "com.marmot.qilu.common.event.like,com.marmot.qilu.common.event.comment,com.marmot.qilu.common.event.reply,com.marmot.qilu.common.event.search,com.marmot.qilu.common.event.voucher"
     listener:
       ack-mode: manual
   elasticsearch:
