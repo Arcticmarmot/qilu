@@ -13,5 +13,41 @@
           and status = 1
           and expire_at > #{now}
     </update>
+    
+    <select id="selectMyVoucherOrders" resultType="com.marmot.qilu.modules.voucher.vo.VoucherOrderVO">
+        select
+            vo.order_no as orderNo,
+            vo.voucher_id as voucherId,
+            vo.seckill_id as seckillId,
+            v.title as title,
+            v.description as description,
+            vo.redeem_code as redeemCode,
+            vo.status as status,
+            vo.expire_at as expireAt,
+            vo.used_at as usedAt,
+            vo.created_at as createdAt
+        from voucher_order vo
+        left join voucher v on vo.voucher_id = v.id
+        where vo.user_uuid = #{currUserUuid}
+        order by vo.created_at desc
+    </select>
 
+    <select id="selectVoucherOrderDetail" resultType="com.marmot.qilu.modules.voucher.vo.VoucherOrderVO">
+        select
+            vo.order_no as orderNo,
+            vo.voucher_id as voucherId,
+            vo.seckill_id as seckillId,
+            v.title as title,
+            v.description as description,
+            vo.redeem_code as redeemCode,
+            vo.status as status,
+            vo.expire_at as expireAt,
+            vo.used_at as usedAt,
+            vo.created_at as createdAt
+        from voucher_order vo
+        left join voucher v on vo.voucher_id = v.id
+        where vo.user_uuid = #{currUserUuid}
+        and vo.order_no = #{orderNo}
+        limit 1
+    </select>
 </mapper>

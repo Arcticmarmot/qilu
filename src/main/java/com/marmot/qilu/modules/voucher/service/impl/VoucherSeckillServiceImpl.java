@@ -8,11 +8,14 @@ import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ConflictException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.modules.voucher.constant.VoucherRedisKeys;
+import com.marmot.qilu.modules.voucher.entity.VoucherOrder;
 import com.marmot.qilu.modules.voucher.entity.VoucherSeckill;
 import com.marmot.qilu.modules.voucher.mapper.VoucherOrderMapper;
 import com.marmot.qilu.modules.voucher.mapper.VoucherSeckillMapper;
 import com.marmot.qilu.modules.voucher.service.VoucherSeckillService;
+import com.marmot.qilu.modules.voucher.vo.VoucherSeckillOrderResultVO;
 import com.marmot.qilu.modules.voucher.vo.VoucherSeckillResultVO;
+import com.marmot.qilu.modules.voucher.vo.VoucherSeckillVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -39,6 +42,7 @@ public class VoucherSeckillServiceImpl implements VoucherSeckillService {
     private final VoucherSeckillMapper voucherSeckillMapper;
     private final VoucherOrderProducer voucherOrderProducer;
     private final StringRedisTemplate stringRedisTemplate;
+    private final VoucherOrderMapper voucherOrderMapper;
 
     @Override
     public VoucherSeckillResultVO seckillVoucher(Long seckillId) {
@@ -72,6 +76,40 @@ public class VoucherSeckillServiceImpl implements VoucherSeckillService {
         log.info("voucher seckill accepted, userUuid={}, seckillId={}, voucherId={}",
                 currUserUuid, seckillId, voucherSeckill.getVoucherId());
         return new VoucherSeckillResultVO("processing");
+    }
+
+    @Override
+    public VoucherSeckillOrderResultVO getSeckillOrderResult(Long seckillId) {
+        validateSeckillId(seckillId);
+
+        String userUuid = UserContext.requireUuid();
+
+        VoucherOrder voucherOrder = voucherOrderMapper.selectOne(
+                Wrappers.<VoucherOrder>lambdaQuery()
+                        .eq(VoucherOrder::getSeckillId, seckillId)
+                        .eq(VoucherOrder::getUserUuid, userUuid)
+                        .last("limit 1")
+        );
+
+        if(voucherOrder == null) {
+            return new VoucherSeckillOrderResultVO(null, "processing");
+        }
+        return new VoucherSeckillOrderResultVO(voucherOrder.getOrderNo(), "success");
+    }
+
+    @Override
+    public List<VoucherSeckillVO> getAvailableVoucherSeckills() {
+        return voucherSeckillMapper.selectAvailableVoucherSeckills(LocalDateTime.now());
+    }
+
+    @Override
+    public VoucherSeckillVO getVoucherSeckillDetail(Long seckillId) {
+        validateSeckillId(seckillId);
+        VoucherSeckillVO vo = voucherSeckillMapper.selectVoucherSeckillDetail(seckillId);
+        if(vo == null) {
+            throw new NotFoundException("voucher seckill not found or disabled");
+        }
+        return vo;
     }
 
     private Long executeVoucherSeckillScript(Long seckillId, String userUuid) {

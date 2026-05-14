@@ -13,4 +13,41 @@
         and remaining_stock > 0
     </update>
 
+    <select id="selectAvailableVoucherSeckills" resultType="com.marmot.qilu.modules.voucher.vo.VoucherSeckillVO">
+        select
+            vs.id as seckillId,
+            vs.voucher_id as voucherId,
+            v.title as title,
+            v.description as description,
+            vs.total_stock as totalStock,
+            vs.remaining_stock as remainingStock,
+            vs.start_time as startTime,
+            vs.end_time as endTime,
+            vs.status as status
+        from voucher_seckill vs
+                 inner join voucher v on vs.voucher_id = v.id
+        where vs.status = 1
+          and v.status = 1
+          and vs.end_time > #{now}
+        order by vs.start_time asc
+    </select>
+
+    <select id="selectVoucherSeckillDetail" resultType="com.marmot.qilu.modules.voucher.vo.VoucherSeckillVO">
+        select
+            vs.id as seckillId,
+            vs.voucher_id as voucherId,
+            v.title as title,
+            v.description as description,
+            vs.total_stock as totalStock,
+            vs.remaining_stock as remainingStock,
+            vs.start_time as startTime,
+            vs.end_time as endTime,
+            vs.status as status
+        from voucher_seckill vs
+                 inner join voucher v on vs.voucher_id = v.id
+        where vs.id = #{seckillId}
+          and vs.status = 1
+          and v.status = 1
+            limit 1
+    </select>
 </mapper>
