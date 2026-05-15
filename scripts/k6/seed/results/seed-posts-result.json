@@ -1,0 +1,104 @@
+{
+  "seedTag": "qilu-seed-20260515123403",
+  "baseUrl": "http://localhost:8080",
+  "rootPostCount": 5,
+  "minBranchCount": 1,
+  "maxBranchCount": 3,
+  "roots": [
+    {
+      "id": 27,
+      "title": "大龙山半日徒步路线记录｜qilu-seed-20260515123403-0001",
+      "authorEmail": "qilu_k6_user_001@example.com",
+      "branchCount": 2,
+      "branches": [
+        {
+          "id": 28,
+          "branchPrompt": "选择轻装路线",
+          "title": "选择轻装路线｜大龙山半日徒步路线记录"
+        },
+        {
+          "id": 29,
+          "branchPrompt": "绕去看日落",
+          "title": "绕去看日落｜大龙山半日徒步路线记录"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "title": "从老城区走到江边的一下午｜qilu-seed-20260515123403-0002",
+      "authorEmail": "qilu_k6_user_002@example.com",
+      "branchCount": 3,
+      "branches": [
+        {
+          "id": 31,
+          "branchPrompt": "走向江边",
+          "title": "走向江边｜从老城区走到江边的一下午"
+        },
+        {
+          "id": 32,
+          "branchPrompt": "拐进老街",
+          "title": "拐进老街｜从老城区走到江边的一下午"
+        },
+        {
+          "id": 33,
+          "branchPrompt": "找一家咖啡店坐下",
+          "title": "找一家咖啡店坐下｜从老城区走到江边的一下午"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "title": "短途徒步装备清单｜qilu-seed-20260515123403-0003",
+      "authorEmail": "qilu_k6_user_003@example.com",
+      "branchCount": 3,
+      "branches": [
+        {
+          "id": 35,
+          "branchPrompt": "预算有限怎么选",
+          "title": "预算有限怎么选｜短途徒步装备清单"
+        },
+        {
+          "id": 36,
+          "branchPrompt": "更看重轻便",
+          "title": "更看重轻便｜短途徒步装备清单"
+        },
+        {
+          "id": 37,
+          "branchPrompt": "更看重耐用",
+          "title": "更看重耐用｜短途徒步装备清单"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "title": "树状内容适合哪些社区场景｜qilu-seed-20260515123403-0004",
+      "authorEmail": "qilu_k6_user_004@example.com",
+      "branchCount": 1,
+      "branches": [
+        {
+          "id": 39,
+          "branchPrompt": "选择实用攻略分支",
+          "title": "选择实用攻略分支｜树状内容适合哪些社区场景"
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "title": "一个内容社区后端应该先做什么｜qilu-seed-20260515123403-0005",
+      "authorEmail": "qilu_k6_user_005@example.com",
+      "branchCount": 2,
+      "branches": [
+        {
+          "id": 41,
+          "branchPrompt": "先做 MVP",
+          "title": "先做 MVP｜一个内容社区后端应该先做什么"
+        },
+        {
+          "id": 42,
+          "branchPrompt": "先保证一致性",
+          "title": "先保证一致性｜一个内容社区后端应该先做什么"
+        }
+      ]
+    }
+  ]
+}
