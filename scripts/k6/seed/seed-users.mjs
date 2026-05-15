@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 const USER_COUNT = Number(process.env.USER_COUNT || 100);
-const OUTPUT_FILE = process.env.OUTPUT_FILE || './users.json';
+const OUTPUT_FILE = process.env.OUTPUT_FILE || './data/users.json';
 
 const EMAIL_PREFIX = process.env.EMAIL_PREFIX || 'qilu_k6_user';
 const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN || 'example.com';

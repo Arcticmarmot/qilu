@@ -1,104 +1,3695 @@
 {
-  "seedTag": "qilu-seed-20260515123403",
   "baseUrl": "http://localhost:8080",
-  "rootPostCount": 5,
-  "minBranchCount": 1,
-  "maxBranchCount": 3,
+  "postsFile": "./data/posts.json",
+  "assetsDir": "./assets",
+  "rootPostCount": 100,
+  "maxTotalPostCount": 600,
   "roots": [
     {
-      "id": 27,
-      "title": "大龙山半日徒步路线记录｜qilu-seed-20260515123403-0001",
+      "id": 616,
+      "sourceIndex": 1,
+      "title": "草地野餐的慢时光",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        280
+      ],
       "authorEmail": "qilu_k6_user_001@example.com",
-      "branchCount": 2,
-      "branches": [
-        {
-          "id": 28,
-          "branchPrompt": "选择轻装路线",
-          "title": "选择轻装路线｜大龙山半日徒步路线记录"
-        },
-        {
-          "id": 29,
-          "branchPrompt": "绕去看日落",
-          "title": "绕去看日落｜大龙山半日徒步路线记录"
-        }
-      ]
+      "children": []
     },
     {
-      "id": 30,
-      "title": "从老城区走到江边的一下午｜qilu-seed-20260515123403-0002",
+      "id": 617,
+      "sourceIndex": 2,
+      "title": "黑暗中的平衡练习",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        281
+      ],
       "authorEmail": "qilu_k6_user_002@example.com",
-      "branchCount": 3,
-      "branches": [
-        {
-          "id": 31,
-          "branchPrompt": "走向江边",
-          "title": "走向江边｜从老城区走到江边的一下午"
-        },
-        {
-          "id": 32,
-          "branchPrompt": "拐进老街",
-          "title": "拐进老街｜从老城区走到江边的一下午"
-        },
-        {
-          "id": 33,
-          "branchPrompt": "找一家咖啡店坐下",
-          "title": "找一家咖啡店坐下｜从老城区走到江边的一下午"
-        }
-      ]
+      "children": []
     },
     {
-      "id": 34,
-      "title": "短途徒步装备清单｜qilu-seed-20260515123403-0003",
+      "id": 618,
+      "sourceIndex": 3,
+      "title": "星轨下的山野露营",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        282
+      ],
       "authorEmail": "qilu_k6_user_003@example.com",
-      "branchCount": 3,
-      "branches": [
+      "children": [
         {
-          "id": 35,
-          "branchPrompt": "预算有限怎么选",
-          "title": "预算有限怎么选｜短途徒步装备清单"
+          "id": 619,
+          "sourceIndex": 100,
+          "title": "靠近晴天水岸边行走的男子的冲击感",
+          "branchPrompt": "来看看这条晴天水岸边行走的男子，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            283
+          ],
+          "children": [
+            {
+              "id": 620,
+              "sourceIndex": 94,
+              "title": "切开粉色双层樱桃婚礼蛋糕的情侣定格的情绪",
+              "branchPrompt": "来看看这条切开粉色双层樱桃婚礼蛋糕的情侣，可能会让你想起某个人。",
+              "depth": 3,
+              "mediaIds": [
+                284
+              ],
+              "children": [
+                {
+                  "id": 621,
+                  "sourceIndex": 88,
+                  "title": "把脚步放慢在蓝晒风格的樱花枝特写",
+                  "branchPrompt": "来走一段蓝晒风格的樱花枝特写的视线路线，可能会很放松。",
+                  "depth": 4,
+                  "mediaIds": [
+                    285
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 622,
+              "sourceIndex": 61,
+              "title": "地球背景下的平台宇航员里的尺度感",
+              "branchPrompt": "要不要点开看看地球背景下的平台宇航员，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                286
+              ],
+              "children": [
+                {
+                  "id": 623,
+                  "sourceIndex": 30,
+                  "title": "手持瑜伽垫的运动女子定格的情绪",
+                  "branchPrompt": "来看看这条手持瑜伽垫的运动女子，可能会让你想起某个人。",
+                  "depth": 4,
+                  "mediaIds": [
+                    287
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": 36,
-          "branchPrompt": "更看重轻便",
-          "title": "更看重轻便｜短途徒步装备清单"
+          "id": 624,
+          "sourceIndex": 11,
+          "title": "围绕人群剪影走向远处高塔的生活片刻",
+          "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+          "depth": 2,
+          "mediaIds": [
+            288
+          ],
+          "children": [
+            {
+              "id": 625,
+              "sourceIndex": 68,
+              "title": "东京涩谷街景的低噪瞬间",
+              "branchPrompt": "要不要从东京涩谷街景出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                289
+              ],
+              "children": []
+            },
+            {
+              "id": 626,
+              "sourceIndex": 51,
+              "title": "把目光交给星云与昴星团同框",
+              "branchPrompt": "要不要点开看看星云与昴星团同框，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                290
+              ],
+              "children": [
+                {
+                  "id": 627,
+                  "sourceIndex": 29,
+                  "title": "厨房里对照平板食谱的工作切面",
+                  "branchPrompt": "来看看厨房里对照平板食谱这条，可能就是你的同款日常。",
+                  "depth": 4,
+                  "mediaIds": [
+                    291
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 628,
+                  "sourceIndex": 64,
+                  "title": "临港中心的低噪瞬间",
+                  "branchPrompt": "要不要从临港中心出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    292
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 629,
+              "sourceIndex": 29,
+              "title": "厨房里对照平板食谱的工作切面",
+              "branchPrompt": "来看看厨房里对照平板食谱这条，可能就是你的同款日常。",
+              "depth": 3,
+              "mediaIds": [
+                293
+              ],
+              "children": [
+                {
+                  "id": 630,
+                  "sourceIndex": 77,
+                  "title": "咖啡旁的桌前工作的工作切面",
+                  "branchPrompt": "来看看咖啡旁的桌前工作这条，可能就是你的同款日常。",
+                  "depth": 4,
+                  "mediaIds": [
+                    294
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 631,
+                  "sourceIndex": 68,
+                  "title": "东京涩谷街景的低噪瞬间",
+                  "branchPrompt": "要不要从东京涩谷街景出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    295
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 632,
+                  "sourceIndex": 43,
+                  "title": "围绕日落海滩上的行人剪影的生活片刻",
+                  "branchPrompt": "要不要点开看看日落海滩上的行人剪影，这份情绪很真实。",
+                  "depth": 4,
+                  "mediaIds": [
+                    296
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": 37,
-          "branchPrompt": "更看重耐用",
-          "title": "更看重耐用｜短途徒步装备清单"
+          "id": 633,
+          "sourceIndex": 46,
+          "title": "沿着胶片相机下的沙漠纪实走一段",
+          "branchPrompt": "来走一段胶片相机下的沙漠纪实的视线路线，可能会很放松。",
+          "depth": 2,
+          "mediaIds": [
+            297
+          ],
+          "children": []
         }
       ]
     },
     {
-      "id": 38,
-      "title": "树状内容适合哪些社区场景｜qilu-seed-20260515123403-0004",
+      "id": 634,
+      "sourceIndex": 4,
+      "title": "清晨空街与第一束光",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        298
+      ],
       "authorEmail": "qilu_k6_user_004@example.com",
-      "branchCount": 1,
-      "branches": [
+      "children": []
+    },
+    {
+      "id": 635,
+      "sourceIndex": 5,
+      "title": "峡谷瀑布的力量感",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        299
+      ],
+      "authorEmail": "qilu_k6_user_005@example.com",
+      "children": [
         {
-          "id": 39,
-          "branchPrompt": "选择实用攻略分支",
-          "title": "选择实用攻略分支｜树状内容适合哪些社区场景"
+          "id": 636,
+          "sourceIndex": 97,
+          "title": "广阔沙漠上的戏剧性日落的远方呼吸",
+          "branchPrompt": "不如点进去看看广阔沙漠上的戏剧性日落，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            300
+          ],
+          "children": [
+            {
+              "id": 637,
+              "sourceIndex": 63,
+              "title": "厨房台面上的一盒棕蛋呈现的生活质感",
+              "branchPrompt": "不如点进去看看厨房台面上的一盒棕蛋，空间灵感很实用。",
+              "depth": 3,
+              "mediaIds": [
+                301
+              ],
+              "children": []
+            },
+            {
+              "id": 638,
+              "sourceIndex": 79,
+              "title": "在白墙上的相框照片集合里看见结构美",
+              "branchPrompt": "点开看看白墙上的相框照片集合这个城市瞬间，有没有打动你？",
+              "depth": 3,
+              "mediaIds": [
+                302
+              ],
+              "children": []
+            },
+            {
+              "id": 639,
+              "sourceIndex": 50,
+              "title": "围绕格纹户外桌上的餐食饮品的空间灵感",
+              "branchPrompt": "来看看这条格纹户外桌上的餐食饮品场景，也许能给你布置新想法。",
+              "depth": 3,
+              "mediaIds": [
+                303
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 640,
+          "sourceIndex": 90,
+          "title": "夜间繁忙街道的航拍视角下的安静时区",
+          "branchPrompt": "来看看这段夜间繁忙街道的航拍视角的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            304
+          ],
+          "children": []
+        },
+        {
+          "id": 641,
+          "sourceIndex": 16,
+          "title": "舷窗水珠后的云层带来的深空想象",
+          "branchPrompt": "来看看这段舷窗水珠后的云层的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            305
+          ],
+          "children": [
+            {
+              "id": 642,
+              "sourceIndex": 44,
+              "title": "超现实色彩抽象人像的耐看细节",
+              "branchPrompt": "来看看这段超现实色彩抽象人像画面细节，你会发现层次感。",
+              "depth": 3,
+              "mediaIds": [
+                306
+              ],
+              "children": []
+            }
+          ]
         }
       ]
     },
     {
-      "id": 40,
-      "title": "一个内容社区后端应该先做什么｜qilu-seed-20260515123403-0005",
-      "authorEmail": "qilu_k6_user_005@example.com",
-      "branchCount": 2,
-      "branches": [
+      "id": 643,
+      "sourceIndex": 6,
+      "title": "沿着暗色前景下的雾山走一段",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        307
+      ],
+      "authorEmail": "qilu_k6_user_006@example.com",
+      "children": []
+    },
+    {
+      "id": 644,
+      "sourceIndex": 7,
+      "title": "围绕旧楼梯上的一对男女的生活片刻",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        308
+      ],
+      "authorEmail": "qilu_k6_user_007@example.com",
+      "children": [
         {
-          "id": 41,
-          "branchPrompt": "先做 MVP",
-          "title": "先做 MVP｜一个内容社区后端应该先做什么"
+          "id": 645,
+          "sourceIndex": 40,
+          "title": "靠在砖墙边的人物的低噪瞬间",
+          "branchPrompt": "要不要从靠在砖墙边的人物出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            309
+          ],
+          "children": []
         },
         {
-          "id": 42,
-          "branchPrompt": "先保证一致性",
-          "title": "先保证一致性｜一个内容社区后端应该先做什么"
+          "id": 646,
+          "sourceIndex": 21,
+          "title": "樱花下被托起的孩子的远方呼吸",
+          "branchPrompt": "不如点进去看看樱花下被托起的孩子，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            310
+          ],
+          "children": []
         }
       ]
+    },
+    {
+      "id": 647,
+      "sourceIndex": 8,
+      "title": "从桌前办公与电脑手机看见节奏管理",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        311
+      ],
+      "authorEmail": "qilu_k6_user_008@example.com",
+      "children": []
+    },
+    {
+      "id": 648,
+      "sourceIndex": 9,
+      "title": "山地中人与马匹的远方呼吸",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        312
+      ],
+      "authorEmail": "qilu_k6_user_009@example.com",
+      "children": []
+    },
+    {
+      "id": 649,
+      "sourceIndex": 10,
+      "title": "柏林国际会议中心构成的清晨感",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        313
+      ],
+      "authorEmail": "qilu_k6_user_010@example.com",
+      "children": [
+        {
+          "id": 650,
+          "sourceIndex": 81,
+          "title": "猫头鹰星云里的尺度感",
+          "branchPrompt": "要不要点开看看猫头鹰星云，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            314
+          ],
+          "children": [
+            {
+              "id": 651,
+              "sourceIndex": 12,
+              "title": "深空旋涡星系带来的深空想象",
+              "branchPrompt": "来看看这段深空旋涡星系的画面，也许会让你心情更松一点。",
+              "depth": 3,
+              "mediaIds": [
+                315
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 652,
+      "sourceIndex": 11,
+      "title": "围绕人群剪影走向远处高塔的生活片刻",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        316
+      ],
+      "authorEmail": "qilu_k6_user_011@example.com",
+      "children": []
+    },
+    {
+      "id": 653,
+      "sourceIndex": 12,
+      "title": "深空旋涡星系带来的深空想象",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        317
+      ],
+      "authorEmail": "qilu_k6_user_012@example.com",
+      "children": [
+        {
+          "id": 654,
+          "sourceIndex": 54,
+          "title": "砖楼门前的杂物痕迹构成的清晨感",
+          "branchPrompt": "要不要从砖楼门前的杂物痕迹出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            318
+          ],
+          "children": []
+        },
+        {
+          "id": 655,
+          "sourceIndex": 38,
+          "title": "窗前满架书墙构成的清晨感",
+          "branchPrompt": "要不要从窗前满架书墙出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            319
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 656,
+      "sourceIndex": 13,
+      "title": "枝头停驻的灰犀鸟的目光停驻",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        320
+      ],
+      "authorEmail": "qilu_k6_user_013@example.com",
+      "children": [
+        {
+          "id": 657,
+          "sourceIndex": 8,
+          "title": "从桌前办公与电脑手机看见节奏管理",
+          "branchPrompt": "点开这条桌前办公与电脑手机，也许能拿到一点节奏管理灵感。",
+          "depth": 2,
+          "mediaIds": [
+            321
+          ],
+          "children": [
+            {
+              "id": 658,
+              "sourceIndex": 47,
+              "title": "把目光交给夜间旋转木马动感虚化",
+              "branchPrompt": "要不要点开看看夜间旋转木马动感虚化，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                322
+              ],
+              "children": []
+            },
+            {
+              "id": 659,
+              "sourceIndex": 79,
+              "title": "在白墙上的相框照片集合里看见结构美",
+              "branchPrompt": "点开看看白墙上的相框照片集合这个城市瞬间，有没有打动你？",
+              "depth": 3,
+              "mediaIds": [
+                323
+              ],
+              "children": []
+            },
+            {
+              "id": 660,
+              "sourceIndex": 61,
+              "title": "地球背景下的平台宇航员里的尺度感",
+              "branchPrompt": "要不要点开看看地球背景下的平台宇航员，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                324
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 661,
+          "sourceIndex": 92,
+          "title": "玫瑰星云带来的深空想象",
+          "branchPrompt": "来看看这段玫瑰星云的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            325
+          ],
+          "children": []
+        },
+        {
+          "id": 662,
+          "sourceIndex": 22,
+          "title": "围绕桌前办公与电脑手机的专注现场",
+          "branchPrompt": "点开这条桌前办公与电脑手机，也许能拿到一点节奏管理灵感。",
+          "depth": 2,
+          "mediaIds": [
+            326
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 663,
+      "sourceIndex": 14,
+      "title": "夜色雪山上的星轨下的安静时区",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        327
+      ],
+      "authorEmail": "qilu_k6_user_014@example.com",
+      "children": [
+        {
+          "id": 664,
+          "sourceIndex": 84,
+          "title": "从床上电脑与零食的年轻人看见节奏管理",
+          "branchPrompt": "点开这条床上电脑与零食的年轻人，也许能拿到一点节奏管理灵感。",
+          "depth": 2,
+          "mediaIds": [
+            328
+          ],
+          "children": [
+            {
+              "id": 665,
+              "sourceIndex": 21,
+              "title": "樱花下被托起的孩子的远方呼吸",
+              "branchPrompt": "不如点进去看看樱花下被托起的孩子，给大脑降个噪？",
+              "depth": 3,
+              "mediaIds": [
+                329
+              ],
+              "children": []
+            },
+            {
+              "id": 666,
+              "sourceIndex": 25,
+              "title": "装满酒瓶的木质酒架里的居家层次",
+              "branchPrompt": "不如点进去看看装满酒瓶的木质酒架，空间灵感很实用。",
+              "depth": 3,
+              "mediaIds": [
+                330
+              ],
+              "children": []
+            },
+            {
+              "id": 667,
+              "sourceIndex": 83,
+              "title": "日出时的纪念碑谷岩层里的地形叙事",
+              "branchPrompt": "不如点进去看看日出时的纪念碑谷岩层，给大脑降个噪？",
+              "depth": 3,
+              "mediaIds": [
+                331
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 668,
+      "sourceIndex": 15,
+      "title": "桌面上手机与电脑平板里的日常效率",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        332
+      ],
+      "authorEmail": "qilu_k6_user_015@example.com",
+      "children": []
+    },
+    {
+      "id": 669,
+      "sourceIndex": 16,
+      "title": "舷窗水珠后的云层带来的深空想象",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        333
+      ],
+      "authorEmail": "qilu_k6_user_016@example.com",
+      "children": []
+    },
+    {
+      "id": 670,
+      "sourceIndex": 17,
+      "title": "柏林国际会议中心中的城市秩序",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        334
+      ],
+      "authorEmail": "qilu_k6_user_017@example.com",
+      "children": [
+        {
+          "id": 671,
+          "sourceIndex": 33,
+          "title": "探险故事配图的画面叙事",
+          "branchPrompt": "点开看看探险故事配图这条，也许会有意外收获。",
+          "depth": 2,
+          "mediaIds": [
+            335
+          ],
+          "children": [
+            {
+              "id": 672,
+              "sourceIndex": 16,
+              "title": "舷窗水珠后的云层带来的深空想象",
+              "branchPrompt": "来看看这段舷窗水珠后的云层的画面，也许会让你心情更松一点。",
+              "depth": 3,
+              "mediaIds": [
+                336
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 673,
+          "sourceIndex": 47,
+          "title": "把目光交给夜间旋转木马动感虚化",
+          "branchPrompt": "要不要点开看看夜间旋转木马动感虚化，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            337
+          ],
+          "children": [
+            {
+              "id": 674,
+              "sourceIndex": 84,
+              "title": "从床上电脑与零食的年轻人看见节奏管理",
+              "branchPrompt": "点开这条床上电脑与零食的年轻人，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                338
+              ],
+              "children": []
+            },
+            {
+              "id": 675,
+              "sourceIndex": 65,
+              "title": "夜间灯影中的旋转木马里的尺度感",
+              "branchPrompt": "要不要点开看看夜间灯影中的旋转木马，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                339
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 676,
+          "sourceIndex": 67,
+          "title": "把目光交给云海上方的山脉日落剪影",
+          "branchPrompt": "要不要点开看看云海上方的山脉日落剪影，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            340
+          ],
+          "children": [
+            {
+              "id": 677,
+              "sourceIndex": 69,
+              "title": "晴空下漂浮的蓝海冰山里的尺度感",
+              "branchPrompt": "要不要点开看看晴空下漂浮的蓝海冰山，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                341
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 678,
+      "sourceIndex": 18,
+      "title": "围绕黑字白色打印纸的专注现场",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        342
+      ],
+      "authorEmail": "qilu_k6_user_018@example.com",
+      "children": []
+    },
+    {
+      "id": 679,
+      "sourceIndex": 19,
+      "title": "把目光交给繁星夜空下的手电光束",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        343
+      ],
+      "authorEmail": "qilu_k6_user_019@example.com",
+      "children": []
+    },
+    {
+      "id": 680,
+      "sourceIndex": 20,
+      "title": "现代厨房里父亲抱着孩子背后的日常连接",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        344
+      ],
+      "authorEmail": "qilu_k6_user_020@example.com",
+      "children": []
+    },
+    {
+      "id": 681,
+      "sourceIndex": 21,
+      "title": "樱花下被托起的孩子的远方呼吸",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        345
+      ],
+      "authorEmail": "qilu_k6_user_021@example.com",
+      "children": [
+        {
+          "id": 682,
+          "sourceIndex": 86,
+          "title": "在泳池中的橙片充气浮圈里听见节拍",
+          "branchPrompt": "来看看这条泳池中的橙片充气浮圈，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            346
+          ],
+          "children": []
+        },
+        {
+          "id": 683,
+          "sourceIndex": 54,
+          "title": "砖楼门前的杂物痕迹构成的清晨感",
+          "branchPrompt": "要不要从砖楼门前的杂物痕迹出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            347
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 684,
+      "sourceIndex": 22,
+      "title": "围绕桌前办公与电脑手机的专注现场",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        348
+      ],
+      "authorEmail": "qilu_k6_user_022@example.com",
+      "children": []
+    },
+    {
+      "id": 685,
+      "sourceIndex": 23,
+      "title": "家居布景拍摄现场呈现的生活质感",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        349
+      ],
+      "authorEmail": "qilu_k6_user_023@example.com",
+      "children": [
+        {
+          "id": 686,
+          "sourceIndex": 29,
+          "title": "厨房里对照平板食谱的工作切面",
+          "branchPrompt": "来看看厨房里对照平板食谱这条，可能就是你的同款日常。",
+          "depth": 2,
+          "mediaIds": [
+            350
+          ],
+          "children": []
+        },
+        {
+          "id": 687,
+          "sourceIndex": 64,
+          "title": "临港中心的低噪瞬间",
+          "branchPrompt": "要不要从临港中心出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            351
+          ],
+          "children": [
+            {
+              "id": 688,
+              "sourceIndex": 11,
+              "title": "围绕人群剪影走向远处高塔的生活片刻",
+              "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+              "depth": 3,
+              "mediaIds": [
+                352
+              ],
+              "children": []
+            },
+            {
+              "id": 689,
+              "sourceIndex": 10,
+              "title": "柏林国际会议中心构成的清晨感",
+              "branchPrompt": "要不要从柏林国际会议中心出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                353
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 690,
+          "sourceIndex": 45,
+          "title": "繁忙路口的人群过街中的城市秩序",
+          "branchPrompt": "点开看看繁忙路口的人群过街这个城市瞬间，有没有打动你？",
+          "depth": 2,
+          "mediaIds": [
+            354
+          ],
+          "children": [
+            {
+              "id": 691,
+              "sourceIndex": 11,
+              "title": "围绕人群剪影走向远处高塔的生活片刻",
+              "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+              "depth": 3,
+              "mediaIds": [
+                355
+              ],
+              "children": [
+                {
+                  "id": 692,
+                  "sourceIndex": 59,
+                  "title": "在砖墙上悬挂的五件外套里看见结构美",
+                  "branchPrompt": "点开看看砖墙上悬挂的五件外套这个城市瞬间，有没有打动你？",
+                  "depth": 4,
+                  "mediaIds": [
+                    356
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 693,
+      "sourceIndex": 24,
+      "title": "站在城市斑马线上的女子的低噪瞬间",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        357
+      ],
+      "authorEmail": "qilu_k6_user_024@example.com",
+      "children": []
+    },
+    {
+      "id": 694,
+      "sourceIndex": 25,
+      "title": "装满酒瓶的木质酒架里的居家层次",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        358
+      ],
+      "authorEmail": "qilu_k6_user_025@example.com",
+      "children": []
+    },
+    {
+      "id": 695,
+      "sourceIndex": 26,
+      "title": "在草间母鹿里遇见生命力",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        359
+      ],
+      "authorEmail": "qilu_k6_user_026@example.com",
+      "children": [
+        {
+          "id": 696,
+          "sourceIndex": 85,
+          "title": "被废弃卫星环绕的地球里的尺度感",
+          "branchPrompt": "要不要点开看看被废弃卫星环绕的地球，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            360
+          ],
+          "children": [
+            {
+              "id": 697,
+              "sourceIndex": 79,
+              "title": "在白墙上的相框照片集合里看见结构美",
+              "branchPrompt": "点开看看白墙上的相框照片集合这个城市瞬间，有没有打动你？",
+              "depth": 3,
+              "mediaIds": [
+                361
+              ],
+              "children": []
+            },
+            {
+              "id": 698,
+              "sourceIndex": 64,
+              "title": "临港中心的低噪瞬间",
+              "branchPrompt": "要不要从临港中心出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                362
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 699,
+      "sourceIndex": 27,
+      "title": "金色田野里的花纹长裙女子里的地形叙事",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        363
+      ],
+      "authorEmail": "qilu_k6_user_027@example.com",
+      "children": [
+        {
+          "id": 700,
+          "sourceIndex": 11,
+          "title": "围绕人群剪影走向远处高塔的生活片刻",
+          "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+          "depth": 2,
+          "mediaIds": [
+            364
+          ],
+          "children": [
+            {
+              "id": 701,
+              "sourceIndex": 40,
+              "title": "靠在砖墙边的人物的低噪瞬间",
+              "branchPrompt": "要不要从靠在砖墙边的人物出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                365
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 702,
+          "sourceIndex": 31,
+          "title": "居家办公角落里的日常效率",
+          "branchPrompt": "来看看居家办公角落这条，可能就是你的同款日常。",
+          "depth": 2,
+          "mediaIds": [
+            366
+          ],
+          "children": [
+            {
+              "id": 703,
+              "sourceIndex": 84,
+              "title": "从床上电脑与零食的年轻人看见节奏管理",
+              "branchPrompt": "点开这条床上电脑与零食的年轻人，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                367
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 704,
+          "sourceIndex": 91,
+          "title": "居家办公角落里的日常效率",
+          "branchPrompt": "来看看居家办公角落这条，可能就是你的同款日常。",
+          "depth": 2,
+          "mediaIds": [
+            368
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 705,
+      "sourceIndex": 28,
+      "title": "把脚步放慢在从洞口望向岩地风景",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        369
+      ],
+      "authorEmail": "qilu_k6_user_028@example.com",
+      "children": []
+    },
+    {
+      "id": 706,
+      "sourceIndex": 29,
+      "title": "厨房里对照平板食谱的工作切面",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        370
+      ],
+      "authorEmail": "qilu_k6_user_029@example.com",
+      "children": []
+    },
+    {
+      "id": 707,
+      "sourceIndex": 30,
+      "title": "手持瑜伽垫的运动女子定格的情绪",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        371
+      ],
+      "authorEmail": "qilu_k6_user_030@example.com",
+      "children": []
+    },
+    {
+      "id": 708,
+      "sourceIndex": 31,
+      "title": "居家办公角落里的日常效率",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        372
+      ],
+      "authorEmail": "qilu_k6_user_031@example.com",
+      "children": []
+    },
+    {
+      "id": 709,
+      "sourceIndex": 32,
+      "title": "复古奔驰车头细节的耐看细节",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        373
+      ],
+      "authorEmail": "qilu_k6_user_032@example.com",
+      "children": [
+        {
+          "id": 710,
+          "sourceIndex": 38,
+          "title": "窗前满架书墙构成的清晨感",
+          "branchPrompt": "要不要从窗前满架书墙出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            374
+          ],
+          "children": [
+            {
+              "id": 711,
+              "sourceIndex": 72,
+              "title": "把脚步放慢在重复排列的圆角蓝砖",
+              "branchPrompt": "来走一段重复排列的圆角蓝砖的视线路线，可能会很放松。",
+              "depth": 3,
+              "mediaIds": [
+                375
+              ],
+              "children": []
+            },
+            {
+              "id": 712,
+              "sourceIndex": 8,
+              "title": "从桌前办公与电脑手机看见节奏管理",
+              "branchPrompt": "点开这条桌前办公与电脑手机，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                376
+              ],
+              "children": []
+            },
+            {
+              "id": 713,
+              "sourceIndex": 36,
+              "title": "把脚步放慢在日落暖光下的山峰",
+              "branchPrompt": "来走一段日落暖光下的山峰的视线路线，可能会很放松。",
+              "depth": 3,
+              "mediaIds": [
+                377
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 714,
+      "sourceIndex": 33,
+      "title": "探险故事配图的画面叙事",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        378
+      ],
+      "authorEmail": "qilu_k6_user_033@example.com",
+      "children": []
+    },
+    {
+      "id": 715,
+      "sourceIndex": 34,
+      "title": "城市中的单速骑行者里的光影线索",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        379
+      ],
+      "authorEmail": "qilu_k6_user_034@example.com",
+      "children": []
+    },
+    {
+      "id": 716,
+      "sourceIndex": 35,
+      "title": "围绕草间母鹿的生活片刻",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        380
+      ],
+      "authorEmail": "qilu_k6_user_035@example.com",
+      "children": [
+        {
+          "id": 717,
+          "sourceIndex": 92,
+          "title": "玫瑰星云带来的深空想象",
+          "branchPrompt": "来看看这段玫瑰星云的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            381
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 718,
+      "sourceIndex": 36,
+      "title": "把脚步放慢在日落暖光下的山峰",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        382
+      ],
+      "authorEmail": "qilu_k6_user_036@example.com",
+      "children": []
+    },
+    {
+      "id": 719,
+      "sourceIndex": 37,
+      "title": "船舱视角下的静谧山湖的远方呼吸",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        383
+      ],
+      "authorEmail": "qilu_k6_user_037@example.com",
+      "children": []
+    },
+    {
+      "id": 720,
+      "sourceIndex": 38,
+      "title": "窗前满架书墙构成的清晨感",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        384
+      ],
+      "authorEmail": "qilu_k6_user_038@example.com",
+      "children": [
+        {
+          "id": 721,
+          "sourceIndex": 94,
+          "title": "切开粉色双层樱桃婚礼蛋糕的情侣定格的情绪",
+          "branchPrompt": "来看看这条切开粉色双层樱桃婚礼蛋糕的情侣，可能会让你想起某个人。",
+          "depth": 2,
+          "mediaIds": [
+            385
+          ],
+          "children": []
+        },
+        {
+          "id": 722,
+          "sourceIndex": 44,
+          "title": "超现实色彩抽象人像的耐看细节",
+          "branchPrompt": "来看看这段超现实色彩抽象人像画面细节，你会发现层次感。",
+          "depth": 2,
+          "mediaIds": [
+            386
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 723,
+      "sourceIndex": 39,
+      "title": "围绕胶片风后期色调的静态张力",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        387
+      ],
+      "authorEmail": "qilu_k6_user_039@example.com",
+      "children": []
+    },
+    {
+      "id": 724,
+      "sourceIndex": 40,
+      "title": "靠在砖墙边的人物的低噪瞬间",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        388
+      ],
+      "authorEmail": "qilu_k6_user_040@example.com",
+      "children": []
+    },
+    {
+      "id": 725,
+      "sourceIndex": 41,
+      "title": "低照度汽车摄影的画面叙事",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        389
+      ],
+      "authorEmail": "qilu_k6_user_041@example.com",
+      "children": [
+        {
+          "id": 726,
+          "sourceIndex": 86,
+          "title": "在泳池中的橙片充气浮圈里听见节拍",
+          "branchPrompt": "来看看这条泳池中的橙片充气浮圈，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            390
+          ],
+          "children": [
+            {
+              "id": 727,
+              "sourceIndex": 71,
+              "title": "深色背景里的浅蓝花朵里的地形叙事",
+              "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+              "depth": 3,
+              "mediaIds": [
+                391
+              ],
+              "children": [
+                {
+                  "id": 728,
+                  "sourceIndex": 78,
+                  "title": "重复窗格的现代建筑立面构成的清晨感",
+                  "branchPrompt": "要不要从重复窗格的现代建筑立面出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    392
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 729,
+                  "sourceIndex": 29,
+                  "title": "厨房里对照平板食谱的工作切面",
+                  "branchPrompt": "来看看厨房里对照平板食谱这条，可能就是你的同款日常。",
+                  "depth": 4,
+                  "mediaIds": [
+                    393
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 730,
+                  "sourceIndex": 7,
+                  "title": "围绕旧楼梯上的一对男女的生活片刻",
+                  "branchPrompt": "要不要点开看看旧楼梯上的一对男女，这份情绪很真实。",
+                  "depth": 4,
+                  "mediaIds": [
+                    394
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 731,
+          "sourceIndex": 69,
+          "title": "晴空下漂浮的蓝海冰山里的尺度感",
+          "branchPrompt": "要不要点开看看晴空下漂浮的蓝海冰山，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            395
+          ],
+          "children": [
+            {
+              "id": 732,
+              "sourceIndex": 33,
+              "title": "探险故事配图的画面叙事",
+              "branchPrompt": "点开看看探险故事配图这条，也许会有意外收获。",
+              "depth": 3,
+              "mediaIds": [
+                396
+              ],
+              "children": []
+            },
+            {
+              "id": 733,
+              "sourceIndex": 63,
+              "title": "厨房台面上的一盒棕蛋呈现的生活质感",
+              "branchPrompt": "不如点进去看看厨房台面上的一盒棕蛋，空间灵感很实用。",
+              "depth": 3,
+              "mediaIds": [
+                397
+              ],
+              "children": [
+                {
+                  "id": 734,
+                  "sourceIndex": 40,
+                  "title": "靠在砖墙边的人物的低噪瞬间",
+                  "branchPrompt": "要不要从靠在砖墙边的人物出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    398
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 735,
+          "sourceIndex": 48,
+          "title": "夜间微光下的街边超市带来的深空想象",
+          "branchPrompt": "来看看这段夜间微光下的街边超市的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            399
+          ],
+          "children": [
+            {
+              "id": 736,
+              "sourceIndex": 11,
+              "title": "围绕人群剪影走向远处高塔的生活片刻",
+              "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+              "depth": 3,
+              "mediaIds": [
+                400
+              ],
+              "children": [
+                {
+                  "id": 737,
+                  "sourceIndex": 50,
+                  "title": "围绕格纹户外桌上的餐食饮品的空间灵感",
+                  "branchPrompt": "来看看这条格纹户外桌上的餐食饮品场景，也许能给你布置新想法。",
+                  "depth": 4,
+                  "mediaIds": [
+                    401
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 738,
+                  "sourceIndex": 59,
+                  "title": "在砖墙上悬挂的五件外套里看见结构美",
+                  "branchPrompt": "点开看看砖墙上悬挂的五件外套这个城市瞬间，有没有打动你？",
+                  "depth": 4,
+                  "mediaIds": [
+                    402
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 739,
+                  "sourceIndex": 39,
+                  "title": "围绕胶片风后期色调的静态张力",
+                  "branchPrompt": "点开看看胶片风后期色调这条，也许会有意外收获。",
+                  "depth": 4,
+                  "mediaIds": [
+                    403
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 740,
+      "sourceIndex": 42,
+      "title": "围绕厨房交谈与烹饪瞬间的空间灵感",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        404
+      ],
+      "authorEmail": "qilu_k6_user_042@example.com",
+      "children": []
+    },
+    {
+      "id": 741,
+      "sourceIndex": 43,
+      "title": "围绕日落海滩上的行人剪影的生活片刻",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        405
+      ],
+      "authorEmail": "qilu_k6_user_043@example.com",
+      "children": []
+    },
+    {
+      "id": 742,
+      "sourceIndex": 44,
+      "title": "超现实色彩抽象人像的耐看细节",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        406
+      ],
+      "authorEmail": "qilu_k6_user_044@example.com",
+      "children": [
+        {
+          "id": 743,
+          "sourceIndex": 45,
+          "title": "繁忙路口的人群过街中的城市秩序",
+          "branchPrompt": "点开看看繁忙路口的人群过街这个城市瞬间，有没有打动你？",
+          "depth": 2,
+          "mediaIds": [
+            407
+          ],
+          "children": []
+        },
+        {
+          "id": 744,
+          "sourceIndex": 27,
+          "title": "金色田野里的花纹长裙女子里的地形叙事",
+          "branchPrompt": "不如点进去看看金色田野里的花纹长裙女子，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            408
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 745,
+      "sourceIndex": 45,
+      "title": "繁忙路口的人群过街中的城市秩序",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        409
+      ],
+      "authorEmail": "qilu_k6_user_045@example.com",
+      "children": []
+    },
+    {
+      "id": 746,
+      "sourceIndex": 46,
+      "title": "沿着胶片相机下的沙漠纪实走一段",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        410
+      ],
+      "authorEmail": "qilu_k6_user_046@example.com",
+      "children": []
+    },
+    {
+      "id": 747,
+      "sourceIndex": 47,
+      "title": "把目光交给夜间旋转木马动感虚化",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        411
+      ],
+      "authorEmail": "qilu_k6_user_047@example.com",
+      "children": [
+        {
+          "id": 748,
+          "sourceIndex": 82,
+          "title": "在瀑布旁站在碧色水中的男子里听见节拍",
+          "branchPrompt": "来看看这条瀑布旁站在碧色水中的男子，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            412
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 749,
+      "sourceIndex": 48,
+      "title": "夜间微光下的街边超市带来的深空想象",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        413
+      ],
+      "authorEmail": "qilu_k6_user_048@example.com",
+      "children": []
+    },
+    {
+      "id": 750,
+      "sourceIndex": 49,
+      "title": "灶台前烹饪的女子里的关系温度",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        414
+      ],
+      "authorEmail": "qilu_k6_user_049@example.com",
+      "children": [
+        {
+          "id": 751,
+          "sourceIndex": 35,
+          "title": "围绕草间母鹿的生活片刻",
+          "branchPrompt": "要不要点开看看草间母鹿，这份情绪很真实。",
+          "depth": 2,
+          "mediaIds": [
+            415
+          ],
+          "children": []
+        },
+        {
+          "id": 752,
+          "sourceIndex": 25,
+          "title": "装满酒瓶的木质酒架里的居家层次",
+          "branchPrompt": "不如点进去看看装满酒瓶的木质酒架，空间灵感很实用。",
+          "depth": 2,
+          "mediaIds": [
+            416
+          ],
+          "children": [
+            {
+              "id": 753,
+              "sourceIndex": 73,
+              "title": "黄昏海滩上的双人越野车里的关系温度",
+              "branchPrompt": "要不要点开看看黄昏海滩上的双人越野车，这份情绪很真实。",
+              "depth": 3,
+              "mediaIds": [
+                417
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 754,
+      "sourceIndex": 50,
+      "title": "围绕格纹户外桌上的餐食饮品的空间灵感",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        418
+      ],
+      "authorEmail": "qilu_k6_user_050@example.com",
+      "children": []
+    },
+    {
+      "id": 755,
+      "sourceIndex": 51,
+      "title": "把目光交给星云与昴星团同框",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        419
+      ],
+      "authorEmail": "qilu_k6_user_051@example.com",
+      "children": []
+    },
+    {
+      "id": 756,
+      "sourceIndex": 52,
+      "title": "靠近水面与流动光线的冲击感",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        420
+      ],
+      "authorEmail": "qilu_k6_user_052@example.com",
+      "children": [
+        {
+          "id": 757,
+          "sourceIndex": 71,
+          "title": "深色背景里的浅蓝花朵里的地形叙事",
+          "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            421
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 758,
+      "sourceIndex": 53,
+      "title": "白底八件服饰拼贴的画面叙事",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        422
+      ],
+      "authorEmail": "qilu_k6_user_053@example.com",
+      "children": []
+    },
+    {
+      "id": 759,
+      "sourceIndex": 54,
+      "title": "砖楼门前的杂物痕迹构成的清晨感",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        423
+      ],
+      "authorEmail": "qilu_k6_user_054@example.com",
+      "children": [
+        {
+          "id": 760,
+          "sourceIndex": 56,
+          "title": "从桌面工作场景看见节奏管理",
+          "branchPrompt": "点开这条桌面工作场景，也许能拿到一点节奏管理灵感。",
+          "depth": 2,
+          "mediaIds": [
+            424
+          ],
+          "children": [
+            {
+              "id": 761,
+              "sourceIndex": 46,
+              "title": "沿着胶片相机下的沙漠纪实走一段",
+              "branchPrompt": "来走一段胶片相机下的沙漠纪实的视线路线，可能会很放松。",
+              "depth": 3,
+              "mediaIds": [
+                425
+              ],
+              "children": [
+                {
+                  "id": 762,
+                  "sourceIndex": 17,
+                  "title": "柏林国际会议中心中的城市秩序",
+                  "branchPrompt": "点开看看柏林国际会议中心这个城市瞬间，有没有打动你？",
+                  "depth": 4,
+                  "mediaIds": [
+                    426
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 763,
+          "sourceIndex": 26,
+          "title": "在草间母鹿里遇见生命力",
+          "branchPrompt": "来和草间母鹿对视一下，这条真的很有感觉。",
+          "depth": 2,
+          "mediaIds": [
+            427
+          ],
+          "children": [
+            {
+              "id": 764,
+              "sourceIndex": 44,
+              "title": "超现实色彩抽象人像的耐看细节",
+              "branchPrompt": "来看看这段超现实色彩抽象人像画面细节，你会发现层次感。",
+              "depth": 3,
+              "mediaIds": [
+                428
+              ],
+              "children": [
+                {
+                  "id": 765,
+                  "sourceIndex": 66,
+                  "title": "白衬衫牛仔裤滑板女子定格的情绪",
+                  "branchPrompt": "来看看这条白衬衫牛仔裤滑板女子，可能会让你想起某个人。",
+                  "depth": 4,
+                  "mediaIds": [
+                    429
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 766,
+                  "sourceIndex": 1,
+                  "title": "草地野餐的慢时光",
+                  "branchPrompt": "要不要带点吃的，去草地上坐一会儿？",
+                  "depth": 4,
+                  "mediaIds": [
+                    430
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 767,
+                  "sourceIndex": 43,
+                  "title": "围绕日落海滩上的行人剪影的生活片刻",
+                  "branchPrompt": "要不要点开看看日落海滩上的行人剪影，这份情绪很真实。",
+                  "depth": 4,
+                  "mediaIds": [
+                    431
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 768,
+      "sourceIndex": 55,
+      "title": "围绕深色背景下的冰面纹理特写的静态张力",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        432
+      ],
+      "authorEmail": "qilu_k6_user_055@example.com",
+      "children": []
+    },
+    {
+      "id": 769,
+      "sourceIndex": 56,
+      "title": "从桌面工作场景看见节奏管理",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        433
+      ],
+      "authorEmail": "qilu_k6_user_056@example.com",
+      "children": []
+    },
+    {
+      "id": 770,
+      "sourceIndex": 57,
+      "title": "戏剧性晚霞中的情侣剪影里的尺度感",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        434
+      ],
+      "authorEmail": "qilu_k6_user_057@example.com",
+      "children": []
+    },
+    {
+      "id": 771,
+      "sourceIndex": 58,
+      "title": "戴蓝帽走入门廊的人物定格的情绪",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        435
+      ],
+      "authorEmail": "qilu_k6_user_058@example.com",
+      "children": []
+    },
+    {
+      "id": 772,
+      "sourceIndex": 59,
+      "title": "在砖墙上悬挂的五件外套里看见结构美",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        436
+      ],
+      "authorEmail": "qilu_k6_user_059@example.com",
+      "children": []
+    },
+    {
+      "id": 773,
+      "sourceIndex": 60,
+      "title": "靠近珊瑚旁沙地休憩的海龟的冲击感",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        437
+      ],
+      "authorEmail": "qilu_k6_user_060@example.com",
+      "children": []
+    },
+    {
+      "id": 774,
+      "sourceIndex": 61,
+      "title": "地球背景下的平台宇航员里的尺度感",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        438
+      ],
+      "authorEmail": "qilu_k6_user_061@example.com",
+      "children": [
+        {
+          "id": 775,
+          "sourceIndex": 5,
+          "title": "峡谷瀑布的力量感",
+          "branchPrompt": "想不想靠近一点，听听瀑布的声音有多震撼？",
+          "depth": 2,
+          "mediaIds": [
+            439
+          ],
+          "children": []
+        },
+        {
+          "id": 776,
+          "sourceIndex": 13,
+          "title": "枝头停驻的灰犀鸟的目光停驻",
+          "branchPrompt": "点开看看枝头停驻的灰犀鸟，这份生命力很难不被注意。",
+          "depth": 2,
+          "mediaIds": [
+            440
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 777,
+      "sourceIndex": 62,
+      "title": "沿着堆叠石堆走一段",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        441
+      ],
+      "authorEmail": "qilu_k6_user_062@example.com",
+      "children": []
+    },
+    {
+      "id": 778,
+      "sourceIndex": 63,
+      "title": "厨房台面上的一盒棕蛋呈现的生活质感",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        442
+      ],
+      "authorEmail": "qilu_k6_user_063@example.com",
+      "children": [
+        {
+          "id": 779,
+          "sourceIndex": 30,
+          "title": "手持瑜伽垫的运动女子定格的情绪",
+          "branchPrompt": "来看看这条手持瑜伽垫的运动女子，可能会让你想起某个人。",
+          "depth": 2,
+          "mediaIds": [
+            443
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 780,
+      "sourceIndex": 64,
+      "title": "临港中心的低噪瞬间",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        444
+      ],
+      "authorEmail": "qilu_k6_user_064@example.com",
+      "children": [
+        {
+          "id": 781,
+          "sourceIndex": 12,
+          "title": "深空旋涡星系带来的深空想象",
+          "branchPrompt": "来看看这段深空旋涡星系的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            445
+          ],
+          "children": []
+        },
+        {
+          "id": 782,
+          "sourceIndex": 47,
+          "title": "把目光交给夜间旋转木马动感虚化",
+          "branchPrompt": "要不要点开看看夜间旋转木马动感虚化，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            446
+          ],
+          "children": [
+            {
+              "id": 783,
+              "sourceIndex": 78,
+              "title": "重复窗格的现代建筑立面构成的清晨感",
+              "branchPrompt": "要不要从重复窗格的现代建筑立面出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                447
+              ],
+              "children": []
+            },
+            {
+              "id": 784,
+              "sourceIndex": 98,
+              "title": "围绕瑜伽垫上使用手机的女子的专注现场",
+              "branchPrompt": "点开这条瑜伽垫上使用手机的女子，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                448
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 785,
+      "sourceIndex": 65,
+      "title": "夜间灯影中的旋转木马里的尺度感",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        449
+      ],
+      "authorEmail": "qilu_k6_user_065@example.com",
+      "children": []
+    },
+    {
+      "id": 786,
+      "sourceIndex": 66,
+      "title": "白衬衫牛仔裤滑板女子定格的情绪",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        450
+      ],
+      "authorEmail": "qilu_k6_user_066@example.com",
+      "children": [
+        {
+          "id": 787,
+          "sourceIndex": 11,
+          "title": "围绕人群剪影走向远处高塔的生活片刻",
+          "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+          "depth": 2,
+          "mediaIds": [
+            451
+          ],
+          "children": []
+        },
+        {
+          "id": 788,
+          "sourceIndex": 61,
+          "title": "地球背景下的平台宇航员里的尺度感",
+          "branchPrompt": "要不要点开看看地球背景下的平台宇航员，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            452
+          ],
+          "children": []
+        },
+        {
+          "id": 789,
+          "sourceIndex": 71,
+          "title": "深色背景里的浅蓝花朵里的地形叙事",
+          "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            453
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 790,
+      "sourceIndex": 67,
+      "title": "把目光交给云海上方的山脉日落剪影",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        454
+      ],
+      "authorEmail": "qilu_k6_user_067@example.com",
+      "children": [
+        {
+          "id": 791,
+          "sourceIndex": 71,
+          "title": "深色背景里的浅蓝花朵里的地形叙事",
+          "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            455
+          ],
+          "children": [
+            {
+              "id": 792,
+              "sourceIndex": 89,
+              "title": "黑底上的蓝绿矿石块的画面叙事",
+              "branchPrompt": "点开看看黑底上的蓝绿矿石块这条，也许会有意外收获。",
+              "depth": 3,
+              "mediaIds": [
+                456
+              ],
+              "children": [
+                {
+                  "id": 793,
+                  "sourceIndex": 44,
+                  "title": "超现实色彩抽象人像的耐看细节",
+                  "branchPrompt": "来看看这段超现实色彩抽象人像画面细节，你会发现层次感。",
+                  "depth": 4,
+                  "mediaIds": [
+                    457
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 794,
+          "sourceIndex": 19,
+          "title": "把目光交给繁星夜空下的手电光束",
+          "branchPrompt": "要不要点开看看繁星夜空下的手电光束，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            458
+          ],
+          "children": [
+            {
+              "id": 795,
+              "sourceIndex": 17,
+              "title": "柏林国际会议中心中的城市秩序",
+              "branchPrompt": "点开看看柏林国际会议中心这个城市瞬间，有没有打动你？",
+              "depth": 3,
+              "mediaIds": [
+                459
+              ],
+              "children": []
+            },
+            {
+              "id": 796,
+              "sourceIndex": 100,
+              "title": "靠近晴天水岸边行走的男子的冲击感",
+              "branchPrompt": "来看看这条晴天水岸边行走的男子，视觉和情绪都很解压。",
+              "depth": 3,
+              "mediaIds": [
+                460
+              ],
+              "children": []
+            },
+            {
+              "id": 797,
+              "sourceIndex": 57,
+              "title": "戏剧性晚霞中的情侣剪影里的尺度感",
+              "branchPrompt": "要不要点开看看戏剧性晚霞中的情侣剪影，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                461
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 798,
+          "sourceIndex": 96,
+          "title": "社媒日常影像的耐看细节",
+          "branchPrompt": "来看看这段社媒日常影像画面细节，你会发现层次感。",
+          "depth": 2,
+          "mediaIds": [
+            462
+          ],
+          "children": [
+            {
+              "id": 799,
+              "sourceIndex": 1,
+              "title": "草地野餐的慢时光",
+              "branchPrompt": "要不要带点吃的，去草地上坐一会儿？",
+              "depth": 3,
+              "mediaIds": [
+                463
+              ],
+              "children": []
+            },
+            {
+              "id": 800,
+              "sourceIndex": 84,
+              "title": "从床上电脑与零食的年轻人看见节奏管理",
+              "branchPrompt": "点开这条床上电脑与零食的年轻人，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                464
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 801,
+      "sourceIndex": 68,
+      "title": "东京涩谷街景的低噪瞬间",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        465
+      ],
+      "authorEmail": "qilu_k6_user_068@example.com",
+      "children": []
+    },
+    {
+      "id": 802,
+      "sourceIndex": 69,
+      "title": "晴空下漂浮的蓝海冰山里的尺度感",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        466
+      ],
+      "authorEmail": "qilu_k6_user_069@example.com",
+      "children": []
+    },
+    {
+      "id": 803,
+      "sourceIndex": 70,
+      "title": "围绕按食谱煎蛋的灶台场景的专注现场",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        467
+      ],
+      "authorEmail": "qilu_k6_user_070@example.com",
+      "children": [
+        {
+          "id": 804,
+          "sourceIndex": 71,
+          "title": "深色背景里的浅蓝花朵里的地形叙事",
+          "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            468
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 805,
+      "sourceIndex": 71,
+      "title": "深色背景里的浅蓝花朵里的地形叙事",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        469
+      ],
+      "authorEmail": "qilu_k6_user_071@example.com",
+      "children": []
+    },
+    {
+      "id": 806,
+      "sourceIndex": 72,
+      "title": "把脚步放慢在重复排列的圆角蓝砖",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        470
+      ],
+      "authorEmail": "qilu_k6_user_072@example.com",
+      "children": [
+        {
+          "id": 807,
+          "sourceIndex": 1,
+          "title": "草地野餐的慢时光",
+          "branchPrompt": "要不要带点吃的，去草地上坐一会儿？",
+          "depth": 2,
+          "mediaIds": [
+            471
+          ],
+          "children": []
+        },
+        {
+          "id": 808,
+          "sourceIndex": 54,
+          "title": "砖楼门前的杂物痕迹构成的清晨感",
+          "branchPrompt": "要不要从砖楼门前的杂物痕迹出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            472
+          ],
+          "children": [
+            {
+              "id": 809,
+              "sourceIndex": 44,
+              "title": "超现实色彩抽象人像的耐看细节",
+              "branchPrompt": "来看看这段超现实色彩抽象人像画面细节，你会发现层次感。",
+              "depth": 3,
+              "mediaIds": [
+                473
+              ],
+              "children": []
+            },
+            {
+              "id": 810,
+              "sourceIndex": 70,
+              "title": "围绕按食谱煎蛋的灶台场景的专注现场",
+              "branchPrompt": "点开这条按食谱煎蛋的灶台场景，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                474
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 811,
+          "sourceIndex": 56,
+          "title": "从桌面工作场景看见节奏管理",
+          "branchPrompt": "点开这条桌面工作场景，也许能拿到一点节奏管理灵感。",
+          "depth": 2,
+          "mediaIds": [
+            475
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 812,
+      "sourceIndex": 73,
+      "title": "黄昏海滩上的双人越野车里的关系温度",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        476
+      ],
+      "authorEmail": "qilu_k6_user_073@example.com",
+      "children": [
+        {
+          "id": 813,
+          "sourceIndex": 37,
+          "title": "船舱视角下的静谧山湖的远方呼吸",
+          "branchPrompt": "不如点进去看看船舱视角下的静谧山湖，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            477
+          ],
+          "children": [
+            {
+              "id": 814,
+              "sourceIndex": 41,
+              "title": "低照度汽车摄影的画面叙事",
+              "branchPrompt": "点开看看低照度汽车摄影这条，也许会有意外收获。",
+              "depth": 3,
+              "mediaIds": [
+                478
+              ],
+              "children": [
+                {
+                  "id": 815,
+                  "sourceIndex": 98,
+                  "title": "围绕瑜伽垫上使用手机的女子的专注现场",
+                  "branchPrompt": "点开这条瑜伽垫上使用手机的女子，也许能拿到一点节奏管理灵感。",
+                  "depth": 4,
+                  "mediaIds": [
+                    479
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 816,
+                  "sourceIndex": 8,
+                  "title": "从桌前办公与电脑手机看见节奏管理",
+                  "branchPrompt": "点开这条桌前办公与电脑手机，也许能拿到一点节奏管理灵感。",
+                  "depth": 4,
+                  "mediaIds": [
+                    480
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 817,
+              "sourceIndex": 51,
+              "title": "把目光交给星云与昴星团同框",
+              "branchPrompt": "要不要点开看看星云与昴星团同框，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                481
+              ],
+              "children": [
+                {
+                  "id": 818,
+                  "sourceIndex": 96,
+                  "title": "社媒日常影像的耐看细节",
+                  "branchPrompt": "来看看这段社媒日常影像画面细节，你会发现层次感。",
+                  "depth": 4,
+                  "mediaIds": [
+                    482
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 819,
+                  "sourceIndex": 9,
+                  "title": "山地中人与马匹的远方呼吸",
+                  "branchPrompt": "不如点进去看看山地中人与马匹，给大脑降个噪？",
+                  "depth": 4,
+                  "mediaIds": [
+                    483
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 820,
+                  "sourceIndex": 63,
+                  "title": "厨房台面上的一盒棕蛋呈现的生活质感",
+                  "branchPrompt": "不如点进去看看厨房台面上的一盒棕蛋，空间灵感很实用。",
+                  "depth": 4,
+                  "mediaIds": [
+                    484
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 821,
+              "sourceIndex": 66,
+              "title": "白衬衫牛仔裤滑板女子定格的情绪",
+              "branchPrompt": "来看看这条白衬衫牛仔裤滑板女子，可能会让你想起某个人。",
+              "depth": 3,
+              "mediaIds": [
+                485
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 822,
+          "sourceIndex": 26,
+          "title": "在草间母鹿里遇见生命力",
+          "branchPrompt": "来和草间母鹿对视一下，这条真的很有感觉。",
+          "depth": 2,
+          "mediaIds": [
+            486
+          ],
+          "children": [
+            {
+              "id": 823,
+              "sourceIndex": 52,
+              "title": "靠近水面与流动光线的冲击感",
+              "branchPrompt": "来看看这条水面与流动光线，视觉和情绪都很解压。",
+              "depth": 3,
+              "mediaIds": [
+                487
+              ],
+              "children": [
+                {
+                  "id": 824,
+                  "sourceIndex": 13,
+                  "title": "枝头停驻的灰犀鸟的目光停驻",
+                  "branchPrompt": "点开看看枝头停驻的灰犀鸟，这份生命力很难不被注意。",
+                  "depth": 4,
+                  "mediaIds": [
+                    488
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 825,
+              "sourceIndex": 10,
+              "title": "柏林国际会议中心构成的清晨感",
+              "branchPrompt": "要不要从柏林国际会议中心出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                489
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 826,
+          "sourceIndex": 71,
+          "title": "深色背景里的浅蓝花朵里的地形叙事",
+          "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            490
+          ],
+          "children": [
+            {
+              "id": 827,
+              "sourceIndex": 94,
+              "title": "切开粉色双层樱桃婚礼蛋糕的情侣定格的情绪",
+              "branchPrompt": "来看看这条切开粉色双层樱桃婚礼蛋糕的情侣，可能会让你想起某个人。",
+              "depth": 3,
+              "mediaIds": [
+                491
+              ],
+              "children": []
+            },
+            {
+              "id": 828,
+              "sourceIndex": 3,
+              "title": "星轨下的山野露营",
+              "branchPrompt": "今晚要不要去看星空，给自己一个安静的夜晚？",
+              "depth": 3,
+              "mediaIds": [
+                492
+              ],
+              "children": [
+                {
+                  "id": 829,
+                  "sourceIndex": 6,
+                  "title": "沿着暗色前景下的雾山走一段",
+                  "branchPrompt": "来走一段暗色前景下的雾山的视线路线，可能会很放松。",
+                  "depth": 4,
+                  "mediaIds": [
+                    493
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 830,
+                  "sourceIndex": 81,
+                  "title": "猫头鹰星云里的尺度感",
+                  "branchPrompt": "要不要点开看看猫头鹰星云，给自己几分钟安静时间？",
+                  "depth": 4,
+                  "mediaIds": [
+                    494
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 831,
+                  "sourceIndex": 76,
+                  "title": "靠近蓝色卫衣男子眺望海面的冲击感",
+                  "branchPrompt": "来看看这条蓝色卫衣男子眺望海面，视觉和情绪都很解压。",
+                  "depth": 4,
+                  "mediaIds": [
+                    495
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 832,
+              "sourceIndex": 36,
+              "title": "把脚步放慢在日落暖光下的山峰",
+              "branchPrompt": "来走一段日落暖光下的山峰的视线路线，可能会很放松。",
+              "depth": 3,
+              "mediaIds": [
+                496
+              ],
+              "children": [
+                {
+                  "id": 833,
+                  "sourceIndex": 93,
+                  "title": "浅色背景中的单支粉色扶郎花的画面叙事",
+                  "branchPrompt": "点开看看浅色背景中的单支粉色扶郎花这条，也许会有意外收获。",
+                  "depth": 4,
+                  "mediaIds": [
+                    497
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 834,
+                  "sourceIndex": 20,
+                  "title": "现代厨房里父亲抱着孩子背后的日常连接",
+                  "branchPrompt": "来看看这条现代厨房里父亲抱着孩子，可能会让你想起某个人。",
+                  "depth": 4,
+                  "mediaIds": [
+                    498
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 835,
+      "sourceIndex": 74,
+      "title": "沿着棕榈与人物的装饰瓷砖画走一段",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        499
+      ],
+      "authorEmail": "qilu_k6_user_074@example.com",
+      "children": [
+        {
+          "id": 836,
+          "sourceIndex": 78,
+          "title": "重复窗格的现代建筑立面构成的清晨感",
+          "branchPrompt": "要不要从重复窗格的现代建筑立面出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            500
+          ],
+          "children": [
+            {
+              "id": 837,
+              "sourceIndex": 40,
+              "title": "靠在砖墙边的人物的低噪瞬间",
+              "branchPrompt": "要不要从靠在砖墙边的人物出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                501
+              ],
+              "children": [
+                {
+                  "id": 838,
+                  "sourceIndex": 9,
+                  "title": "山地中人与马匹的远方呼吸",
+                  "branchPrompt": "不如点进去看看山地中人与马匹，给大脑降个噪？",
+                  "depth": 4,
+                  "mediaIds": [
+                    502
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 839,
+                  "sourceIndex": 43,
+                  "title": "围绕日落海滩上的行人剪影的生活片刻",
+                  "branchPrompt": "要不要点开看看日落海滩上的行人剪影，这份情绪很真实。",
+                  "depth": 4,
+                  "mediaIds": [
+                    503
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 840,
+              "sourceIndex": 5,
+              "title": "峡谷瀑布的力量感",
+              "branchPrompt": "想不想靠近一点，听听瀑布的声音有多震撼？",
+              "depth": 3,
+              "mediaIds": [
+                504
+              ],
+              "children": []
+            },
+            {
+              "id": 841,
+              "sourceIndex": 54,
+              "title": "砖楼门前的杂物痕迹构成的清晨感",
+              "branchPrompt": "要不要从砖楼门前的杂物痕迹出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                505
+              ],
+              "children": [
+                {
+                  "id": 842,
+                  "sourceIndex": 84,
+                  "title": "从床上电脑与零食的年轻人看见节奏管理",
+                  "branchPrompt": "点开这条床上电脑与零食的年轻人，也许能拿到一点节奏管理灵感。",
+                  "depth": 4,
+                  "mediaIds": [
+                    506
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 843,
+                  "sourceIndex": 86,
+                  "title": "在泳池中的橙片充气浮圈里听见节拍",
+                  "branchPrompt": "来看看这条泳池中的橙片充气浮圈，视觉和情绪都很解压。",
+                  "depth": 4,
+                  "mediaIds": [
+                    507
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 844,
+                  "sourceIndex": 63,
+                  "title": "厨房台面上的一盒棕蛋呈现的生活质感",
+                  "branchPrompt": "不如点进去看看厨房台面上的一盒棕蛋，空间灵感很实用。",
+                  "depth": 4,
+                  "mediaIds": [
+                    508
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 845,
+          "sourceIndex": 68,
+          "title": "东京涩谷街景的低噪瞬间",
+          "branchPrompt": "要不要从东京涩谷街景出发，看一眼城市的秩序感？",
+          "depth": 2,
+          "mediaIds": [
+            509
+          ],
+          "children": []
+        },
+        {
+          "id": 846,
+          "sourceIndex": 76,
+          "title": "靠近蓝色卫衣男子眺望海面的冲击感",
+          "branchPrompt": "来看看这条蓝色卫衣男子眺望海面，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            510
+          ],
+          "children": [
+            {
+              "id": 847,
+              "sourceIndex": 47,
+              "title": "把目光交给夜间旋转木马动感虚化",
+              "branchPrompt": "要不要点开看看夜间旋转木马动感虚化，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                511
+              ],
+              "children": []
+            },
+            {
+              "id": 848,
+              "sourceIndex": 44,
+              "title": "超现实色彩抽象人像的耐看细节",
+              "branchPrompt": "来看看这段超现实色彩抽象人像画面细节，你会发现层次感。",
+              "depth": 3,
+              "mediaIds": [
+                512
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 849,
+      "sourceIndex": 75,
+      "title": "深蓝水面的闪光纹理与时间的对话",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        513
+      ],
+      "authorEmail": "qilu_k6_user_075@example.com",
+      "children": [
+        {
+          "id": 850,
+          "sourceIndex": 42,
+          "title": "围绕厨房交谈与烹饪瞬间的空间灵感",
+          "branchPrompt": "来看看这条厨房交谈与烹饪瞬间场景，也许能给你布置新想法。",
+          "depth": 2,
+          "mediaIds": [
+            514
+          ],
+          "children": []
+        },
+        {
+          "id": 851,
+          "sourceIndex": 90,
+          "title": "夜间繁忙街道的航拍视角下的安静时区",
+          "branchPrompt": "来看看这段夜间繁忙街道的航拍视角的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            515
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 852,
+      "sourceIndex": 76,
+      "title": "靠近蓝色卫衣男子眺望海面的冲击感",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        516
+      ],
+      "authorEmail": "qilu_k6_user_076@example.com",
+      "children": []
+    },
+    {
+      "id": 853,
+      "sourceIndex": 77,
+      "title": "咖啡旁的桌前工作的工作切面",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        517
+      ],
+      "authorEmail": "qilu_k6_user_077@example.com",
+      "children": []
+    },
+    {
+      "id": 854,
+      "sourceIndex": 78,
+      "title": "重复窗格的现代建筑立面构成的清晨感",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        518
+      ],
+      "authorEmail": "qilu_k6_user_078@example.com",
+      "children": [
+        {
+          "id": 855,
+          "sourceIndex": 16,
+          "title": "舷窗水珠后的云层带来的深空想象",
+          "branchPrompt": "来看看这段舷窗水珠后的云层的画面，也许会让你心情更松一点。",
+          "depth": 2,
+          "mediaIds": [
+            519
+          ],
+          "children": [
+            {
+              "id": 856,
+              "sourceIndex": 68,
+              "title": "东京涩谷街景的低噪瞬间",
+              "branchPrompt": "要不要从东京涩谷街景出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                520
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 857,
+      "sourceIndex": 79,
+      "title": "在白墙上的相框照片集合里看见结构美",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        521
+      ],
+      "authorEmail": "qilu_k6_user_079@example.com",
+      "children": [
+        {
+          "id": 858,
+          "sourceIndex": 51,
+          "title": "把目光交给星云与昴星团同框",
+          "branchPrompt": "要不要点开看看星云与昴星团同框，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            522
+          ],
+          "children": []
+        },
+        {
+          "id": 859,
+          "sourceIndex": 98,
+          "title": "围绕瑜伽垫上使用手机的女子的专注现场",
+          "branchPrompt": "点开这条瑜伽垫上使用手机的女子，也许能拿到一点节奏管理灵感。",
+          "depth": 2,
+          "mediaIds": [
+            523
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 860,
+      "sourceIndex": 80,
+      "title": "蓝天下的霓虹酒吧招牌带来的深空想象",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        524
+      ],
+      "authorEmail": "qilu_k6_user_080@example.com",
+      "children": []
+    },
+    {
+      "id": 861,
+      "sourceIndex": 81,
+      "title": "猫头鹰星云里的尺度感",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        525
+      ],
+      "authorEmail": "qilu_k6_user_081@example.com",
+      "children": []
+    },
+    {
+      "id": 862,
+      "sourceIndex": 82,
+      "title": "在瀑布旁站在碧色水中的男子里听见节拍",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        526
+      ],
+      "authorEmail": "qilu_k6_user_082@example.com",
+      "children": []
+    },
+    {
+      "id": 863,
+      "sourceIndex": 83,
+      "title": "日出时的纪念碑谷岩层里的地形叙事",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        527
+      ],
+      "authorEmail": "qilu_k6_user_083@example.com",
+      "children": [
+        {
+          "id": 864,
+          "sourceIndex": 93,
+          "title": "浅色背景中的单支粉色扶郎花的画面叙事",
+          "branchPrompt": "点开看看浅色背景中的单支粉色扶郎花这条，也许会有意外收获。",
+          "depth": 2,
+          "mediaIds": [
+            528
+          ],
+          "children": [
+            {
+              "id": 865,
+              "sourceIndex": 45,
+              "title": "繁忙路口的人群过街中的城市秩序",
+              "branchPrompt": "点开看看繁忙路口的人群过街这个城市瞬间，有没有打动你？",
+              "depth": 3,
+              "mediaIds": [
+                529
+              ],
+              "children": [
+                {
+                  "id": 866,
+                  "sourceIndex": 58,
+                  "title": "戴蓝帽走入门廊的人物定格的情绪",
+                  "branchPrompt": "来看看这条戴蓝帽走入门廊的人物，可能会让你想起某个人。",
+                  "depth": 4,
+                  "mediaIds": [
+                    530
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 867,
+                  "sourceIndex": 24,
+                  "title": "站在城市斑马线上的女子的低噪瞬间",
+                  "branchPrompt": "要不要从站在城市斑马线上的女子出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    531
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 868,
+              "sourceIndex": 54,
+              "title": "砖楼门前的杂物痕迹构成的清晨感",
+              "branchPrompt": "要不要从砖楼门前的杂物痕迹出发，看一眼城市的秩序感？",
+              "depth": 3,
+              "mediaIds": [
+                532
+              ],
+              "children": [
+                {
+                  "id": 869,
+                  "sourceIndex": 13,
+                  "title": "枝头停驻的灰犀鸟的目光停驻",
+                  "branchPrompt": "点开看看枝头停驻的灰犀鸟，这份生命力很难不被注意。",
+                  "depth": 4,
+                  "mediaIds": [
+                    533
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 870,
+                  "sourceIndex": 32,
+                  "title": "复古奔驰车头细节的耐看细节",
+                  "branchPrompt": "来看看这段复古奔驰车头细节画面细节，你会发现层次感。",
+                  "depth": 4,
+                  "mediaIds": [
+                    534
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 871,
+                  "sourceIndex": 100,
+                  "title": "靠近晴天水岸边行走的男子的冲击感",
+                  "branchPrompt": "来看看这条晴天水岸边行走的男子，视觉和情绪都很解压。",
+                  "depth": 4,
+                  "mediaIds": [
+                    535
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 872,
+          "sourceIndex": 37,
+          "title": "船舱视角下的静谧山湖的远方呼吸",
+          "branchPrompt": "不如点进去看看船舱视角下的静谧山湖，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            536
+          ],
+          "children": [
+            {
+              "id": 873,
+              "sourceIndex": 100,
+              "title": "靠近晴天水岸边行走的男子的冲击感",
+              "branchPrompt": "来看看这条晴天水岸边行走的男子，视觉和情绪都很解压。",
+              "depth": 3,
+              "mediaIds": [
+                537
+              ],
+              "children": [
+                {
+                  "id": 874,
+                  "sourceIndex": 74,
+                  "title": "沿着棕榈与人物的装饰瓷砖画走一段",
+                  "branchPrompt": "来走一段棕榈与人物的装饰瓷砖画的视线路线，可能会很放松。",
+                  "depth": 4,
+                  "mediaIds": [
+                    538
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 875,
+                  "sourceIndex": 77,
+                  "title": "咖啡旁的桌前工作的工作切面",
+                  "branchPrompt": "来看看咖啡旁的桌前工作这条，可能就是你的同款日常。",
+                  "depth": 4,
+                  "mediaIds": [
+                    539
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 876,
+                  "sourceIndex": 9,
+                  "title": "山地中人与马匹的远方呼吸",
+                  "branchPrompt": "不如点进去看看山地中人与马匹，给大脑降个噪？",
+                  "depth": 4,
+                  "mediaIds": [
+                    540
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 877,
+              "sourceIndex": 19,
+              "title": "把目光交给繁星夜空下的手电光束",
+              "branchPrompt": "要不要点开看看繁星夜空下的手电光束，给自己几分钟安静时间？",
+              "depth": 3,
+              "mediaIds": [
+                541
+              ],
+              "children": []
+            },
+            {
+              "id": 878,
+              "sourceIndex": 11,
+              "title": "围绕人群剪影走向远处高塔的生活片刻",
+              "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+              "depth": 3,
+              "mediaIds": [
+                542
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 879,
+          "sourceIndex": 30,
+          "title": "手持瑜伽垫的运动女子定格的情绪",
+          "branchPrompt": "来看看这条手持瑜伽垫的运动女子，可能会让你想起某个人。",
+          "depth": 2,
+          "mediaIds": [
+            543
+          ],
+          "children": [
+            {
+              "id": 880,
+              "sourceIndex": 25,
+              "title": "装满酒瓶的木质酒架里的居家层次",
+              "branchPrompt": "不如点进去看看装满酒瓶的木质酒架，空间灵感很实用。",
+              "depth": 3,
+              "mediaIds": [
+                544
+              ],
+              "children": [
+                {
+                  "id": 881,
+                  "sourceIndex": 89,
+                  "title": "黑底上的蓝绿矿石块的画面叙事",
+                  "branchPrompt": "点开看看黑底上的蓝绿矿石块这条，也许会有意外收获。",
+                  "depth": 4,
+                  "mediaIds": [
+                    545
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 882,
+                  "sourceIndex": 6,
+                  "title": "沿着暗色前景下的雾山走一段",
+                  "branchPrompt": "来走一段暗色前景下的雾山的视线路线，可能会很放松。",
+                  "depth": 4,
+                  "mediaIds": [
+                    546
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 883,
+                  "sourceIndex": 35,
+                  "title": "围绕草间母鹿的生活片刻",
+                  "branchPrompt": "要不要点开看看草间母鹿，这份情绪很真实。",
+                  "depth": 4,
+                  "mediaIds": [
+                    547
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 884,
+              "sourceIndex": 55,
+              "title": "围绕深色背景下的冰面纹理特写的静态张力",
+              "branchPrompt": "点开看看深色背景下的冰面纹理特写这条，也许会有意外收获。",
+              "depth": 3,
+              "mediaIds": [
+                548
+              ],
+              "children": []
+            },
+            {
+              "id": 885,
+              "sourceIndex": 4,
+              "title": "清晨空街与第一束光",
+              "branchPrompt": "不如我们去街上走走看，等第一束光落下来？",
+              "depth": 3,
+              "mediaIds": [
+                549
+              ],
+              "children": [
+                {
+                  "id": 886,
+                  "sourceIndex": 26,
+                  "title": "在草间母鹿里遇见生命力",
+                  "branchPrompt": "来和草间母鹿对视一下，这条真的很有感觉。",
+                  "depth": 4,
+                  "mediaIds": [
+                    550
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 887,
+                  "sourceIndex": 28,
+                  "title": "把脚步放慢在从洞口望向岩地风景",
+                  "branchPrompt": "来走一段从洞口望向岩地风景的视线路线，可能会很放松。",
+                  "depth": 4,
+                  "mediaIds": [
+                    551
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 888,
+      "sourceIndex": 84,
+      "title": "从床上电脑与零食的年轻人看见节奏管理",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        552
+      ],
+      "authorEmail": "qilu_k6_user_084@example.com",
+      "children": [
+        {
+          "id": 889,
+          "sourceIndex": 97,
+          "title": "广阔沙漠上的戏剧性日落的远方呼吸",
+          "branchPrompt": "不如点进去看看广阔沙漠上的戏剧性日落，给大脑降个噪？",
+          "depth": 2,
+          "mediaIds": [
+            553
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 890,
+      "sourceIndex": 85,
+      "title": "被废弃卫星环绕的地球里的尺度感",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        554
+      ],
+      "authorEmail": "qilu_k6_user_085@example.com",
+      "children": []
+    },
+    {
+      "id": 891,
+      "sourceIndex": 86,
+      "title": "在泳池中的橙片充气浮圈里听见节拍",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        555
+      ],
+      "authorEmail": "qilu_k6_user_086@example.com",
+      "children": []
+    },
+    {
+      "id": 892,
+      "sourceIndex": 87,
+      "title": "在临港中心里看见结构美",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        556
+      ],
+      "authorEmail": "qilu_k6_user_087@example.com",
+      "children": []
+    },
+    {
+      "id": 893,
+      "sourceIndex": 88,
+      "title": "把脚步放慢在蓝晒风格的樱花枝特写",
+      "depth": 1,
+      "maxDepth": 3,
+      "mediaIds": [
+        557
+      ],
+      "authorEmail": "qilu_k6_user_088@example.com",
+      "children": [
+        {
+          "id": 894,
+          "sourceIndex": 85,
+          "title": "被废弃卫星环绕的地球里的尺度感",
+          "branchPrompt": "要不要点开看看被废弃卫星环绕的地球，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            558
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 895,
+      "sourceIndex": 89,
+      "title": "黑底上的蓝绿矿石块的画面叙事",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        559
+      ],
+      "authorEmail": "qilu_k6_user_089@example.com",
+      "children": [
+        {
+          "id": 896,
+          "sourceIndex": 46,
+          "title": "沿着胶片相机下的沙漠纪实走一段",
+          "branchPrompt": "来走一段胶片相机下的沙漠纪实的视线路线，可能会很放松。",
+          "depth": 2,
+          "mediaIds": [
+            560
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 897,
+      "sourceIndex": 90,
+      "title": "夜间繁忙街道的航拍视角下的安静时区",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        561
+      ],
+      "authorEmail": "qilu_k6_user_090@example.com",
+      "children": []
+    },
+    {
+      "id": 898,
+      "sourceIndex": 91,
+      "title": "居家办公角落里的日常效率",
+      "depth": 1,
+      "maxDepth": 4,
+      "mediaIds": [
+        562
+      ],
+      "authorEmail": "qilu_k6_user_091@example.com",
+      "children": [
+        {
+          "id": 899,
+          "sourceIndex": 2,
+          "title": "黑暗中的平衡练习",
+          "branchPrompt": "你想不想试试，把生活里失衡的地方慢慢摆正？",
+          "depth": 2,
+          "mediaIds": [
+            563
+          ],
+          "children": [
+            {
+              "id": 900,
+              "sourceIndex": 71,
+              "title": "深色背景里的浅蓝花朵里的地形叙事",
+              "branchPrompt": "不如点进去看看深色背景里的浅蓝花朵，给大脑降个噪？",
+              "depth": 3,
+              "mediaIds": [
+                564
+              ],
+              "children": []
+            },
+            {
+              "id": 901,
+              "sourceIndex": 18,
+              "title": "围绕黑字白色打印纸的专注现场",
+              "branchPrompt": "点开这条黑字白色打印纸，也许能拿到一点节奏管理灵感。",
+              "depth": 3,
+              "mediaIds": [
+                565
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 902,
+      "sourceIndex": 92,
+      "title": "玫瑰星云带来的深空想象",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        566
+      ],
+      "authorEmail": "qilu_k6_user_092@example.com",
+      "children": [
+        {
+          "id": 903,
+          "sourceIndex": 43,
+          "title": "围绕日落海滩上的行人剪影的生活片刻",
+          "branchPrompt": "要不要点开看看日落海滩上的行人剪影，这份情绪很真实。",
+          "depth": 2,
+          "mediaIds": [
+            567
+          ],
+          "children": [
+            {
+              "id": 904,
+              "sourceIndex": 5,
+              "title": "峡谷瀑布的力量感",
+              "branchPrompt": "想不想靠近一点，听听瀑布的声音有多震撼？",
+              "depth": 3,
+              "mediaIds": [
+                568
+              ],
+              "children": [
+                {
+                  "id": 905,
+                  "sourceIndex": 55,
+                  "title": "围绕深色背景下的冰面纹理特写的静态张力",
+                  "branchPrompt": "点开看看深色背景下的冰面纹理特写这条，也许会有意外收获。",
+                  "depth": 4,
+                  "mediaIds": [
+                    569
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 906,
+                  "sourceIndex": 64,
+                  "title": "临港中心的低噪瞬间",
+                  "branchPrompt": "要不要从临港中心出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    570
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 907,
+                  "sourceIndex": 17,
+                  "title": "柏林国际会议中心中的城市秩序",
+                  "branchPrompt": "点开看看柏林国际会议中心这个城市瞬间，有没有打动你？",
+                  "depth": 4,
+                  "mediaIds": [
+                    571
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 908,
+          "sourceIndex": 11,
+          "title": "围绕人群剪影走向远处高塔的生活片刻",
+          "branchPrompt": "要不要点开看看人群剪影走向远处高塔，这份情绪很真实。",
+          "depth": 2,
+          "mediaIds": [
+            572
+          ],
+          "children": [
+            {
+              "id": 909,
+              "sourceIndex": 82,
+              "title": "在瀑布旁站在碧色水中的男子里听见节拍",
+              "branchPrompt": "来看看这条瀑布旁站在碧色水中的男子，视觉和情绪都很解压。",
+              "depth": 3,
+              "mediaIds": [
+                573
+              ],
+              "children": [
+                {
+                  "id": 910,
+                  "sourceIndex": 59,
+                  "title": "在砖墙上悬挂的五件外套里看见结构美",
+                  "branchPrompt": "点开看看砖墙上悬挂的五件外套这个城市瞬间，有没有打动你？",
+                  "depth": 4,
+                  "mediaIds": [
+                    574
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 911,
+              "sourceIndex": 49,
+              "title": "灶台前烹饪的女子里的关系温度",
+              "branchPrompt": "要不要点开看看灶台前烹饪的女子，这份情绪很真实。",
+              "depth": 3,
+              "mediaIds": [
+                575
+              ],
+              "children": [
+                {
+                  "id": 912,
+                  "sourceIndex": 68,
+                  "title": "东京涩谷街景的低噪瞬间",
+                  "branchPrompt": "要不要从东京涩谷街景出发，看一眼城市的秩序感？",
+                  "depth": 4,
+                  "mediaIds": [
+                    576
+                  ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 913,
+          "sourceIndex": 20,
+          "title": "现代厨房里父亲抱着孩子背后的日常连接",
+          "branchPrompt": "来看看这条现代厨房里父亲抱着孩子，可能会让你想起某个人。",
+          "depth": 2,
+          "mediaIds": [
+            577
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 914,
+      "sourceIndex": 93,
+      "title": "浅色背景中的单支粉色扶郎花的画面叙事",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        578
+      ],
+      "authorEmail": "qilu_k6_user_093@example.com",
+      "children": []
+    },
+    {
+      "id": 915,
+      "sourceIndex": 94,
+      "title": "切开粉色双层樱桃婚礼蛋糕的情侣定格的情绪",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        579
+      ],
+      "authorEmail": "qilu_k6_user_094@example.com",
+      "children": []
+    },
+    {
+      "id": 916,
+      "sourceIndex": 95,
+      "title": "围绕橙紫光线下的柔和抽象曲线的静态张力",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        580
+      ],
+      "authorEmail": "qilu_k6_user_095@example.com",
+      "children": []
+    },
+    {
+      "id": 917,
+      "sourceIndex": 96,
+      "title": "社媒日常影像的耐看细节",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        581
+      ],
+      "authorEmail": "qilu_k6_user_096@example.com",
+      "children": [
+        {
+          "id": 918,
+          "sourceIndex": 77,
+          "title": "咖啡旁的桌前工作的工作切面",
+          "branchPrompt": "来看看咖啡旁的桌前工作这条，可能就是你的同款日常。",
+          "depth": 2,
+          "mediaIds": [
+            582
+          ],
+          "children": []
+        },
+        {
+          "id": 919,
+          "sourceIndex": 76,
+          "title": "靠近蓝色卫衣男子眺望海面的冲击感",
+          "branchPrompt": "来看看这条蓝色卫衣男子眺望海面，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            583
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": 920,
+      "sourceIndex": 97,
+      "title": "广阔沙漠上的戏剧性日落的远方呼吸",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        584
+      ],
+      "authorEmail": "qilu_k6_user_097@example.com",
+      "children": []
+    },
+    {
+      "id": 921,
+      "sourceIndex": 98,
+      "title": "围绕瑜伽垫上使用手机的女子的专注现场",
+      "depth": 1,
+      "maxDepth": 2,
+      "mediaIds": [
+        585
+      ],
+      "authorEmail": "qilu_k6_user_098@example.com",
+      "children": []
+    },
+    {
+      "id": 922,
+      "sourceIndex": 99,
+      "title": "围绕胶片风后期色调的静态张力",
+      "depth": 1,
+      "maxDepth": 5,
+      "mediaIds": [
+        586
+      ],
+      "authorEmail": "qilu_k6_user_099@example.com",
+      "children": [
+        {
+          "id": 923,
+          "sourceIndex": 86,
+          "title": "在泳池中的橙片充气浮圈里听见节拍",
+          "branchPrompt": "来看看这条泳池中的橙片充气浮圈，视觉和情绪都很解压。",
+          "depth": 2,
+          "mediaIds": [
+            587
+          ],
+          "children": []
+        },
+        {
+          "id": 924,
+          "sourceIndex": 67,
+          "title": "把目光交给云海上方的山脉日落剪影",
+          "branchPrompt": "要不要点开看看云海上方的山脉日落剪影，给自己几分钟安静时间？",
+          "depth": 2,
+          "mediaIds": [
+            588
+          ],
+          "children": [
+            {
+              "id": 925,
+              "sourceIndex": 13,
+              "title": "枝头停驻的灰犀鸟的目光停驻",
+              "branchPrompt": "点开看看枝头停驻的灰犀鸟，这份生命力很难不被注意。",
+              "depth": 3,
+              "mediaIds": [
+                589
+              ],
+              "children": [
+                {
+                  "id": 926,
+                  "sourceIndex": 82,
+                  "title": "在瀑布旁站在碧色水中的男子里听见节拍",
+                  "branchPrompt": "来看看这条瀑布旁站在碧色水中的男子，视觉和情绪都很解压。",
+                  "depth": 4,
+                  "mediaIds": [
+                    590
+                  ],
+                  "children": []
+                },
+                {
+                  "id": 927,
+                  "sourceIndex": 4,
+                  "title": "清晨空街与第一束光",
+                  "branchPrompt": "不如我们去街上走走看，等第一束光落下来？",
+                  "depth": 4,
+                  "mediaIds": [
+                    591
+                  ],
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 928,
+              "sourceIndex": 23,
+              "title": "家居布景拍摄现场呈现的生活质感",
+              "branchPrompt": "不如点进去看看家居布景拍摄现场，空间灵感很实用。",
+              "depth": 3,
+              "mediaIds": [
+                592
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": 929,
+          "sourceIndex": 13,
+          "title": "枝头停驻的灰犀鸟的目光停驻",
+          "branchPrompt": "点开看看枝头停驻的灰犀鸟，这份生命力很难不被注意。",
+          "depth": 2,
+          "mediaIds": [
+            593
+          ],
+          "children": [
+            {
+              "id": 930,
+              "sourceIndex": 93,
+              "title": "浅色背景中的单支粉色扶郎花的画面叙事",
+              "branchPrompt": "点开看看浅色背景中的单支粉色扶郎花这条，也许会有意外收获。",
+              "depth": 3,
+              "mediaIds": [
+                594
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 931,
+      "sourceIndex": 100,
+      "title": "靠近晴天水岸边行走的男子的冲击感",
+      "depth": 1,
+      "maxDepth": 1,
+      "mediaIds": [
+        595
+      ],
+      "authorEmail": "qilu_k6_user_100@example.com",
+      "children": []
     }
-  ]
+  ],
+  "totalCreated": 316
 }
