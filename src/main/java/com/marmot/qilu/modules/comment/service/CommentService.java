@@ -14,7 +14,7 @@ public interface CommentService {
 
     CommentPreview getCommentPreview(Long commentId);
 
-    void createComment(Long postId, CommentCreateDTO dto);
+    Long createComment(Long postId, CommentCreateDTO dto);
 
     void deleteComment(Long postId, Long commentId);
 

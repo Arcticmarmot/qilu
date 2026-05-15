@@ -72,7 +72,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createReply(Long postId, Long commentId, ReplyCreateDTO dto) {
+    public Long createReply(Long postId, Long commentId, ReplyCreateDTO dto) {
         validateCreateParams(postId, commentId, dto);
 
         String currUserUuid = UserContext.requireUuid();
@@ -138,6 +138,7 @@ public class ReplyServiceImpl implements ReplyService {
                 reply.getId(),
                 parentReplyId
         );
+        return reply.getId();
     }
 
     @Override

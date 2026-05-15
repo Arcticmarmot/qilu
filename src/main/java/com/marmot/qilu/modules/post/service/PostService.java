@@ -13,9 +13,9 @@ import java.util.Map;
 
 public interface PostService {
 
-    void createPost(PostCreateDTO dto);
+    Long createPost(PostCreateDTO dto);
 
-    void createBranchPost(Long parentPostId, BranchPostCreateDTO dto);
+    Long createBranchPost(Long parentPostId, BranchPostCreateDTO dto);
 
     void updatePost(Long postId, PostUpdateDTO dto);
 

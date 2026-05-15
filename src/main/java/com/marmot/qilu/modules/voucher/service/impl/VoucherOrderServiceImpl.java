@@ -32,7 +32,7 @@ public class VoucherOrderServiceImpl implements VoucherOrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createVoucherOrder(String userUuid, Long voucherId, Long seckillId) {
+    public Long createVoucherOrder(String userUuid, Long voucherId, Long seckillId) {
         validateUserUuid(userUuid);
         validateVoucherId(voucherId);
         validateSeckillId(seckillId);
@@ -64,7 +64,7 @@ public class VoucherOrderServiceImpl implements VoucherOrderService {
         } catch (DuplicateKeyException e) {
             log.warn("duplicate voucher order ignored, seckillId={}, voucherId={}, userUuid={}",
                     seckillId, voucherId, userUuid);
-            return;
+            throw new DuplicateKeyException("duplicated voucher order");
         }
 
         int updated = voucherSeckillMapper.decreaseRemainingStock(seckillId);
@@ -74,6 +74,8 @@ public class VoucherOrderServiceImpl implements VoucherOrderService {
 
         log.info("create voucher order success, orderNo={}, userUuid={}, seckillId={}, voucherId={}",
                 voucherOrder.getOrderNo(), userUuid, seckillId, voucherId);
+
+        return voucherOrder.getId();
     }
 
     @Override

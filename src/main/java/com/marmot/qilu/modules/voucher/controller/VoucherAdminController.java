@@ -21,16 +21,14 @@ public class VoucherAdminController {
 
     @Operation(summary = "创建优惠券")
     @PostMapping("/vouchers")
-    public ApiResponse<Void> createVoucher(@Valid @RequestBody VoucherCreateDTO dto) {
-        voucherAdminService.createVoucher(dto);
-        return ApiResponse.success();
+    public ApiResponse<Long> createVoucher(@Valid @RequestBody VoucherCreateDTO dto) {
+        return ApiResponse.success(voucherAdminService.createVoucher(dto));
     }
 
     @Operation(summary = "创建秒杀活动")
     @PostMapping("/voucher-seckills")
-    public ApiResponse<Void> createVoucherSeckill(@Valid @RequestBody VoucherSeckillCreateDTO dto) {
-        voucherAdminService.createVoucherSeckill(dto);
-        return ApiResponse.success();
+    public ApiResponse<Long> createVoucherSeckill(@Valid @RequestBody VoucherSeckillCreateDTO dto) {
+        return ApiResponse.success(voucherAdminService.createVoucherSeckill(dto));
     }
 
     @Operation(summary = "预热秒杀活动库存")

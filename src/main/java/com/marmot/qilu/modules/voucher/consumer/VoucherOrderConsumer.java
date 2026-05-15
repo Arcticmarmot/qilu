@@ -27,13 +27,13 @@ public class VoucherOrderConsumer {
         validateVoucherOrderEvent(event);
 
         try {
-            voucherOrderService.createVoucherOrder(
+            Long voucherOrderId = voucherOrderService.createVoucherOrder(
                     event.getUserUuid(),
                     event.getVoucherId(),
                     event.getSeckillId()
             );
             acknowledgment.acknowledge();
-            log.debug("consume voucher order event success, eventId={}", event.getEventId());
+            log.debug("consume voucher order event success, eventId={}, orderId={}", event.getEventId(), voucherOrderId);
         } catch (Exception e) {
             log.error("consume voucher order event failed, eventId={}, seckillId={}, voucherId={}, userUuid={}",
                     event.getEventId(), event.getSeckillId(), event.getVoucherId(), event.getUserUuid(), e);

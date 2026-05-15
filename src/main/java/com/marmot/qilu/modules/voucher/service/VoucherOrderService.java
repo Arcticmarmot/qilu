@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface VoucherOrderService {
 
-    void createVoucherOrder(String userUuid, Long voucherId, Long seckillId);
+    Long createVoucherOrder(String userUuid, Long voucherId, Long seckillId);
 
     List<VoucherOrderVO> getMyVoucherOrders();
 

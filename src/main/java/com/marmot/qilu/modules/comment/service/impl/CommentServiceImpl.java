@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createComment(Long postId, CommentCreateDTO dto) {
+    public Long createComment(Long postId, CommentCreateDTO dto) {
         validatePostId(postId);
 
         if (dto == null) {
@@ -118,6 +118,8 @@ public class CommentServiceImpl implements CommentService {
                 postId,
                 comment.getId()
         );
+
+        return comment.getId();
     }
 
     @Override

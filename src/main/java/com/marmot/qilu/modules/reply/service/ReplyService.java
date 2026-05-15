@@ -15,7 +15,7 @@ public interface ReplyService {
 
     ReplyPreview getReplyPreview(Long replyId);
 
-    void createReply(Long postId, Long commentId, ReplyCreateDTO dto);
+    Long createReply(Long postId, Long commentId, ReplyCreateDTO dto);
 
     void deleteReply(Long postId, Long commentId, Long replyId);
 

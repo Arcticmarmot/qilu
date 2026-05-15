@@ -25,18 +25,16 @@ public class PostController {
 
     @Operation(summary = "创建根帖子", description = "创建一篇新帖子，可设置为公开或仅自己可见")
     @PostMapping
-    public ApiResponse<Void> createPost(@Valid @RequestBody PostCreateDTO dto) {
-        postService.createPost(dto);
-        return ApiResponse.success();
+    public ApiResponse<Long> createPost(@Valid @RequestBody PostCreateDTO dto) {
+        return ApiResponse.success(postService.createPost(dto));
     }
 
     @Operation(summary = "创建分支帖子", description = "在指定父帖子下创建一个分支帖子，parentId 和 rootId 由后端根据父帖子自动确定")
     @PostMapping("/{parentPostId}/branches")
-    public ApiResponse<Void> createBranchPost(
+    public ApiResponse<Long> createBranchPost(
             @Parameter(description = "父帖子ID") @PathVariable Long parentPostId,
             @Valid @RequestBody BranchPostCreateDTO dto) {
-        postService.createBranchPost(parentPostId, dto);
-        return ApiResponse.success();
+        return ApiResponse.success(postService.createBranchPost(parentPostId, dto));
     }
 
     @Operation(summary = "更新帖子基本信息", description = "更新当前登录用户自己的帖子内容和可见性")

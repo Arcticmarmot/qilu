@@ -6,9 +6,9 @@ import com.marmot.qilu.modules.voucher.dto.VoucherSeckillCreateDTO;
 
 public interface VoucherAdminService {
 
-    void createVoucher(VoucherCreateDTO dto);
+    Long createVoucher(VoucherCreateDTO dto);
 
-    void createVoucherSeckill(VoucherSeckillCreateDTO dto);
+    Long createVoucherSeckill(VoucherSeckillCreateDTO dto);
 
     void preheatVoucherSeckill(Long seckillId);
 

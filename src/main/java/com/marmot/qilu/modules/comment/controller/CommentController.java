@@ -23,14 +23,13 @@ public class CommentController {
 
     @Operation(summary = "创建帖子评论", description = "当前登录用户对指定帖子发表评论")
     @PostMapping("/comments")
-    public ApiResponse<Void> createPostComment(
+    public ApiResponse<Long> createPostComment(
             @Parameter(description = "帖子ID", example = "1", required = true)
             @PathVariable Long postId,
             @Parameter(description = "评论创建输入")
             @Valid @RequestBody CommentCreateDTO dto
     ) {
-        commentService.createComment(postId, dto);
-        return ApiResponse.success();
+        return ApiResponse.success(commentService.createComment(postId, dto));
     }
 
     @Operation(summary = "删除自己的评论", description = "当前登录用户删除自己发布的一级评论")

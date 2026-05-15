@@ -24,13 +24,13 @@ public class PostServiceImpl implements PostService {
     private final PostQueryService postQueryService;
 
     @Override
-    public void createPost(PostCreateDTO dto) {
-        postCommandService.createPost(dto);
+    public Long createPost(PostCreateDTO dto) {
+        return postCommandService.createPost(dto);
     }
 
     @Override
-    public void createBranchPost(Long parentPostId, BranchPostCreateDTO dto) {
-        postCommandService.createBranchPost(parentPostId, dto);
+    public Long createBranchPost(Long parentPostId, BranchPostCreateDTO dto) {
+        return postCommandService.createBranchPost(parentPostId, dto);
     }
 
     @Override

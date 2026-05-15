@@ -43,7 +43,7 @@ public class VoucherAdminServiceImpl implements VoucherAdminService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createVoucher(VoucherCreateDTO dto) {
+    public Long createVoucher(VoucherCreateDTO dto) {
         if(dto == null) {
             throw new BadRequestException("voucher create dto is invalid");
         }
@@ -62,10 +62,12 @@ public class VoucherAdminServiceImpl implements VoucherAdminService {
             throw new IllegalStateException("create voucher failed");
         }
         log.info("create voucher success, voucherId={}", voucher.getId());
+
+        return voucher.getId();
     }
 
     @Override
-    public void createVoucherSeckill(VoucherSeckillCreateDTO dto) {
+    public Long createVoucherSeckill(VoucherSeckillCreateDTO dto) {
         if(dto == null) {
             throw new BadRequestException("voucher seckill create dto is invalid");
         }
@@ -97,6 +99,8 @@ public class VoucherAdminServiceImpl implements VoucherAdminService {
 
         log.info("create voucher seckill success, seckillId={}, voucherId={}",
                 voucherSeckill.getId(), dto.getVoucherId());
+
+        return voucherSeckill.getId();
     }
 
     @Override

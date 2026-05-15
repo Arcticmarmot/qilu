@@ -44,7 +44,7 @@ public class PostCommandServiceImpl implements PostCommandService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createPost(PostCreateDTO dto) {
+    public Long createPost(PostCreateDTO dto) {
         if(dto == null) {
             throw new BadRequestException("request body must not be null");
         }
@@ -104,11 +104,12 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         sendPostSearchIndexEventAfterCommit(List.of(postId), postId, PostSearchIndexAction.SYNC, currUserUuid);
         log.info("create post success, userUuid={}, postId={}", currUserUuid, post.getId());
+        return postId;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createBranchPost(Long parentPostId, BranchPostCreateDTO dto) {
+    public Long createBranchPost(Long parentPostId, BranchPostCreateDTO dto) {
         validatePostId(parentPostId);
 
         if(dto == null) {
@@ -144,21 +145,23 @@ public class PostCommandServiceImpl implements PostCommandService {
         if(inserted != 1) {
             throw new IllegalStateException("create post branch failed");
         }
+        Long postId = post.getId();
+        Long rootId = post.getRootId();
 
         if(mediaIds != null && !mediaIds.isEmpty()) {
-            bindPostMedia(post.getId(), mediaIds);
+            bindPostMedia(postId, mediaIds);
 
             int updated = mediaFileService.markMediaFilesUsed(mediaIds);
             if(updated != mediaIds.size()) {
                 throw new BadRequestException("media ids are invalid");
             }
         }
-        Long postId = post.getId();
-        Long rootId = post.getRootId();
+
         sendPostSearchIndexEventAfterCommit(List.of(postId), rootId, PostSearchIndexAction.SYNC, currUserUuid);
 
         log.info("create post branch success, userUuid={}, parentPostId={}, postId={}",
                 currUserUuid, parentPostId, post.getId());
+        return postId;
     }
 
     @Override

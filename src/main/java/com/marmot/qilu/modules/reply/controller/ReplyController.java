@@ -21,11 +21,10 @@ public class ReplyController {
 
     @Operation(summary = "创建评论回复", description = "当前登录用户对指定评论发表回复")
     @PostMapping("/{commentId}/replies")
-    public ApiResponse<Void> createCommentReply(@PathVariable Long postId,
+    public ApiResponse<Long> createCommentReply(@PathVariable Long postId,
                                                 @PathVariable Long commentId,
                                                 @RequestBody ReplyCreateDTO dto) {
-        replyService.createReply(postId, commentId, dto);
-        return ApiResponse.success();
+        return ApiResponse.success(replyService.createReply(postId, commentId, dto));
     }
 
     @Operation(summary = "删除评论回复", description = "当前登录用户对指定评论发表回复")
