@@ -6,6 +6,7 @@ import com.marmot.qilu.common.event.voucher.VoucherOrderEvent;
 import com.marmot.qilu.common.event.voucher.VoucherOrderProducer;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ConflictException;
+import com.marmot.qilu.common.exception.ForbiddenException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.modules.voucher.constant.VoucherRedisKeys;
 import com.marmot.qilu.modules.voucher.entity.VoucherOrder;
@@ -137,7 +138,7 @@ public class VoucherSeckillServiceImpl implements VoucherSeckillService {
         }
 
         if(result == LUA_STOCK_NOT_ENOUGH) {
-            throw new BadRequestException("voucher stock is not enough");
+            throw new ConflictException("voucher stock is not enough");
         }
 
         if(result == LUA_DUPLICATE_SECKILL) {
@@ -145,7 +146,7 @@ public class VoucherSeckillServiceImpl implements VoucherSeckillService {
         }
 
         if(result == LUA_STOCK_NOT_INITIALIZED) {
-            throw new BadRequestException("voucher seckill stock is not initialized");
+            throw new ConflictException("voucher seckill stock is not initialized");
         }
 
         throw new IllegalStateException("unknown voucher seckill result");
@@ -164,10 +165,10 @@ public class VoucherSeckillServiceImpl implements VoucherSeckillService {
             throw new IllegalStateException("voucher seckill time is invalid");
         }
         if(now.isBefore(startTime)) {
-            throw new BadRequestException("voucher seckill has not started");
+            throw new ForbiddenException("voucher seckill has not started");
         }
         if(now.isAfter(endTime)) {
-            throw new BadRequestException("voucher seckill has ended");
+            throw new ForbiddenException("voucher seckill has ended");
         }
     }
 
