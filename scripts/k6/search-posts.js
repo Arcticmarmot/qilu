@@ -97,7 +97,14 @@ export default function () {
         'http status is 200': (r) => r.status === 200,
         'api response is valid': () => apiResponseIsValid(body),
         'api code is success': () => body !== null && body.code === SUCCESS,
-        'search data is list': () => body !== null && Array.isArray(body.data),
+        'hot page data is valid': () => {
+            return body !== null
+                && body.data !== null
+                && typeof body.data.current === 'number'
+                && typeof body.data.size === 'number'
+                && typeof body.data.total === 'number'
+                && Array.isArray(body.data.records);
+        },
         'no bad request': () => noBadRequest(body),
         'token is valid': () => tokenIsValid(body),
         'no forbidden': () => noForbidden(body),

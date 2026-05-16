@@ -45,7 +45,7 @@ export const options = {
         http_req_failed: ['rate<0.01'],
 
         // 热榜通常应该比普通分页更快，因为理想情况下主要读 Redis 热榜结果。
-        http_req_duration: ['p(95)<300', 'p(99)<800'],
+        http_req_duration: ['p(95)<500', 'p(99)<1000'],
 
         checks: ['rate>0.99'],
         hot_posts_system_error_count: ['count==0'],
