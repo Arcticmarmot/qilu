@@ -5,6 +5,7 @@ import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.common.event.reply.ReplyEvent;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
+import com.marmot.qilu.modules.post.vo.PostPageVO;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface HotPostService {
 
     void increaseByReply(ReplyEvent event);
 
-    List<PostPageItemVO> getHotPosts(PostPageQueryDTO dto);
+    PostPageVO<PostPageItemVO> getHotPosts(PostPageQueryDTO dto);
 
     void rebuildHotPostRank();
 }

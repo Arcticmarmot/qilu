@@ -1,12 +1,15 @@
 package com.marmot.qilu.modules.hot.service.impl;
 
+import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.event.comment.CommentEvent;
 import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.common.event.reply.ReplyEvent;
+import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.modules.hot.service.HotPostService;
 import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
+import com.marmot.qilu.modules.post.vo.PostPageVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -15,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,7 +36,7 @@ public class HotPostServiceImpl implements HotPostService {
     private static final String HOT_POST_RANK = "hot::post::rank";
     private static final String HOT_POST_RANK_TMP = "hot::post::rank::tmp";
 
-    private static final int REBUILD_CANDIDATE_LIMIT = 100;
+    private static final int REBUILD_CANDIDATE_LIMIT = 1000;
     private static final long DECAY_OFFSET_HOURS = 2;
     private static final double DECAY_FACTOR = 1.2;
 
@@ -82,25 +82,29 @@ public class HotPostServiceImpl implements HotPostService {
     }
 
     @Override
-    public List<PostPageItemVO> getHotPosts(PostPageQueryDTO dto) {
+    public PostPageVO<PostPageItemVO> getHotPosts(PostPageQueryDTO dto) {
         if(dto == null) {
-            throw new IllegalStateException("");
+            throw new BadRequestException("post page query dto is invalid");
         }
 
         long current = dto.getCurrent();
         long size = dto.getSize();
         long start = (current - 1) * size;
         long end = start + size - 1;
+        long total = Optional.ofNullable(
+                stringRedisTemplate.opsForZSet().zCard(HOT_POST_RANK)
+        ).orElse(0L);
 
         Set<String> postIdSet = stringRedisTemplate.opsForZSet().reverseRange(HOT_POST_RANK, start, end);
 
         if(postIdSet == null || postIdSet.isEmpty()) {
-            return List.of();
+            return new PostPageVO<>(current, size, total, List.of());
         }
 
         List<Long> postIds = postIdSet.stream().map(Long::valueOf).toList();
 
-        return postService.getPublicPostsByIds(postIds);
+        List<PostPageItemVO> records = postService.getPublicPostsByIds(postIds);
+        return new PostPageVO<>(current, size, total, records);
     }
 
     @Override
