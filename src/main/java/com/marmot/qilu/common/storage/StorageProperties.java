@@ -24,6 +24,4 @@ public class StorageProperties {
     private Long maxFileSize;
 
     private String postImagePrefix;
-
-    private String avatarPrefix;
 }

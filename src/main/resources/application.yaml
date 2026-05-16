@@ -63,13 +63,12 @@ logging:
 
 storage:
   endpoint: http://localhost:9000
-  public-endpoint: http://localhost:9000
+  public-endpoint: http://localhost/media
   access-key: qilu-minio
   secret-key: qilu-minio
   bucket: qilu-media
   max-file-size: 10485760
   post-image-prefix: post-image
-  avatar-prefix: avatar
 
 springdoc:
   swagger-ui:
