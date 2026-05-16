@@ -1,15 +1,22 @@
 package com.marmot.qilu.modules.search.service.impl;
 
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch.core.search.FieldCollapse;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.modules.post.model.PostSearchSource;
 import com.marmot.qilu.modules.post.service.PostService;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
+import com.marmot.qilu.modules.post.vo.PostPageVO;
 import com.marmot.qilu.modules.search.document.PostSearchDocument;
+import com.marmot.qilu.modules.search.dto.PostSearchPageQueryDTO;
 import com.marmot.qilu.modules.search.repository.PostSearchRepository;
 import com.marmot.qilu.modules.search.service.PostSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -24,7 +31,7 @@ public class PostSearchServiceImpl implements PostSearchService {
 
     private static final int STATUS_NORMAL = 1;
     private static final int VISIBILITY_PUBLIC = 1;
-    private static final int SEARCH_RESULT_SIZE = 20;
+    private static final String AGG_ROOT_COUNT = "root_count";
 
     private final PostService postService;
     private final PostSearchRepository postSearchRepository;
@@ -61,8 +68,11 @@ public class PostSearchServiceImpl implements PostSearchService {
     }
 
     @Override
-    public List<PostPageItemVO> searchPosts(String keyword) {
+    public PostPageVO<PostPageItemVO> searchPosts(PostSearchPageQueryDTO dto) {
+        String keyword = dto.getKeyword();
         validateKeyword(keyword);
+        int current = dto.getCurrent();
+        int size = dto.getSize();
 
         NativeQuery query = NativeQuery.builder()
                 .withQuery(q -> q
@@ -86,20 +96,56 @@ public class PostSearchServiceImpl implements PostSearchService {
                                 )
                         )
                 )
-                .withPageable(PageRequest.of(0, SEARCH_RESULT_SIZE))
+                .withFieldCollapse(FieldCollapse.of(fc -> fc
+                        .field("rootId")
+                ))
+                .withPageable(PageRequest.of(current - 1, size))
+                .withAggregation(AGG_ROOT_COUNT, Aggregation.of(a -> a
+                        .cardinality(c -> c
+                            .field("rootId")
+                            .precisionThreshold(10000)
+                        )
+                    )
+                )
                 .build();
+
         SearchHits<PostSearchDocument> searchHits = elasticsearchOperations.search(query, PostSearchDocument.class);
-        List<Long> postIds = searchHits.getSearchHits()
+
+        long total = getRootCount(searchHits);
+
+        List<Long> rootIds = searchHits.getSearchHits()
                 .stream()
                 .map(hit -> hit.getContent().getRootId())
                 .filter(Objects::nonNull)
-                .distinct()
                 .toList();
 
-        if(postIds.isEmpty()) {
-            return List.of();
+        if(rootIds.isEmpty()) {
+            return new PostPageVO<>(current, size, total, List.of());
         }
-        return postService.getPublicPostsByIds(postIds);
+        List<PostPageItemVO> records = postService.getPublicPostsByIds(rootIds);
+        return new PostPageVO<>(current, size, total, records);
+    }
+
+    private long getRootCount(SearchHits<PostSearchDocument> searchHits) {
+        if (searchHits.getAggregations() == null) {
+            return 0L;
+        }
+
+        ElasticsearchAggregations aggregations =
+                (ElasticsearchAggregations) searchHits.getAggregations();
+
+        ElasticsearchAggregation rootCountAgg = aggregations.get(AGG_ROOT_COUNT);
+        if (rootCountAgg == null) {
+            return 0L;
+        }
+
+        Aggregate aggregate = rootCountAgg.aggregation().getAggregate();
+        if (!aggregate.isCardinality()) {
+            return 0L;
+        }
+
+        double rootCount = aggregate.cardinality().value();
+        return Math.round(rootCount);
     }
 
 
