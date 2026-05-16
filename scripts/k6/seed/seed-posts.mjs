@@ -1,102 +1,46 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {
+    currentDir,
+    resolvePath,
+    readJsonFile,
+    writeJsonFile,
+    readUsers,
+    requestJson,
+    assertApiSuccess,
+    getCreatedId,
+    randomInt,
+    getContentType,
+    VISIBILITY_PUBLIC,
+} from '../lib/common.mjs';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const __dirname = currentDir(import.meta.url);
+
 const USERS_FILE = process.env.USERS_FILE || './data/users.json';
 const POSTS_FILE = process.env.POSTS_FILE || './data/posts.json';
 const ASSETS_DIR = process.env.ASSETS_DIR || './assets';
 const OUTPUT_FILE = process.env.OUTPUT_FILE || './results/seed-posts-result.json';
 
 const ROOT_POST_COUNT = Number(process.env.ROOT_POST_COUNT || 100);
+
 const MIN_BRANCH_COUNT = Number(process.env.MIN_BRANCH_COUNT || 1);
 const MAX_BRANCH_COUNT = Number(process.env.MAX_BRANCH_COUNT || 3);
-const MIN_TREE_DEPTH = Number(process.env.MIN_TREE_DEPTH || 1);
+
+const MIN_TREE_DEPTH = Number(process.env.MIN_TREE_DEPTH || 2);
 const MAX_TREE_DEPTH = Number(process.env.MAX_TREE_DEPTH || 5);
 
-// 防止 100 个根帖在 5 层树下爆炸式创建，默认最多创建 600 个帖子节点。
-const MAX_TOTAL_POST_COUNT = Number(process.env.MAX_TOTAL_POST_COUNT || 600);
-
-// 控制分支是否继续向下生长。越大树越深，节点越多。
+// 越深越不容易继续生长。这个值是基础生长概率。
 const BRANCH_CONTINUE_RATE = Number(process.env.BRANCH_CONTINUE_RATE || 0.65);
 
-const SUCCESS = 0;
-const VISIBILITY_PUBLIC = 1;
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const state = {
-    totalCreated: 0,
-    uploadedMediaCount: 0,
-};
-
-function resolvePath(relativePath) {
-    return path.resolve(__dirname, relativePath);
-}
-
-function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function pickRandom(list) {
-    return list[randomInt(0, list.length - 1)];
-}
-
-function pickRandomItems(list, count, excludeIndexes = new Set()) {
-    const candidates = list.filter((item) => !excludeIndexes.has(item.index));
-    const result = [];
-
-    while (result.length < count && candidates.length > 0) {
-        const offset = randomInt(0, candidates.length - 1);
-        const [item] = candidates.splice(offset, 1);
-        result.push(item);
-    }
-
-    return result;
-}
-
-function getContentType(filename) {
-    const lower = filename.toLowerCase();
-
-    if (lower.endsWith('.png')) {
-        return 'image/png';
-    }
-
-    if (lower.endsWith('.webp')) {
-        return 'image/webp';
-    }
-
-    return 'image/jpeg';
-}
-
-async function readUsers() {
-    const raw = await fs.readFile(resolvePath(USERS_FILE), 'utf-8');
-    const users = JSON.parse(raw);
-
-    if (!Array.isArray(users) || users.length === 0) {
-        throw new Error(`users file is empty, file=${USERS_FILE}`);
-    }
-
-    for (const user of users) {
-        if (!user.token) {
-            throw new Error(`user token is missing, email=${user.email}`);
-        }
-    }
-
-    return users;
-}
-
 async function readSeedPosts() {
-    const raw = await fs.readFile(resolvePath(POSTS_FILE), 'utf-8');
-    const posts = JSON.parse(raw);
+    const posts = await readJsonFile(__dirname, POSTS_FILE);
 
     if (!Array.isArray(posts) || posts.length === 0) {
         throw new Error(`posts file is empty, file=${POSTS_FILE}`);
     }
 
     for (const post of posts) {
-        if (!post.index || !post.title || !post.content) {
+        if (!post.index || !post.title || !post.content || !post.branchPrompt || !post.category) {
             throw new Error(`seed post is invalid, index=${post.index}`);
         }
 
@@ -108,51 +52,13 @@ async function readSeedPosts() {
     return posts;
 }
 
-async function requestJson(pathname, options = {}) {
-    const url = `${BASE_URL}${pathname}`;
-
-    const response = await fetch(url, options);
-
-    let body;
-
-    try {
-        body = await response.json();
-    } catch (e) {
-        throw new Error(`invalid json response, url=${url}, httpStatus=${response.status}`);
-    }
-
-    return {
-        httpStatus: response.status,
-        body,
-    };
-}
-
-function assertApiSuccess(result, action) {
-    if (result.httpStatus !== 200) {
-        throw new Error(`${action} failed, httpStatus=${result.httpStatus}`);
-    }
-
-    if (!result.body || result.body.code !== SUCCESS) {
-        throw new Error(
-            `${action} failed, code=${result.body?.code}, message=${result.body?.message}`
-        );
-    }
-}
-
-function getCreatedId(result, action) {
-    assertApiSuccess(result, action);
-
-    const id = result.body.data;
-
-    if (!Number.isInteger(id) || id <= 0) {
-        throw new Error(`${action} failed, created id is invalid, id=${id}`);
-    }
-
-    return id;
+function shouldCreateNextLevelBranches(depth) {
+    const rate = Math.max(0.15, BRANCH_CONTINUE_RATE - depth * 0.12);
+    return Math.random() < rate;
 }
 
 async function uploadImage(token, filename) {
-    const filePath = path.join(resolvePath(ASSETS_DIR), filename);
+    const filePath = path.join(resolvePath(__dirname, ASSETS_DIR), filename);
     const fileBuffer = await fs.readFile(filePath);
 
     const form = new FormData();
@@ -178,17 +84,19 @@ async function uploadImage(token, filename) {
         throw new Error(`upload image failed, media id is invalid, filename=${filename}`);
     }
 
-    console.log(`upload image success, filename=${filename}, mediaId=${mediaId}`);
-
     return mediaId;
 }
 
-async function uploadPostImages(token, sourcePost) {
+async function uploadPostImages(token, sourcePost, state) {
     const mediaIds = [];
 
     for (const filename of sourcePost.url) {
         const mediaId = await uploadImage(token, filename);
+
         mediaIds.push(mediaId);
+        state.uploadedMediaCount += 1;
+
+        console.log(`upload image success, filename=${filename}, mediaId=${mediaId}`);
     }
 
     return mediaIds;
@@ -233,113 +141,134 @@ async function createBranchPost(user, parentPostId, sourcePost, mediaIds) {
     );
 }
 
-function shouldContinue(depth, maxDepth) {
-    if (depth >= maxDepth) {
-        return false;
+function pickBranchSources(seedPosts, category, count, usedIndexes) {
+    const sameCategoryPosts = seedPosts.filter((post) => {
+        return post.category === category && !usedIndexes.has(post.index);
+    });
+
+    const fallbackPosts = seedPosts.filter((post) => {
+        return !usedIndexes.has(post.index);
+    });
+
+    const candidates = sameCategoryPosts.length >= count ? sameCategoryPosts : fallbackPosts;
+    const selected = [];
+
+    while (selected.length < count && candidates.length > 0) {
+        const offset = randomInt(0, candidates.length - 1);
+        const [post] = candidates.splice(offset, 1);
+
+        selected.push(post);
+        usedIndexes.add(post.index);
     }
 
-    return Math.random() < BRANCH_CONTINUE_RATE;
+    return selected;
 }
 
-async function createBranchTree(context) {
-    const {
-        user,
-        allPosts,
-        parentPostId,
+async function createBranchNode({ user, parentPostId, sourcePost, depth, state }) {
+    const mediaIds = await uploadPostImages(user.token, sourcePost, state);
+    const postId = await createBranchPost(user, parentPostId, sourcePost, mediaIds);
+
+    state.totalCreated += 1;
+
+    console.log(
+        `create branch post success, postId=${postId}, parentPostId=${parentPostId}, sourceIndex=${sourcePost.index}, depth=${depth}`
+    );
+
+    return {
+        id: postId,
+        sourceIndex: sourcePost.index,
+        category: sourcePost.category,
+        title: sourcePost.title,
+        branchPrompt: sourcePost.branchPrompt,
         depth,
-        maxDepth,
-        pathIndexes,
-        createdNode,
-        state,
-    } = context;
+        mediaIds,
+        children: [],
+    };
+}
 
-    if (state.totalCreated >= MAX_TOTAL_POST_COUNT) {
-        return;
-    }
-
-    if (!shouldContinue(depth, maxDepth)) {
+async function createBranchChildren({
+                                        user,
+                                        parentNode,
+                                        parentSource,
+                                        seedPosts,
+                                        usedIndexes,
+                                        depth,
+                                        maxDepth,
+                                        state,
+                                    }) {
+    if (depth > maxDepth) {
         return;
     }
 
     const branchCount = randomInt(MIN_BRANCH_COUNT, MAX_BRANCH_COUNT);
-    const branchSources = pickRandomItems(allPosts, branchCount, pathIndexes);
+
+    const branchSources = pickBranchSources(
+        seedPosts,
+        parentSource.category,
+        branchCount,
+        usedIndexes
+    );
 
     for (const branchSource of branchSources) {
-        if (state.totalCreated >= MAX_TOTAL_POST_COUNT) {
-            return;
-        }
-
-        const nextPathIndexes = new Set(pathIndexes);
-        nextPathIndexes.add(branchSource.index);
-
-        const mediaIds = await uploadPostImages(user.token, branchSource);
-        const branchPostId = await createBranchPost(user, parentPostId, branchSource, mediaIds);
-
-        state.totalCreated += 1;
-
-        const branchNode = {
-            id: branchPostId,
-            sourceIndex: branchSource.index,
-            title: branchSource.title,
-            branchPrompt: branchSource.branchPrompt,
-            depth,
-            mediaIds,
-            children: [],
-        };
-
-        createdNode.children.push(branchNode);
-
-        console.log(
-            `create branch post success, postId=${branchPostId}, parentPostId=${parentPostId}, sourceIndex=${branchSource.index}, depth=${depth}`
-        );
-
-        await createBranchTree({
+        const branchNode = await createBranchNode({
             user,
-            allPosts,
-            parentPostId: branchPostId,
-            depth: depth + 1,
-            maxDepth,
-            pathIndexes: nextPathIndexes,
-            createdNode: branchNode,
+            parentPostId: parentNode.id,
+            sourcePost: branchSource,
+            depth,
             state,
         });
+
+        parentNode.children.push(branchNode);
+
+        if (depth < maxDepth && shouldCreateNextLevelBranches(depth)) {
+            await createBranchChildren({
+                user,
+                parentNode: branchNode,
+                parentSource: branchSource,
+                seedPosts,
+                usedIndexes,
+                depth: depth + 1,
+                maxDepth,
+                state,
+            });
+        }
     }
 }
 
 async function main() {
-    const users = await readUsers();
+    const users = await readUsers(__dirname, USERS_FILE);
     const seedPosts = await readSeedPosts();
 
     const rootSources = seedPosts.slice(0, Math.min(ROOT_POST_COUNT, seedPosts.length));
 
     const state = {
         totalCreated: 0,
+        uploadedMediaCount: 0,
     };
 
     const seedResult = {
-        baseUrl: BASE_URL,
+        usersFile: USERS_FILE,
         postsFile: POSTS_FILE,
         assetsDir: ASSETS_DIR,
         rootPostCount: rootSources.length,
-        maxTotalPostCount: MAX_TOTAL_POST_COUNT,
+        minBranchCount: MIN_BRANCH_COUNT,
+        maxBranchCount: MAX_BRANCH_COUNT,
+        minTreeDepth: MIN_TREE_DEPTH,
+        maxTreeDepth: MAX_TREE_DEPTH,
+        branchContinueRate: BRANCH_CONTINUE_RATE,
         roots: [],
     };
 
-    console.log(
-        `seed posts started, rootPostCount=${rootSources.length}, maxTotalPostCount=${MAX_TOTAL_POST_COUNT}`
-    );
+    console.log(`seed posts started, rootPostCount=${rootSources.length}`);
+
+    const maxDepth = MAX_TREE_DEPTH;
 
     for (let i = 0; i < rootSources.length; i++) {
-        if (state.totalCreated >= MAX_TOTAL_POST_COUNT) {
-            break;
-        }
-
         const user = users[i % users.length];
         const rootSource = rootSources[i];
-        const maxDepth = randomInt(MIN_TREE_DEPTH, MAX_TREE_DEPTH);
 
-        // 根节点忽略 branchPrompt，只使用 title/content/mediaIds 创建根帖。
-        const mediaIds = await uploadPostImages(user.token, rootSource);
+        // 根节点忽略 branchPrompt，统一创建公开帖子。
+        const mediaIds = await uploadPostImages(user.token, rootSource, state);
         const rootPostId = await createRootPost(user, rootSource, mediaIds);
 
         state.totalCreated += 1;
@@ -347,6 +276,7 @@ async function main() {
         const rootNode = {
             id: rootPostId,
             sourceIndex: rootSource.index,
+            category: rootSource.category,
             title: rootSource.title,
             depth: 1,
             maxDepth,
@@ -358,30 +288,29 @@ async function main() {
         seedResult.roots.push(rootNode);
 
         console.log(
-            `create root post success, index=${i + 1}, postId=${rootPostId}, sourceIndex=${rootSource.index}, maxDepth=${maxDepth}`
+            `create root post success, index=${i + 1}, postId=${rootPostId}, sourceIndex=${rootSource.index}, category=${rootSource.category}, maxDepth=${maxDepth}`
         );
 
-        const pathIndexes = new Set([rootSource.index]);
-
-        await createBranchTree({
+        await createBranchChildren({
             user,
-            allPosts: seedPosts,
-            parentPostId: rootPostId,
+            parentNode: rootNode,
+            parentSource: rootSource,
+            seedPosts,
+            usedIndexes: new Set([rootSource.index]),
             depth: 2,
             maxDepth,
-            pathIndexes,
-            createdNode: rootNode,
             state,
         });
     }
 
     seedResult.totalCreated = state.totalCreated;
+    seedResult.uploadedMediaCount = state.uploadedMediaCount;
 
-    await fs.writeFile(resolvePath(OUTPUT_FILE), JSON.stringify(seedResult, null, 2));
+    await writeJsonFile(__dirname, OUTPUT_FILE, seedResult);
 
     console.log('');
     console.log(
-        `seed posts success, totalCreated=${state.totalCreated}, output=${OUTPUT_FILE}`
+        `seed posts success, totalCreated=${state.totalCreated}, uploadedMediaCount=${state.uploadedMediaCount}, output=${OUTPUT_FILE}`
     );
 }
 

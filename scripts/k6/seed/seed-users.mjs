@@ -1,15 +1,19 @@
-import fs from 'fs/promises';
+import {
+    currentDir,
+    writeJsonFile,
+    requestJson,
+    SUCCESS,
+    CONFLICT,
+} from '../lib/common.mjs';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
+const __dirname = currentDir(import.meta.url);
+
 const USER_COUNT = Number(process.env.USER_COUNT || 100);
 const OUTPUT_FILE = process.env.OUTPUT_FILE || './data/users.json';
 
 const EMAIL_PREFIX = process.env.EMAIL_PREFIX || 'qilu_k6_user';
 const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN || 'example.com';
 const PASSWORD = process.env.PASSWORD || '123456';
-
-const SUCCESS_CODE = 0;
-const CONFLICT_CODE = 40900;
 
 function buildUser(index) {
     const no = String(index).padStart(3, '0');
@@ -21,38 +25,17 @@ function buildUser(index) {
     };
 }
 
-async function postJson(path, body) {
-    const url = `${BASE_URL}${path}`;
-
-    const response = await fetch(url, {
+async function registerUser(user) {
+    const result = await requestJson('/users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
-    });
-
-    let apiResponse;
-
-    try {
-        apiResponse = await response.json();
-    } catch (e) {
-        throw new Error(`invalid json response, url=${url}, httpStatus=${response.status}`);
-    }
-
-    return {
-        httpStatus: response.status,
-        code: apiResponse.code,
-        message: apiResponse.message,
-        data: apiResponse.data,
-    };
-}
-
-async function registerUser(user) {
-    const result = await postJson('/users', {
-        nickname: user.nickname,
-        email: user.email,
-        password: user.password,
+        body: JSON.stringify({
+            nickname: user.nickname,
+            email: user.email,
+            password: user.password,
+        }),
     });
 
     if (result.httpStatus !== 200) {
@@ -61,25 +44,31 @@ async function registerUser(user) {
         );
     }
 
-    if (result.code === SUCCESS_CODE) {
+    if (result.body.code === SUCCESS) {
         console.log(`register user success, email=${user.email}`);
         return;
     }
 
-    if (result.code === CONFLICT_CODE) {
+    if (result.body.code === CONFLICT) {
         console.log(`register user skipped, email already exists, email=${user.email}`);
         return;
     }
 
     throw new Error(
-        `register user failed, email=${user.email}, code=${result.code}, message=${result.message}`
+        `register user failed, email=${user.email}, code=${result.body.code}, message=${result.body.message}`
     );
 }
 
 async function loginUser(user) {
-    const result = await postJson('/auth/login', {
-        email: user.email,
-        password: user.password,
+    const result = await requestJson('/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: user.email,
+            password: user.password,
+        }),
     });
 
     if (result.httpStatus !== 200) {
@@ -88,24 +77,24 @@ async function loginUser(user) {
         );
     }
 
-    if (result.code !== SUCCESS_CODE) {
+    if (result.body.code !== SUCCESS) {
         throw new Error(
-            `login user failed, email=${user.email}, code=${result.code}, message=${result.message}`
+            `login user failed, email=${user.email}, code=${result.body.code}, message=${result.body.message}`
         );
     }
 
-    if (!result.data || !result.data.token) {
+    if (!result.body.data || !result.body.data.token) {
         throw new Error(`login user failed, token is missing, email=${user.email}`);
     }
 
     console.log(`login user success, email=${user.email}`);
 
     return {
-        uuid: result.data.uuid,
-        nickname: result.data.nickname,
-        email: result.data.email,
+        uuid: result.body.data.uuid,
+        nickname: result.body.data.nickname,
+        email: result.body.data.email,
         password: user.password,
-        token: result.data.token,
+        token: result.body.data.token,
     };
 }
 
@@ -121,7 +110,7 @@ async function main() {
         preparedUsers.push(loggedInUser);
     }
 
-    await fs.writeFile(OUTPUT_FILE, JSON.stringify(preparedUsers, null, 2));
+    await writeJsonFile(__dirname, OUTPUT_FILE, preparedUsers);
 
     console.log('');
     console.log(`prepare k6 users success, count=${preparedUsers.length}, output=${OUTPUT_FILE}`);
