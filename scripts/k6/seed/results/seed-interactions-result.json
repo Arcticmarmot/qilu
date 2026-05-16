@@ -1,7 +1,7 @@
 {
   "usersFile": "./data/users.json",
   "seedPostsFile": "./results/seed-posts-result.json",
-  "postCount": 596,
+  "postCount": 561,
   "userCount": 100,
   "likeCount": 2000,
   "commentCount": 600,
@@ -10,7 +10,7 @@
     "target": 2000,
     "created": 2000,
     "skipped": 0,
-    "attempts": 2036
+    "attempts": 2035
   },
   "comments": {
     "target": 600,
@@ -23,265 +23,265 @@
   "commentSamples": [
     {
       "id": 1,
-      "postId": 499,
-      "content": "这个分支很适合继续展开。",
-      "actorEmail": "qilu_k6_user_079@example.com"
+      "postId": 517,
+      "content": "这让我想到很多日常里的小选择。",
+      "actorEmail": "qilu_k6_user_017@example.com"
     },
     {
       "id": 2,
-      "postId": 548,
-      "content": "这种内容比纯测试数据好多了。",
-      "actorEmail": "qilu_k6_user_059@example.com"
+      "postId": 411,
+      "content": "感觉这里可以再补充一点细节。",
+      "actorEmail": "qilu_k6_user_056@example.com"
     },
     {
       "id": 3,
-      "postId": 347,
-      "content": "看完有点想出去走走。",
-      "actorEmail": "qilu_k6_user_066@example.com"
+      "postId": 80,
+      "content": "这种内容比纯测试数据好多了。",
+      "actorEmail": "qilu_k6_user_012@example.com"
     },
     {
       "id": 4,
-      "postId": 86,
-      "content": "有些地方说得很克制，但很准确。",
-      "actorEmail": "qilu_k6_user_093@example.com"
+      "postId": 337,
+      "content": "看完有点想出去走走。",
+      "actorEmail": "qilu_k6_user_092@example.com"
     },
     {
       "id": 5,
-      "postId": 439,
-      "content": "真实，有时候就是这种感觉。",
-      "actorEmail": "qilu_k6_user_049@example.com"
+      "postId": 386,
+      "content": "我也有类似的经历，看完很有共鸣。",
+      "actorEmail": "qilu_k6_user_054@example.com"
     },
     {
       "id": 6,
-      "postId": 41,
-      "content": "真实，有时候就是这种感觉。",
-      "actorEmail": "qilu_k6_user_057@example.com"
+      "postId": 548,
+      "content": "有时候简单一点反而更舒服。",
+      "actorEmail": "qilu_k6_user_052@example.com"
     },
     {
       "id": 7,
-      "postId": 257,
-      "content": "这种内容比纯测试数据好多了。",
-      "actorEmail": "qilu_k6_user_049@example.com"
-    },
-    {
-      "id": 8,
-      "postId": 317,
-      "content": "这让我想到很多日常里的小选择。",
-      "actorEmail": "qilu_k6_user_091@example.com"
-    },
-    {
-      "id": 9,
-      "postId": 567,
-      "content": "这个选择分支很有代入感。",
-      "actorEmail": "qilu_k6_user_041@example.com"
-    },
-    {
-      "id": 10,
-      "postId": 573,
-      "content": "这段写得很有画面感。",
-      "actorEmail": "qilu_k6_user_040@example.com"
-    },
-    {
-      "id": 11,
-      "postId": 62,
-      "content": "看起来像真实用户会发的内容。",
-      "actorEmail": "qilu_k6_user_093@example.com"
-    },
-    {
-      "id": 12,
-      "postId": 399,
-      "content": "有些地方说得很克制，但很准确。",
-      "actorEmail": "qilu_k6_user_079@example.com"
-    },
-    {
-      "id": 13,
-      "postId": 35,
-      "content": "看起来像真实用户会发的内容。",
-      "actorEmail": "qilu_k6_user_079@example.com"
-    },
-    {
-      "id": 14,
-      "postId": 246,
-      "content": "有时候简单一点反而更舒服。",
-      "actorEmail": "qilu_k6_user_093@example.com"
-    },
-    {
-      "id": 15,
-      "postId": 223,
-      "content": "这张图和文字还挺搭的。",
+      "postId": 529,
+      "content": "真实，有时候就是这种感觉。",
       "actorEmail": "qilu_k6_user_036@example.com"
     },
     {
+      "id": 8,
+      "postId": 528,
+      "content": "这个分支很适合继续展开。",
+      "actorEmail": "qilu_k6_user_005@example.com"
+    },
+    {
+      "id": 9,
+      "postId": 443,
+      "content": "真实，有时候就是这种感觉。",
+      "actorEmail": "qilu_k6_user_078@example.com"
+    },
+    {
+      "id": 10,
+      "postId": 93,
+      "content": "我觉得这里的情绪很稳。",
+      "actorEmail": "qilu_k6_user_100@example.com"
+    },
+    {
+      "id": 11,
+      "postId": 367,
+      "content": "看起来像真实用户会发的内容。",
+      "actorEmail": "qilu_k6_user_059@example.com"
+    },
+    {
+      "id": 12,
+      "postId": 317,
+      "content": "这种表达挺自然的，不像硬凑出来的内容。",
+      "actorEmail": "qilu_k6_user_043@example.com"
+    },
+    {
+      "id": 13,
+      "postId": 299,
+      "content": "我觉得这里的情绪很稳。",
+      "actorEmail": "qilu_k6_user_005@example.com"
+    },
+    {
+      "id": 14,
+      "postId": 241,
+      "content": "有时候简单一点反而更舒服。",
+      "actorEmail": "qilu_k6_user_035@example.com"
+    },
+    {
+      "id": 15,
+      "postId": 105,
+      "content": "确实不是所有内容都适合线性阅读。",
+      "actorEmail": "qilu_k6_user_096@example.com"
+    },
+    {
       "id": 16,
-      "postId": 182,
-      "content": "这类内容很适合慢慢读。",
-      "actorEmail": "qilu_k6_user_022@example.com"
+      "postId": 521,
+      "content": "这个选择分支很有代入感。",
+      "actorEmail": "qilu_k6_user_100@example.com"
     },
     {
       "id": 17,
-      "postId": 8,
-      "content": "看起来像真实用户会发的内容。",
-      "actorEmail": "qilu_k6_user_070@example.com"
+      "postId": 26,
+      "content": "这种内容比纯测试数据好多了。",
+      "actorEmail": "qilu_k6_user_030@example.com"
     },
     {
       "id": 18,
-      "postId": 567,
-      "content": "这种内容比纯测试数据好多了。",
-      "actorEmail": "qilu_k6_user_041@example.com"
+      "postId": 8,
+      "content": "感觉平台有这种内容之后会更像真实社区。",
+      "actorEmail": "qilu_k6_user_063@example.com"
     },
     {
       "id": 19,
-      "postId": 219,
-      "content": "这个角度很有意思，之前没这么想过。",
-      "actorEmail": "qilu_k6_user_090@example.com"
+      "postId": 183,
+      "content": "这个点可以收藏一下。",
+      "actorEmail": "qilu_k6_user_076@example.com"
     },
     {
       "id": 20,
-      "postId": 228,
-      "content": "内容挺真实的，有生活感。",
-      "actorEmail": "qilu_k6_user_066@example.com"
+      "postId": 269,
+      "content": "这个点可以收藏一下。",
+      "actorEmail": "qilu_k6_user_057@example.com"
     }
   ],
   "replySamples": [
     {
       "id": 1,
-      "postId": 75,
-      "commentId": 95,
-      "content": "我觉得这里还可以补一段个人经历。",
-      "actorEmail": "qilu_k6_user_043@example.com"
+      "postId": 122,
+      "commentId": 280,
+      "content": "如果配图再多一点，观感会更好。",
+      "actorEmail": "qilu_k6_user_058@example.com"
     },
     {
       "id": 2,
-      "postId": 106,
-      "commentId": 561,
-      "content": "这个分支可以继续往下写。",
-      "actorEmail": "qilu_k6_user_006@example.com"
+      "postId": 79,
+      "commentId": 312,
+      "content": "我觉得这里还可以补一段个人经历。",
+      "actorEmail": "qilu_k6_user_070@example.com"
     },
     {
       "id": 3,
-      "postId": 181,
-      "commentId": 310,
-      "content": "哈哈，这个说法挺准确。",
-      "actorEmail": "qilu_k6_user_080@example.com"
+      "postId": 193,
+      "commentId": 261,
+      "content": "这个角度挺适合展开成另一个分支。",
+      "actorEmail": "qilu_k6_user_088@example.com"
     },
     {
       "id": 4,
-      "postId": 35,
-      "commentId": 13,
+      "postId": 124,
+      "commentId": 572,
+      "content": "我觉得这类内容适合放在首页。",
+      "actorEmail": "qilu_k6_user_085@example.com"
+    },
+    {
+      "id": 5,
+      "postId": 367,
+      "commentId": 11,
+      "content": "如果配图再多一点，观感会更好。",
+      "actorEmail": "qilu_k6_user_038@example.com"
+    },
+    {
+      "id": 6,
+      "postId": 95,
+      "commentId": 419,
+      "content": "感觉你抓住了重点。",
+      "actorEmail": "qilu_k6_user_063@example.com"
+    },
+    {
+      "id": 7,
+      "postId": 492,
+      "commentId": 478,
+      "content": "这个评论让我又想回去看原文。",
+      "actorEmail": "qilu_k6_user_085@example.com"
+    },
+    {
+      "id": 8,
+      "postId": 401,
+      "commentId": 235,
+      "content": "我觉得这类内容适合放在首页。",
+      "actorEmail": "qilu_k6_user_022@example.com"
+    },
+    {
+      "id": 9,
+      "postId": 443,
+      "commentId": 267,
+      "content": "确实，平台感一下子出来了。",
+      "actorEmail": "qilu_k6_user_085@example.com"
+    },
+    {
+      "id": 10,
+      "postId": 505,
+      "commentId": 31,
+      "content": "这个评论让我又想回去看原文。",
+      "actorEmail": "qilu_k6_user_073@example.com"
+    },
+    {
+      "id": 11,
+      "postId": 312,
+      "commentId": 369,
+      "content": "同意，读起来很自然。",
+      "actorEmail": "qilu_k6_user_065@example.com"
+    },
+    {
+      "id": 12,
+      "postId": 232,
+      "commentId": 494,
       "content": "如果配图再多一点，观感会更好。",
       "actorEmail": "qilu_k6_user_034@example.com"
     },
     {
-      "id": 5,
-      "postId": 410,
-      "commentId": 447,
-      "content": "我觉得这里不是简单的图文，而是选择感。",
-      "actorEmail": "qilu_k6_user_055@example.com"
-    },
-    {
-      "id": 6,
-      "postId": 266,
-      "commentId": 540,
-      "content": "确实，细节比结论更有意思。",
-      "actorEmail": "qilu_k6_user_035@example.com"
-    },
-    {
-      "id": 7,
-      "postId": 21,
-      "commentId": 80,
-      "content": "这个评论让我又想回去看原文。",
-      "actorEmail": "qilu_k6_user_037@example.com"
-    },
-    {
-      "id": 8,
-      "postId": 134,
-      "commentId": 389,
-      "content": "同意，读起来很自然。",
-      "actorEmail": "qilu_k6_user_029@example.com"
-    },
-    {
-      "id": 9,
-      "postId": 103,
-      "commentId": 42,
-      "content": "这里可以作为一个典型样例。",
-      "actorEmail": "qilu_k6_user_019@example.com"
-    },
-    {
-      "id": 10,
-      "postId": 133,
-      "commentId": 81,
-      "content": "有道理，继续往下读会更自然。",
-      "actorEmail": "qilu_k6_user_034@example.com"
-    },
-    {
-      "id": 11,
-      "postId": 344,
-      "commentId": 112,
-      "content": "对，树状内容的优势就在这里。",
-      "actorEmail": "qilu_k6_user_096@example.com"
-    },
-    {
-      "id": 12,
-      "postId": 15,
-      "commentId": 386,
-      "content": "这个节点很适合继续探索。",
-      "actorEmail": "qilu_k6_user_045@example.com"
-    },
-    {
       "id": 13,
-      "postId": 120,
-      "commentId": 564,
-      "content": "这个评论让我又想回去看原文。",
-      "actorEmail": "qilu_k6_user_084@example.com"
+      "postId": 320,
+      "commentId": 475,
+      "content": "这个角度挺适合展开成另一个分支。",
+      "actorEmail": "qilu_k6_user_085@example.com"
     },
     {
       "id": 14,
-      "postId": 422,
-      "commentId": 390,
-      "content": "这个节点很适合继续探索。",
-      "actorEmail": "qilu_k6_user_003@example.com"
+      "postId": 309,
+      "commentId": 507,
+      "content": "确实，细节比结论更有意思。",
+      "actorEmail": "qilu_k6_user_093@example.com"
     },
     {
       "id": 15,
-      "postId": 153,
-      "commentId": 54,
-      "content": "同意，读起来很自然。",
-      "actorEmail": "qilu_k6_user_066@example.com"
+      "postId": 492,
+      "commentId": 478,
+      "content": "这里可以作为一个典型样例。",
+      "actorEmail": "qilu_k6_user_021@example.com"
     },
     {
       "id": 16,
-      "postId": 531,
-      "commentId": 505,
-      "content": "对，这里最重要的其实是真实感。",
-      "actorEmail": "qilu_k6_user_036@example.com"
+      "postId": 157,
+      "commentId": 528,
+      "content": "我觉得这里不是简单的图文，而是选择感。",
+      "actorEmail": "qilu_k6_user_091@example.com"
     },
     {
       "id": 17,
-      "postId": 243,
-      "commentId": 465,
-      "content": "这种慢节奏内容挺适合歧路。",
-      "actorEmail": "qilu_k6_user_002@example.com"
+      "postId": 541,
+      "commentId": 75,
+      "content": "我觉得这里还可以补一段个人经历。",
+      "actorEmail": "qilu_k6_user_084@example.com"
     },
     {
       "id": 18,
-      "postId": 114,
-      "commentId": 457,
-      "content": "对，树状内容的优势就在这里。",
-      "actorEmail": "qilu_k6_user_081@example.com"
+      "postId": 367,
+      "commentId": 116,
+      "content": "这里可以作为一个典型样例。",
+      "actorEmail": "qilu_k6_user_089@example.com"
     },
     {
       "id": 19,
-      "postId": 548,
-      "commentId": 2,
-      "content": "我觉得这类内容适合放在首页。",
-      "actorEmail": "qilu_k6_user_006@example.com"
+      "postId": 15,
+      "commentId": 186,
+      "content": "确实，细节比结论更有意思。",
+      "actorEmail": "qilu_k6_user_043@example.com"
     },
     {
       "id": 20,
-      "postId": 188,
-      "commentId": 260,
-      "content": "我觉得这里还可以补一段个人经历。",
-      "actorEmail": "qilu_k6_user_076@example.com"
+      "postId": 183,
+      "commentId": 19,
+      "content": "这里可以作为一个典型样例。",
+      "actorEmail": "qilu_k6_user_059@example.com"
     }
   ]
 }

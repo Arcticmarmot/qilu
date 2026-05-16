@@ -12,7 +12,7 @@ import {
     randomInt,
     getContentType,
     VISIBILITY_PUBLIC,
-} from '../lib/common.mjs';
+} from './common.mjs';
 
 const __dirname = currentDir(import.meta.url);
 

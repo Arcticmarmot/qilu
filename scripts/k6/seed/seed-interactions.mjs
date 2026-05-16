@@ -9,7 +9,7 @@ import {
     pickRandom,
     SUCCESS,
     CONFLICT,
-} from '../lib/common.mjs';
+} from './common.mjs';
 
 const __dirname = currentDir(import.meta.url);
 

@@ -1,0 +1,218 @@
+{
+    "metrics": {
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 4950,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "hot_posts_forbidden_count": {
+            "rate": 0,
+            "count": 0,
+            "thresholds": {
+                "count==0": false
+            }
+        },
+        "http_reqs": {
+            "count": 4950,
+            "rate": 164.19174072299043
+        },
+        "http_req_tls_handshaking": {
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0
+        },
+        "hot_posts_unauthorized_count": {
+            "count": 0,
+            "rate": 0,
+            "thresholds": {
+                "count==0": false
+            }
+        },
+        "hot_posts_success_count": {
+            "count": 4950,
+            "rate": 164.19174072299043
+        },
+        "data_received": {
+            "count": 22925907,
+            "rate": 760453.4500976548
+        },
+        "http_req_sending": {
+            "min": 0.00327,
+            "med": 0.00664,
+            "max": 1.076775,
+            "p(90)": 0.01197,
+            "p(95)": 0.016351000000000004,
+            "avg": 0.010244054343434337
+        },
+        "iteration_duration": {
+            "med": 304.215415,
+            "max": 316.643924,
+            "p(90)": 306.0309,
+            "p(95)": 307.0559815,
+            "avg": 304.4791722208079,
+            "min": 302.089941
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 3.635701,
+            "max": 15.805039,
+            "p(90)": 5.5109631000000014,
+            "p(95)": 6.547406500000002,
+            "avg": 3.9769024078787707,
+            "min": 1.860648
+        },
+        "http_req_waiting": {
+            "p(90)": 5.462065900000002,
+            "p(95)": 6.478207,
+            "avg": 3.9122940179798054,
+            "min": 1.779387,
+            "med": 3.57504,
+            "max": 15.749958
+        },
+        "vus": {
+            "max": 50,
+            "value": 50,
+            "min": 50
+        },
+        "data_sent": {
+            "count": 1812220,
+            "rate": 60111.425529902575
+        },
+        "http_req_duration": {
+            "med": 3.635701,
+            "max": 15.805039,
+            "p(90)": 5.5109631000000014,
+            "p(95)": 6.547406500000002,
+            "avg": 3.9769024078787707,
+            "min": 1.860648,
+            "thresholds": {
+                "p(99)<800": false,
+                "p(95)<300": false
+            }
+        },
+        "http_req_receiving": {
+            "p(90)": 0.09965790000000004,
+            "p(95)": 0.13924295000000006,
+            "avg": 0.05436433555555561,
+            "min": 0.00956,
+            "med": 0.04099,
+            "max": 1.380126
+        },
+        "hot_posts_system_error_count": {
+            "count": 0,
+            "rate": 0,
+            "thresholds": {
+                "count==0": false
+            }
+        },
+        "checks": {
+            "passes": 44550,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "http_req_blocked": {
+            "min": 0.001141,
+            "med": 0.00263,
+            "max": 0.600732,
+            "p(90)": 0.0037510000000000035,
+            "p(95)": 0.00431,
+            "avg": 0.006388721010101027
+        },
+        "http_req_connecting": {
+            "max": 0.399031,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.001951941414141414,
+            "min": 0,
+            "med": 0
+        },
+        "iterations": {
+            "count": 4950,
+            "rate": 164.19174072299043
+        }
+    },
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "http status is 200": {
+                    "passes": 4950,
+                    "fails": 0,
+                    "name": "http status is 200",
+                    "path": "::http status is 200",
+                    "id": "ea2fe6ab7eecb8c5b564c043a0723b30"
+                },
+                "api response is valid": {
+                    "fails": 0,
+                    "name": "api response is valid",
+                    "path": "::api response is valid",
+                    "id": "08596da46dd54c32a579eaf7ce45b33e",
+                    "passes": 4950
+                },
+                "api code is success": {
+                    "name": "api code is success",
+                    "path": "::api code is success",
+                    "id": "e536a0eacd0f6fc96515ff583ac78343",
+                    "passes": 4950,
+                    "fails": 0
+                },
+                "hot page data is valid": {
+                    "name": "hot page data is valid",
+                    "path": "::hot page data is valid",
+                    "id": "390a07794f214cce997779a823857382",
+                    "passes": 4950,
+                    "fails": 0
+                },
+                "no bad request": {
+                    "name": "no bad request",
+                    "path": "::no bad request",
+                    "id": "9314c6ef9242b4bc37492791fd30e8d6",
+                    "passes": 4950,
+                    "fails": 0
+                },
+                "token is valid": {
+                    "name": "token is valid",
+                    "path": "::token is valid",
+                    "id": "dbe14b81c43961d6c84ede7b865f5a38",
+                    "passes": 4950,
+                    "fails": 0
+                },
+                "no forbidden": {
+                    "id": "14ab0e021b959e4acba828d9f25fed85",
+                    "passes": 4950,
+                    "fails": 0,
+                    "name": "no forbidden",
+                    "path": "::no forbidden"
+                },
+                "no not found": {
+                    "name": "no not found",
+                    "path": "::no not found",
+                    "id": "e9e952e85e1c484e32d8da4c5fba069e",
+                    "passes": 4950,
+                    "fails": 0
+                },
+                "no system error": {
+                    "name": "no system error",
+                    "path": "::no system error",
+                    "id": "0cdb7e2df2e211ed98481c95ac7c6a45",
+                    "passes": 4950,
+                    "fails": 0
+                }
+            },
+        "name": ""
+    }
+}
