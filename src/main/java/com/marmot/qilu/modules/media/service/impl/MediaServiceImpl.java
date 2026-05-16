@@ -164,10 +164,6 @@ public class MediaServiceImpl implements MediaFileService {
     }
 
     private String buildPublicUrl(String objectKey) {
-        return storageProperties.getPublicEndpoint()
-                + "/"
-                + storageProperties.getBucket()
-                + "/"
-                + objectKey;
+        return storageProperties.getPublicEndpoint() + "/" + objectKey;
     }
 }
