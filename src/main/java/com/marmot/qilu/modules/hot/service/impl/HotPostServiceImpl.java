@@ -1,6 +1,5 @@
 package com.marmot.qilu.modules.hot.service.impl;
 
-import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.event.comment.CommentEvent;
 import com.marmot.qilu.common.event.like.LikeEvent;
 import com.marmot.qilu.common.event.reply.ReplyEvent;

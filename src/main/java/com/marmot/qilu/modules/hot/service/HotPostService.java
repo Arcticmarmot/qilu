@@ -7,8 +7,6 @@ import com.marmot.qilu.modules.post.dto.PostPageQueryDTO;
 import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 
-import java.util.List;
-
 public interface HotPostService {
 
     void increaseByLike(LikeEvent event);

@@ -25,12 +25,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AsyncRequestNotUsableException.class)
-    public void handleAsyncRequestNotUsableException(AsyncRequestNotUsableException e) {
+    public void handleAsyncRequestNotUsableException(AsyncRequestNotUsableException ignored) {
         log.debug("async request not usable, client disconnected");
     }
 
     @ExceptionHandler(AsyncRequestTimeoutException.class)
-    public void handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
+    public void handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ignored) {
         log.debug("async request timeout, client disconnected");
     }
 }
