@@ -13,6 +13,13 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
+
+    private static final String CLAIM_EMAIL = "email";
+    private static final String CLAIM_IDENTITY_TYPE = "identityType";
+
+    private static final String IDENTITY_USER = "USER";
+    private static final String IDENTITY_ADMIN = "ADMIN";
+
     @Value("${jwt.secret}")
     private String secret;
 
@@ -26,12 +33,25 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String uuid, String email) {
+    public String generateUserToken(String uuid, String email) {
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + expire);
         return Jwts.builder()
                 .subject(uuid)
-                .claim("email", email)
+                .claim(CLAIM_EMAIL, email)
+                .claim(CLAIM_IDENTITY_TYPE, IDENTITY_USER)
+                .issuedAt(now)
+                .expiration(expireDate)
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String generateAdminToken(String uuid) {
+        Date now = new Date();
+        Date expireDate = new Date(now.getTime() + expire);
+        return Jwts.builder()
+                .subject(uuid)
+                .claim(CLAIM_IDENTITY_TYPE, IDENTITY_ADMIN)
                 .issuedAt(now)
                 .expiration(expireDate)
                 .signWith(secretKey)
@@ -46,16 +66,25 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public String getUuid(String token) {
-        return parseToken(token).getSubject();
+    public String getIdentityType(Claims claims) {
+        Object identityType = claims.get(CLAIM_IDENTITY_TYPE);
+        return identityType == null ? null : identityType.toString();
     }
 
-    public String getEmail(String token) {
-        Object email = parseToken(token).get("email");
-        return email == null ? null : email.toString();
+    public String getUuid(Claims claims) {
+        Object uuid = claims.getSubject();
+        return uuid == null ? null : uuid.toString();
     }
 
-    public boolean isExpired(String token) {
-        return parseToken(token).getExpiration().before(new Date());
+    public boolean isUserToken(Claims claims) {
+        return IDENTITY_USER.equals(getIdentityType(claims));
+    }
+
+    public boolean isAdminToken(Claims claims) {
+        return IDENTITY_ADMIN.equals(getIdentityType(claims));
+    }
+
+    public boolean isExpired(Claims claims) {
+        return claims.getExpiration().before(new Date());
     }
 }

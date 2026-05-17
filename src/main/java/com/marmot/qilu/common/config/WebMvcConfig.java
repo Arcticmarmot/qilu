@@ -1,6 +1,7 @@
 package com.marmot.qilu.common.config;
 
-import com.marmot.qilu.common.interceptor.JwtInterceptor;
+import com.marmot.qilu.common.interceptor.AdminJwtInterceptor;
+import com.marmot.qilu.common.interceptor.UserJwtInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,13 +12,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final JwtInterceptor jwtInterceptor;
+    private final UserJwtInterceptor userJwtInterceptor;
+    private final AdminJwtInterceptor adminJwtInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor)
+        registry.addInterceptor(userJwtInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
+                        "/admin/**",
                         "/auth/login",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
@@ -25,12 +28,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/v3/api-docs",
                         "/users"
                 );
+
+        registry.addInterceptor(adminJwtInterceptor)
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns(
+                        "/admin/auth/login"
+                );
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins(
+                    "http://localhost:3000",
+                    "http://localhost:3333"
+                )
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)

@@ -3,7 +3,7 @@ package com.marmot.qilu.common.interceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.common.api.ErrorCode;
-import com.marmot.qilu.common.context.UserContext;
+import com.marmot.qilu.common.context.AdminContext;
 import com.marmot.qilu.common.security.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,18 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Date;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtInterceptor implements HandlerInterceptor {
+public class AdminJwtInterceptor implements HandlerInterceptor {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
-
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -48,24 +45,26 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
 
         String token = authorization.substring(BEARER_PREFIX.length());
-
         try {
             Claims claims = jwtUtil.parseToken(token);
-
-            Date expiration = claims.getExpiration();
-            if(expiration == null || expiration.before(new Date())) {
+            if(jwtUtil.isExpired(claims)) {
                 writeUnauthorized(response, "token has expired");
                 return false;
             }
 
-            String uuid = claims.getSubject();
+            String uuid = jwtUtil.getUuid(claims);
             if(uuid == null || uuid.isBlank()) {
                 writeUnauthorized(response, "token subject is invalid");
                 return false;
             }
 
-            UserContext.setUuid(uuid);
-            return true;
+            if(jwtUtil.isAdminToken(claims)) {
+                AdminContext.setUuid(uuid);
+                return true;
+            } else {
+                writeUnauthorized(response, "token type is invalid");
+                return false;
+            }
         } catch (Exception e) {
             log.debug(
                     "parse jwt failed, method={}, uri={}",
@@ -84,7 +83,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                                 @NonNull HttpServletResponse response,
                                 @NonNull Object handler,
                                 Exception ex) {
-        UserContext.clear();
+        AdminContext.clear();
     }
 
     private void writeUnauthorized(HttpServletResponse response, String message) throws Exception {

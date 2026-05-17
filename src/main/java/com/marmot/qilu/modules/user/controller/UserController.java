@@ -33,7 +33,6 @@ public class UserController {
     @Operation(summary = "获取当前登录用户信息", description = "返回当前访问令牌对应的用户基础信息")
     @GetMapping("/me")
     public ApiResponse<UserVO> getCurrentUser() {
-        String uuid = UserContext.getUuid();
-        return ApiResponse.success(userService.getCurrentUserProfile(uuid));
+        return ApiResponse.success(userService.getCurrentUserProfile());
     }
 }

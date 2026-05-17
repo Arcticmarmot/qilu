@@ -1,6 +1,7 @@
 package com.marmot.qilu.modules.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.ConflictException;
 import com.marmot.qilu.common.exception.NotFoundException;
@@ -75,7 +76,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO getCurrentUserProfile(String uuid) {
+    public UserVO getCurrentUserProfile() {
+        String uuid = UserContext.requireUuid();
+
         validateUuid(uuid);
 
         User user = getUserByUuid(uuid);

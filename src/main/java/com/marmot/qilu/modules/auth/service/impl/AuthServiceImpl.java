@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final int STATUS_ENABLED = 1;
+    private static final int STATUS_NORMAL = 1;
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -28,24 +28,26 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginVO login(LoginDTO dto) {
         validateLoginDTO(dto);
+        String email = dto.getEmail();
+        String password = dto.getPassword();
 
-        User user = userService.getUserByEmail(dto.getEmail());
+        User user = userService.getUserByEmail(email);
 
         if (user == null) {
             throw new UnauthorizedException("email or password is incorrect");
         }
 
-        if (user.getStatus() == null || user.getStatus() != STATUS_ENABLED) {
+        if (user.getStatus() == null || user.getStatus() != STATUS_NORMAL) {
             throw new ForbiddenException("user is disabled");
         }
 
-        boolean matched = passwordEncoder.matches(dto.getPassword(), user.getPasswordHash());
+        boolean matched = passwordEncoder.matches(password, user.getPasswordHash());
 
         if (!matched) {
             throw new UnauthorizedException("email or password is incorrect");
         }
 
-        String token = jwtUtil.generateToken(user.getUuid(), user.getEmail());
+        String token = jwtUtil.generateUserToken(user.getUuid(), email);
 
         LoginVO vo = new LoginVO();
         vo.setToken(token);
