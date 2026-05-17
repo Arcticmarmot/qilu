@@ -18,7 +18,7 @@ public class JwtUtil {
     private static final String CLAIM_IDENTITY_TYPE = "identityType";
 
     private static final String IDENTITY_USER = "USER";
-    private static final String IDENTITY_ADMIN = "ADMIN";
+    private static final String IDENTITY_OPERATOR = "OPERATOR";
 
     @Value("${jwt.secret}")
     private String secret;
@@ -46,12 +46,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateAdminToken(String uuid) {
+    public String generateOperatorToken(String uuid) {
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + expire);
         return Jwts.builder()
                 .subject(uuid)
-                .claim(CLAIM_IDENTITY_TYPE, IDENTITY_ADMIN)
+                .claim(CLAIM_IDENTITY_TYPE, IDENTITY_OPERATOR)
                 .issuedAt(now)
                 .expiration(expireDate)
                 .signWith(secretKey)
@@ -80,8 +80,8 @@ public class JwtUtil {
         return IDENTITY_USER.equals(getIdentityType(claims));
     }
 
-    public boolean isAdminToken(Claims claims) {
-        return IDENTITY_ADMIN.equals(getIdentityType(claims));
+    public boolean isOperatorToken(Claims claims) {
+        return IDENTITY_OPERATOR.equals(getIdentityType(claims));
     }
 
     public boolean isExpired(Claims claims) {

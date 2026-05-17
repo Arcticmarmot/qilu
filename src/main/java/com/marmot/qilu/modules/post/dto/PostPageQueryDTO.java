@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "帖子分页查询参数")
+@Schema(description = "帖子分页查询")
 public class PostPageQueryDTO {
 
     @Schema(description = "页码，从 1 开始", example = "1")

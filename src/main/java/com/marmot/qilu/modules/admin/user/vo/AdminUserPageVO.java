@@ -1,17 +1,15 @@
-package com.marmot.qilu.modules.post.vo;
+package com.marmot.qilu.modules.admin.user.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@Schema(description = "帖子分页列表")
-public class PostPageVO<T> {
+@Schema(description = "用户分页列表")
+public class AdminUserPageVO<T> {
 
     @Schema(description = "当前页码", example = "1")
     private long current;

@@ -1,6 +1,6 @@
 package com.marmot.qilu.common.config;
 
-import com.marmot.qilu.common.interceptor.AdminJwtInterceptor;
+import com.marmot.qilu.common.interceptor.OperatorJwtInterceptor;
 import com.marmot.qilu.common.interceptor.UserJwtInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final UserJwtInterceptor userJwtInterceptor;
-    private final AdminJwtInterceptor adminJwtInterceptor;
+    private final OperatorJwtInterceptor operatorJwtInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -29,7 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/users"
                 );
 
-        registry.addInterceptor(adminJwtInterceptor)
+        registry.addInterceptor(operatorJwtInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns(
                         "/admin/auth/login"

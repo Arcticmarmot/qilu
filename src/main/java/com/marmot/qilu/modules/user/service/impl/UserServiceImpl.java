@@ -103,15 +103,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        if (email == null || email.isBlank()) {
-            return null;
-        }
+        validateEmail(email);
 
         return userMapper.selectOne(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getEmail, email)
-                        .last("limit 1")
         );
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("email is invalid");
+        }
     }
 
     private void validateCreateUserDTO(UserCreateDTO dto) {
