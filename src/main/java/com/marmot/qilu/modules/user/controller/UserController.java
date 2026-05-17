@@ -1,6 +1,5 @@
 package com.marmot.qilu.modules.user.controller;
 
-import com.marmot.qilu.common.context.UserContext;
 import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.modules.user.dto.UserCreateDTO;
 import com.marmot.qilu.modules.user.service.UserService;

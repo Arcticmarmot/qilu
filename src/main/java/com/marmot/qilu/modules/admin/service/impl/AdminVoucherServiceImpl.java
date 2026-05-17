@@ -1,12 +1,12 @@
-package com.marmot.qilu.modules.voucher.service.impl;
+package com.marmot.qilu.modules.admin.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.marmot.qilu.common.exception.BadRequestException;
 import com.marmot.qilu.common.exception.NotFoundException;
 import com.marmot.qilu.modules.voucher.constant.VoucherRedisKeys;
-import com.marmot.qilu.modules.voucher.dto.VoucherCreateDTO;
-import com.marmot.qilu.modules.voucher.dto.VoucherRedeemDTO;
-import com.marmot.qilu.modules.voucher.dto.VoucherSeckillCreateDTO;
+import com.marmot.qilu.modules.admin.dto.VoucherCreateDTO;
+import com.marmot.qilu.modules.admin.dto.VoucherRedeemDTO;
+import com.marmot.qilu.modules.admin.dto.VoucherSeckillCreateDTO;
 import com.marmot.qilu.modules.voucher.entity.Voucher;
 import com.marmot.qilu.modules.voucher.entity.VoucherOrder;
 import com.marmot.qilu.modules.voucher.entity.VoucherSeckill;
@@ -14,7 +14,7 @@ import com.marmot.qilu.modules.voucher.enums.VoucherOrderStatus;
 import com.marmot.qilu.modules.voucher.mapper.VoucherMapper;
 import com.marmot.qilu.modules.voucher.mapper.VoucherOrderMapper;
 import com.marmot.qilu.modules.voucher.mapper.VoucherSeckillMapper;
-import com.marmot.qilu.modules.voucher.service.VoucherAdminService;
+import com.marmot.qilu.modules.admin.service.AdminVoucherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,7 +28,7 @@ import static com.marmot.qilu.common.util.ContentUtils.normalizeContent;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class VoucherAdminServiceImpl implements VoucherAdminService {
+public class AdminVoucherServiceImpl implements AdminVoucherService {
 
     private static final int STATUS_DELETED = 0;
     private static final int STATUS_NORMAL = 1;

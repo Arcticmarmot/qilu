@@ -1,4 +1,4 @@
-package com.marmot.qilu.modules.voucher.dto;
+package com.marmot.qilu.modules.admin.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
