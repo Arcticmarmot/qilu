@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qilu-config
+  namespace: qilu
+data:
+  # Spring Boot 应用监听的容器端口，对应 Deployment 里的 containerPort。
+  SERVER_PORT: "8080"
+
+  # JVM 按容器内存限制自动计算堆大小，避免容器内存被打爆。
+  JAVA_OPTS: "-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport"
+
+  # 第一阶段只把 qilu 应用放进 K8s。
+  # MySQL 暂时继续用 Docker Compose 跑在 Mac 上，所以 Pod 通过 host.docker.internal 访问宿主机。
+  # 等后面把 MySQL 也迁进 K8s 后，这里应该改成类似 qilu-mysql 这样的 Service 名称。
+  MYSQL_HOST: "host.docker.internal"
+  MYSQL_PORT: "3306"
+  MYSQL_DATABASE: "qilu"
+  MYSQL_SERVER_TIMEZONE: "Asia/Singapore"
+
+  # Redis 同样暂时访问宿主机上的 Docker Compose Redis。
+  REDIS_HOST: "host.docker.internal"
+  REDIS_PORT: "6379"
+  REDIS_DATABASE: "0"
+  REDIS_TIMEOUT: "3000ms"
+
+  # Kafka 是这里最容易踩坑的依赖。
+  # 这个地址只是 qilu 第一次连接 Kafka 的 bootstrap 地址；
+  # Kafka broker 后续还会返回 advertised.listeners 里的地址。
+  # 如果 Kafka 仍然返回 localhost:9092，Pod 会把 localhost 理解成 Pod 自己，从而连接失败。
+  KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9092"
+
+  # Elasticsearch 暂时继续访问宿主机 Docker Compose 暴露的 9200 端口。
+  ELASTICSEARCH_URIS: "http://host.docker.internal:9200"
+
+  # MinIO 内部上传访问 endpoint；public endpoint 是返回给前端/浏览器访问媒体文件用的地址。
+  MINIO_ENDPOINT: "http://host.docker.internal:9000"
+  MINIO_PUBLIC_ENDPOINT: "http://localhost/media"
+  MINIO_BUCKET: "qilu-media"
+
+  # 开启 Spring Boot 3 的 K8s 健康探针端点：
+  # /actuator/health/liveness 和 /actuator/health/readiness
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info"
+  LOGGING_LEVEL_COM_MARMOT_QILU: "info"
