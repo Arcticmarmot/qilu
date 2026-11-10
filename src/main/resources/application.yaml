@@ -77,3 +77,20 @@ springdoc:
     tags-sorter: alpha
   api-docs:
     path: /v3/api-docs
+
+# 官方 SDK 不提供 Spring Boot 自动配置，由 MilvusConfig 创建客户端。
+# 当前先接入基础设施；需要使用向量检索时通过环境变量启用。
+milvus:
+  enabled: ${MILVUS_ENABLED:false}
+  uri: ${MILVUS_URI:http://localhost:19530}
+  token: "${MILVUS_TOKEN:}"
+  database-name: ${MILVUS_DATABASE_NAME:default}
+  connect-timeout: ${MILVUS_CONNECT_TIMEOUT:5s}
+  rpc-deadline: ${MILVUS_RPC_DEADLINE:10s}
+  # 只预留名称，待确定 embedding 模型与维度后再创建 collection。
+  collection-name: ${MILVUS_COLLECTION_NAME:qilu_post_vector}
+
+embedding:
+  base-url: http://192.168.1.11:11434
+  model: qwen3-embedding:0.6b
+  dimension: 1024

@@ -34,6 +34,7 @@ The current source tree shows dedicated modules for `auth`, `user`, `post`, `lik
 - **MySQL**
 - **Redis**
 - **Kafka**
+- **Milvus** (vector search infrastructure; hybrid retrieval is under development)
 - **JWT**
 - **OpenAPI / Swagger**
 - **Docker Compose**
@@ -102,6 +103,10 @@ The repository already includes local infrastructure definitions:
 - `deploy/docker/kafka/docker-compose.yml`
 
 These files are intended to help run the backend locally with the required middleware.
+
+Milvus Standalone infrastructure is available under `deploy/docker/milvus` for the
+hybrid-search work. See [Milvus local development](deploy/docker/milvus/README.md)
+for startup commands and application configuration.
 
 ## API Style
 
