@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qilu
+  namespace: qilu
+  labels:
+    app: qilu
+spec:
+  # 第一阶段先只跑 1 个副本。
+  # 后面扩到多个副本时，要额外处理定时任务重复执行、Kafka consumer partition、幂等消费等问题。
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qilu
+  template:
+    metadata:
+      labels:
+        app: qilu
+    spec:
+      containers:
+        - name: qilu
+          # 这个镜像来自本机 docker build -t qilu:local .
+          # Docker Desktop Kubernetes 通常能直接看到本机镜像；
+          # kind/minikube 需要先把镜像导入对应集群。
+          image: qilu:local
+          # 本地学习镜像没有推到远程仓库，所以优先使用节点本地镜像。
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          # 从 ConfigMap 和 Secret 注入环境变量；
+          # application.yaml 里用 ${XXX:默认值} 读取这些变量。
+          envFrom:
+            - configMapRef:
+                name: qilu-config
+            - secretRef:
+                name: qilu-secret
+          # startupProbe 给 Spring Boot 更长启动时间。
+          # 依赖多时启动可能较慢，启动探针通过前不会触发 liveness 重启。
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          # readinessProbe 决定这个 Pod 是否可以接收流量。
+          # 未就绪时 Service 不会把请求转发给它。
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          # livenessProbe 判断应用是否卡死。
+          # 连续失败后 K8s 会重启这个容器。
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          # requests 是调度时预留资源，limits 是容器可用资源上限。
+          # 本地学习环境先给一个保守值，避免 Spring Boot、ES、Kafka 一起占满机器。
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi

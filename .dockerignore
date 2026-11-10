@@ -1,0 +1,11 @@
+.git
+.gitignore
+.gitattributes
+.idea
+.vscode
+.DS_Store
+target
+*.iml
+*.log
+deploy/docker/**/data
+scripts/k6/seed/results

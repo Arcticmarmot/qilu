@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qilu
+  namespace: qilu
+spec:
+  # 只有集群里已经安装 Nginx Ingress Controller 时，这个 Ingress 才会生效。
+  # 没装的话，先用 kubectl port-forward svc/qilu 8080:8080 -n qilu。
+  ingressClassName: nginx
+  rules:
+    - host: qilu.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                # 把 qilu.local 的 HTTP 流量转发到 qilu Service。
+                name: qilu
+                port:
+                  number: 8080

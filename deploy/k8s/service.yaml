@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qilu
+  namespace: qilu
+  labels:
+    app: qilu
+spec:
+  # ClusterIP 只在集群内部暴露服务。
+  # 本地访问先用 kubectl port-forward，更稳定，也不依赖 Ingress Controller。
+  type: ClusterIP
+  selector:
+    # Service 通过 label 找到 Deployment 创建出来的 Pod。
+    app: qilu
+  ports:
+    - name: http
+      # Service 端口。
+      port: 8080
+      # 转发到 Pod 里的 containerPort: http，也就是 8080。
+      targetPort: http
