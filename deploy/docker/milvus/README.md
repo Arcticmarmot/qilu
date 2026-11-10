@@ -42,8 +42,9 @@ WebUI 地址为 <http://localhost:9091/webui/>。
 ## 应用配置
 
 `application.yaml` 的 `milvus` 配置由 `MilvusProperties` 绑定。
-当前默认 `MILVUS_ENABLED=false`，不创建客户端，保持尚未使用向量检索时的启动方式。
-启动 Milvus 后，可通过以下命令启用客户端：
+当前混合检索分支默认 `MILVUS_ENABLED=true`，会创建客户端及向量索引消费者。
+仅使用 ES 时可以设置 `MILVUS_ENABLED=false`；修改开关后需要重启应用。
+启动 Milvus 后，可通过以下命令运行应用：
 
 ```bash
 MILVUS_ENABLED=true ./mvnw spring-boot:run
@@ -51,19 +52,20 @@ MILVUS_ENABLED=true ./mvnw spring-boot:run
 
 | 环境变量 | 默认值 | 含义 |
 | --- | --- | --- |
-| MILVUS_ENABLED | false | 是否创建 MilvusClientV2 Bean |
+| MILVUS_ENABLED | true | 是否创建 MilvusClientV2 Bean 和向量索引消费者 |
 | MILVUS_URI | http://localhost:19530 | SDK 连接地址 |
 | MILVUS_TOKEN | 空 | 开启鉴权后的 username:password 或云服务 token |
 | MILVUS_DATABASE_NAME | default | 已存在的数据库名称 |
 | MILVUS_CONNECT_TIMEOUT | 5s | 建立连接的超时时间 |
 | MILVUS_RPC_DEADLINE | 10s | RPC 调用超时时间 |
-| MILVUS_COLLECTION_NAME | qilu_post_vector | 后续向量索引使用的集合名 |
+| MILVUS_COLLECTION_NAME | qilu_post_vector | 向量索引使用的集合名 |
 
 启用后客户端会在初始化时连接服务，应用关闭时调用 `close()` 释放连接。
 本机运行应用使用 `localhost`；容器或 K8s 中运行时，需要将 `MILVUS_URI`
 指向从应用容器可达的 Milvus 地址。
 
-本次只接入基础设施，不自动创建数据库、集合或索引。
-集合的向量维度、距离度量和索引参数应在确定 embedding 模型后再设置。
-后续可让 ES 做关键词召回、Milvus 做语义召回，在搜索服务中按 `postId/rootId`
-融合结果，并回 MySQL 校验可见性、获取展示内容。
+已接入 Ollama embedding 和混合召回 MVP。启用后，首次向量同步或查询会自动创建
+集合、向量索引并加载集合，向量维度读取 `embedding.dimension`，距离度量为 `COSINE`。
+数据库仍需预先存在，默认使用 Milvus 自带的 `default` 数据库。
+更换 embedding 模型或维度时，请设置新的集合名并回填。
+接口、数据流程和存量回填方式见[混合搜索说明](../../../docs/hybrid-search.md)。

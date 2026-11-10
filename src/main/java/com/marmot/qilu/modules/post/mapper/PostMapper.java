@@ -23,6 +23,8 @@ public interface PostMapper extends BaseMapper<Post> {
 
     List<PostSearchSource> selectPostSearchSourceListByIds(@Param("postIds") List<Long> postIds);
 
+    List<Long> selectPostIdsAfter(@Param("afterId") long afterId, @Param("size") int size);
+
     PostTreeInfo selectInteractablePostTreeInfo(@Param("currUserUuid") String currUserUuid, @Param("postId") Long postId);
 
     List<Long> selectSubtreePostIdsById(@Param("postId") Long postId);

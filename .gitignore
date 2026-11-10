@@ -33,3 +33,4 @@ build/
 .vscode/
 
 /deploy/docker/**/data/
+/scripts/k6/**/assets/

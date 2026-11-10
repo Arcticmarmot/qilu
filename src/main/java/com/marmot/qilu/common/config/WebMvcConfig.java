@@ -32,7 +32,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(operatorJwtInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns(
-                        "/admin/auth/login"
+                        "/admin/auth/login",
+                        "/admin/search/vector-index/rebuild"
                 );
     }
 

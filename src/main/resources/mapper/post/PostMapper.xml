@@ -34,6 +34,14 @@
         limit 1
     </select>
 
+    <select id="selectPostIdsAfter" resultType="java.lang.Long">
+        select id
+        from post
+        where id &gt; #{afterId}
+        order by id asc
+        limit #{size}
+    </select>
+
     <select id="selectPostSearchSourceListByIds"
             resultType="com.marmot.qilu.modules.post.model.PostSearchSource">
         select

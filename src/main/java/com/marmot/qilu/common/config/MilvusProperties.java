@@ -15,7 +15,7 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "milvus")
 public class MilvusProperties {
 
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     @NotBlank
     private String uri = "http://localhost:19530";

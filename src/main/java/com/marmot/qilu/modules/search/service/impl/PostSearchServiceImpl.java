@@ -10,6 +10,7 @@ import com.marmot.qilu.modules.post.vo.PostPageItemVO;
 import com.marmot.qilu.modules.post.vo.PostPageVO;
 import com.marmot.qilu.modules.search.document.PostSearchDocument;
 import com.marmot.qilu.modules.search.dto.PostSearchPageQueryDTO;
+import com.marmot.qilu.modules.search.model.PostSearchCandidate;
 import com.marmot.qilu.modules.search.repository.PostSearchRepository;
 import com.marmot.qilu.modules.search.service.PostSearchService;
 import lombok.RequiredArgsConstructor;
@@ -47,13 +48,12 @@ public class PostSearchServiceImpl implements PostSearchService {
             if(!isSearchable(source)) {
                 postSearchRepository.deleteById(postId);
                 log.warn("sync post index failed, post is not searchable, postId={}", postId);
-                return;
+                continue;
             }
 
             PostSearchDocument document = convertToDocument(source);
             postSearchRepository.save(document);
         }
-
 
         log.info("index post success, postIds={}", postIds);
     }
@@ -74,7 +74,41 @@ public class PostSearchServiceImpl implements PostSearchService {
         int current = dto.getCurrent();
         int size = dto.getSize();
 
-        NativeQuery query = NativeQuery.builder()
+        NativeQuery query = buildSearchQuery(keyword, current - 1, size, true);
+        SearchHits<PostSearchDocument> searchHits = elasticsearchOperations.search(query, PostSearchDocument.class);
+
+        long total = getRootCount(searchHits);
+
+        List<Long> rootIds = searchHits.getSearchHits()
+                .stream()
+                .map(hit -> hit.getContent().getRootId())
+                .filter(Objects::nonNull)
+                .toList();
+
+        if(rootIds.isEmpty()) {
+            return new PostPageVO<>(current, size, total, List.of());
+        }
+        List<PostPageItemVO> records = postService.getPublicPostsByIds(rootIds);
+        return new PostPageVO<>(current, size, total, records);
+    }
+
+    @Override
+    public List<PostSearchCandidate> searchCandidates(String keyword, int limit) {
+        validateKeyword(keyword);
+        if (limit < 1 || limit > 100) {
+            throw new BadRequestException("search candidate limit must be between 1 and 100");
+        }
+        SearchHits<PostSearchDocument> hits = elasticsearchOperations.search(
+                buildSearchQuery(keyword, 0, limit, false), PostSearchDocument.class);
+        return hits.getSearchHits().stream()
+                .map(hit -> hit.getContent())
+                .filter(document -> document.getId() != null && document.getRootId() != null)
+                .map(document -> new PostSearchCandidate(document.getId(), document.getRootId()))
+                .toList();
+    }
+
+    private NativeQuery buildSearchQuery(String keyword, int page, int size, boolean countRoots) {
+        var builder = NativeQuery.builder()
                 .withQuery(q -> q
                         .bool(b -> b
                                 .must(m -> m
@@ -99,31 +133,17 @@ public class PostSearchServiceImpl implements PostSearchService {
                 .withFieldCollapse(FieldCollapse.of(fc -> fc
                         .field("rootId")
                 ))
-                .withPageable(PageRequest.of(current - 1, size))
-                .withAggregation(AGG_ROOT_COUNT, Aggregation.of(a -> a
+                .withPageable(PageRequest.of(page, size));
+        if (countRoots) {
+            builder.withAggregation(AGG_ROOT_COUNT, Aggregation.of(a -> a
                         .cardinality(c -> c
                             .field("rootId")
                             .precisionThreshold(10000)
                         )
                     )
-                )
-                .build();
-
-        SearchHits<PostSearchDocument> searchHits = elasticsearchOperations.search(query, PostSearchDocument.class);
-
-        long total = getRootCount(searchHits);
-
-        List<Long> rootIds = searchHits.getSearchHits()
-                .stream()
-                .map(hit -> hit.getContent().getRootId())
-                .filter(Objects::nonNull)
-                .toList();
-
-        if(rootIds.isEmpty()) {
-            return new PostPageVO<>(current, size, total, List.of());
+            );
         }
-        List<PostPageItemVO> records = postService.getPublicPostsByIds(rootIds);
-        return new PostPageVO<>(current, size, total, records);
+        return builder.build();
     }
 
     private long getRootCount(SearchHits<PostSearchDocument> searchHits) {

@@ -34,7 +34,7 @@ The current source tree shows dedicated modules for `auth`, `user`, `post`, `lik
 - **MySQL**
 - **Redis**
 - **Kafka**
-- **Milvus** (vector search infrastructure; hybrid retrieval is under development)
+- **Milvus** (semantic retrieval and ES + Milvus hybrid search MVP)
 - **JWT**
 - **OpenAPI / Swagger**
 - **Docker Compose**
@@ -107,6 +107,9 @@ These files are intended to help run the backend locally with the required middl
 Milvus Standalone infrastructure is available under `deploy/docker/milvus` for the
 hybrid-search work. See [Milvus local development](deploy/docker/milvus/README.md)
 for startup commands and application configuration.
+
+The [hybrid search MVP](docs/hybrid-search.md) adds Ollama embeddings, Kafka-driven
+vector indexing, a historical backfill endpoint, and parallel ES/Milvus retrieval.
 
 ## API Style
 
