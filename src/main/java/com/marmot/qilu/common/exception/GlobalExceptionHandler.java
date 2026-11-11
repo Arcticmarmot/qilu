@@ -3,6 +3,7 @@ package com.marmot.qilu.common.exception;
 import com.marmot.qilu.common.api.ApiResponse;
 import com.marmot.qilu.common.api.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
@@ -11,6 +12,14 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ApiResponse<Void> handleValidationException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .findFirst().orElse("request parameters are invalid");
+        return ApiResponse.fail(ErrorCode.BAD_REQUEST, message);
+    }
 
     @ExceptionHandler(BizException.class)
     public ApiResponse<Void> handleRuntimeException(BizException e) {

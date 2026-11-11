@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
-@EnableConfigurationProperties(EmbeddingProperties.class)
+@EnableConfigurationProperties({EmbeddingProperties.class, OllamaChatProperties.class})
 public class HybridSearchConfig {
 
     @Bean

@@ -111,6 +111,9 @@ for startup commands and application configuration.
 The [hybrid search MVP](docs/hybrid-search.md) adds Ollama embeddings, Kafka-driven
 vector indexing, a historical backfill endpoint, and parallel ES/Milvus retrieval.
 
+The [RAG chat MVP](docs/rag-chat.md) reuses hybrid search and public MySQL post
+content to generate Chinese answers with real post references through local Ollama.
+
 ## API Style
 
 Qilu follows a modular REST-style backend design. For interaction resources such as comments and replies, the APIs are organized around clear ownership relationships between posts, comments, and replies.

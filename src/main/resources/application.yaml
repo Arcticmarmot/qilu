@@ -97,3 +97,11 @@ embedding:
   dimension: ${EMBEDDING_DIMENSION:1024}
   connect-timeout: ${EMBEDDING_CONNECT_TIMEOUT:3s}
   read-timeout: ${EMBEDDING_READ_TIMEOUT:30s}
+
+# 单轮 RAG 生成；默认复用 Embedding 的 Ollama 地址，独立配置生成模型。
+ollama:
+  chat:
+    base-url: ${OLLAMA_CHAT_BASE_URL:${embedding.base-url}}
+    model: ${OLLAMA_CHAT_MODEL:qwen3.5:4b}
+    connect-timeout: ${OLLAMA_CHAT_CONNECT_TIMEOUT:3s}
+    read-timeout: ${OLLAMA_CHAT_READ_TIMEOUT:120s}
